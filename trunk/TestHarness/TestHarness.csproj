@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{85E2DED9-AA04-4A3B-8587-562D577A8EAB}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{AAD8AD5C-566D-445E-A60A-EB5FFACF34C9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>libtcodWrapper</RootNamespace>
-    <AssemblyName>libtcodWrapper</AssemblyName>
+    <RootNamespace>TestHarness</RootNamespace>
+    <AssemblyName>TestHarness</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
@@ -41,17 +41,35 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="libtcodWrapper\TCODColor.cs" />
-    <Compile Include="libtcodWrapper\TCODConsole.cs" />
-    <Compile Include="libtcodWrapper\TCODFileParser.cs" />
-    <Compile Include="libtcodWrapper\TCODFov.cs" />
-    <Compile Include="libtcodWrapper\TCODKeyboard.cs" />
-    <Compile Include="libtcodWrapper\TCODLineDrawing.cs" />
-    <Compile Include="libtcodWrapper\TCODSystem.cs" />
+    <Compile Include="EntryPoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libtcodWrapper.csproj">
+      <Project>{85E2DED9-AA04-4A3B-8587-562D577A8EAB}</Project>
+      <Name>libtcodWrapper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="exampleConfig.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libtcod-VS.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libtcod.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libtcod.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SDL.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="terminal.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

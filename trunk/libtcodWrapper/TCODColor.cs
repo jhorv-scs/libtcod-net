@@ -45,7 +45,6 @@ namespace libtcodWrapper
             return TCOD_color_equals(this, (TCODColor)obj);
         }
 
-        // override object.GetHashCode
         public override int GetHashCode()
         {
             return base.GetHashCode();
