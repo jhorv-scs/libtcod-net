@@ -6,44 +6,44 @@ namespace libtcodWrapper
 {
     class TCODFov : IDisposable
     {
-        private IntPtr mapPtr;
+        private IntPtr m_mapPtr;
 
         public TCODFov(int width, int height)
         {
-            mapPtr = TCOD_map_new(width, height);
-            TCOD_map_clear(mapPtr);
+            m_mapPtr = TCOD_map_new(width, height);
+            TCOD_map_clear(m_mapPtr);
         }
 
         public void ClearMap()
         {
-            TCOD_map_clear(mapPtr);
+            TCOD_map_clear(m_mapPtr);
         }
 
         public void Dispose()
         {
-            TCOD_map_delete(mapPtr);
+            TCOD_map_delete(m_mapPtr);
         }
 
         // x - width ; y - height
         public void SetCell(int x, int y, bool transparent, bool walkable)
         {
-            TCOD_map_set_properties(mapPtr, x, y, transparent, walkable);
+            TCOD_map_set_properties(m_mapPtr, x, y, transparent, walkable);
         }
 
         public void GetCell(int x, int y, out bool transparent, out bool walkable)
         {
-            transparent = TCOD_map_is_transparent(mapPtr, x, y);
-            walkable = TCOD_map_is_walkable(mapPtr, x, y);
+            transparent = TCOD_map_is_transparent(m_mapPtr, x, y);
+            walkable = TCOD_map_is_walkable(m_mapPtr, x, y);
         }
 
         public void CalculateFOV(int playerX, int playerY, int radius)
         {
-            TCOD_map_compute_fov(mapPtr, playerX, playerY, radius);
+            TCOD_map_compute_fov(m_mapPtr, playerX, playerY, radius);
         }
 
         public bool CheckTileFOV(int x, int y)
         {
-            return TCOD_map_is_in_fov(mapPtr, x, y);
+            return TCOD_map_is_in_fov(m_mapPtr, x, y);
         }
 
         [DllImport(DLLName.name)]

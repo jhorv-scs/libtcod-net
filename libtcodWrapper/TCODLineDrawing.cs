@@ -12,9 +12,9 @@ namespace libtcodWrapper
             TCOD_line_init(xFrom, yFrom, xTo, yTo); 
         }
 
-        public static bool StepLine(out int xCur, out int yCur)
+        public static bool StepLine(ref int xCur, ref int yCur)
         {
-            return TCOD_line_step(out xCur, out yCur);
+            return TCOD_line_step(ref xCur, ref yCur);
         }
 
         [DllImport(DLLName.name)]
@@ -22,7 +22,7 @@ namespace libtcodWrapper
 
         //returns true when reached line endpoint
         [DllImport(DLLName.name)]
-        private extern static bool TCOD_line_step(out int xCur, out int yCur);
+        private extern static bool TCOD_line_step(ref int xCur, ref int yCur);
     }
 
     public class TCODLineDrawingTest
@@ -35,7 +35,7 @@ namespace libtcodWrapper
             {
                 if ((2 + i != x) || (2 + i != y))
                     return false;
-                TCODLineDrawing.StepLine(out x, out y);
+                TCODLineDrawing.StepLine(ref x, ref y);
             }
             return true;
         }
