@@ -9,3 +9,13 @@ item_type "blade" {            // structure's type : 'item_type'. structure's na
 	list="foo"				   // a string list property
 	abstract                   // a flag (simplified boolean property)
 }
+
+video {
+	mode="800x600"
+	fullscreen=false
+}
+input {
+	mouse {
+		sensibility=0.5
+	}
+}
