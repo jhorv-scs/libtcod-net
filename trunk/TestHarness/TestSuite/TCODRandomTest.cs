@@ -7,6 +7,20 @@ namespace libtcodWrapperTests
     [TestFixture]
     public class TCODRandomTest
     {
+        private TCODRandom r;
+
+        [SetUp]
+        public void Init()
+        {
+            r = new TCODRandom();
+        }
+
+        [TearDown]
+        public void Cleanup()
+        {
+            r.Dispose();
+        }
+
         [Test]
         public void TestConstructors()
         {
@@ -19,50 +33,37 @@ namespace libtcodWrapperTests
         [Test]
         public void TestRandomInts()
         {
-            using (TCODRandom r = new TCODRandom())
-            {
-                for (int i = 0; i < 1000; ++i)
-                    AssertRange(r.GetRandomInt(0, i), 0, i);
-            }
+            for (int i = 0; i < 1000; ++i)
+                AssertRange(r.GetRandomInt(0, i), 0, i);
         }
 
         [Test]
         public void TestRandomFloats()
         {
-            using (TCODRandom r = new TCODRandom())
-            {
-                for (int i = 0; i < 1000; ++i)
-                    AssertRange(r.GetRandomFloat(0, i), 0, i);
-            }
+            for (int i = 0; i < 1000; ++i)
+                AssertRange(r.GetRandomFloat(0, i), 0, i);
         }
 
         [Test]
         public void TestNegativeRequests()
         {
-            using (TCODRandom r = new TCODRandom())
+            for (int i = 0; i < 1000; ++i)
             {
-                for (int i = 0; i < 1000; ++i)
-                {
-                    AssertRange(r.GetRandomInt(-10, -1), -10, -1);
-                    AssertRange(r.GetRandomFloat(-9.9, -.1), -9.9, -.1);
-                }
+                AssertRange(r.GetRandomInt(-10, -1), -10, -1);
+                AssertRange(r.GetRandomFloat(-9.9, -.1), -9.9, -.1);
             }
         }
 
         [Test]
         public void TestByteArray()
         {
-            using (TCODRandom r = new TCODRandom())
-            {
-                int result = r.GetIntFromByteArray(0, 1000, "Hello World");
-                AssertRange(result, 0, 1000);
+            int result = r.GetIntFromByteArray(0, 1000, "Hello World");
+            AssertRange(result, 0, 1000);
 
-                int secondResult = r.GetIntFromByteArray(0, 1000, "Hello World");
-                Assert.AreEqual(result, secondResult);
-                
-                AssertRange(r.GetIntFromByteArray(0, 1000, "Hello"), 0, 1000);
-            }
-
+            int secondResult = r.GetIntFromByteArray(0, 1000, "Hello World");
+            Assert.AreEqual(result, secondResult);
+            
+            AssertRange(r.GetIntFromByteArray(0, 1000, "Hello"), 0, 1000);
         }
 
 

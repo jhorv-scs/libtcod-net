@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libtcodWrapper", "libtcodWrapper.csproj", "{85E2DED9-AA04-4A3B-8587-562D577A8EAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHarness", "TestHarness\TestHarness.csproj", "{AAD8AD5C-566D-445E-A60A-EB5FFACF34C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCODTestLib", "TestHarness\TCODTestLib.csproj", "{AAD8AD5C-566D-445E-A60A-EB5FFACF34C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

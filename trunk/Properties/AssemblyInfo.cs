@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Chris Hamons")]
-[assembly: AssemblyProduct("libtcodWrapper.Properties")]
+[assembly: AssemblyProduct("libtcodWrapper")]
 [assembly: AssemblyCopyright("Chris Hamons (c) 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
