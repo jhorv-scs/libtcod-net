@@ -6,7 +6,6 @@ namespace libtcodWrapper
 {
     public class TCODRandom : IDisposable
     {
-
         public TCODRandom()
         {
             m_instance = TCOD_random_new();
@@ -64,7 +63,6 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_random_delete(IntPtr mersenne);
-
     }
 }
 

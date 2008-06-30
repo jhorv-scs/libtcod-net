@@ -4,7 +4,7 @@ using System.Text;
 
 namespace libtcodWrapper
 {
-    class TCODSystem
+    public class TCODSystem
     {
         public static UInt32 GetElapsedMilli()
         {

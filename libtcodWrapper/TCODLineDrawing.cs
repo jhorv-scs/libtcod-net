@@ -24,20 +24,4 @@ namespace libtcodWrapper
         [DllImport(DLLName.name)]
         private extern static bool TCOD_line_step(ref int xCur, ref int yCur);
     }
-
-    public class TCODLineDrawingTest
-    {
-        public static bool TestTCODLineDrawing()
-        {
-            TCODLineDrawing.InitLine(2, 2, 5, 5);
-            int x=2, y=2;
-            for (int i = 0; i < 4; ++i)
-            {
-                if ((2 + i != x) || (2 + i != y))
-                    return false;
-                TCODLineDrawing.StepLine(ref x, ref y);
-            }
-            return true;
-        }
-    }
 }

@@ -41,7 +41,12 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="EntryPoint.cs" />
+    <Compile Include="TestSuite\Manual Tests\ManualTestMain.cs" />
+    <Compile Include="TestSuite\Manual Tests\TCODKeyboardTest.cs" />
+    <Compile Include="TestSuite\TCODColorTest.cs" />
+    <Compile Include="TestSuite\Manual Tests\TCODFovTest.cs" />
+    <Compile Include="TestSuite\TCODLineDrawingTest.cs" />
+    <Compile Include="TestSuite\TCODParserTest.cs" />
     <Compile Include="TestSuite\TCODRandomTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,13 +63,7 @@
     <Content Include="exampleConfig.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="libtcod-VS.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="libtcod.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libtcod.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SDL.dll">
