@@ -49,6 +49,7 @@
     <Compile Include="libtcodWrapper\TCODFov.cs" />
     <Compile Include="libtcodWrapper\TCODKeyboard.cs" />
     <Compile Include="libtcodWrapper\TCODLineDrawing.cs" />
+    <Compile Include="libtcodWrapper\TCODRandom.cs" />
     <Compile Include="libtcodWrapper\TCODSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
