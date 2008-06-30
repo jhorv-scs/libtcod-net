@@ -52,28 +52,28 @@ namespace libtcodWrapper
     unsafe public struct TCODValue
     {
         [FieldOffset(0)]
-       	bool b;
+       	public bool b;
+          
+           [FieldOffset(0)]
+           public byte c;
         
-        [FieldOffset(0)]
-	    byte c;
+           [FieldOffset(0)]
+           public int i; 
         
-        [FieldOffset(0)]
-	    int i;
+           [FieldOffset(0)]
+           public float f;
         
-        [FieldOffset(0)]
-	    float f;
-        
-        [FieldOffset(0)]
-        fixed char s[512];        
+           [FieldOffset(0)]
+           public fixed char s[512];        
 
-        [FieldOffset(0)]
-        TCODColor col;
+           [FieldOffset(0)]
+           public TCODColor col;
         
-        [FieldOffset(0)]
-        TCODDice dice;
+           [FieldOffset(0)]
+           public TCODDice dice;
 
-        [FieldOffset(0)]
-        IntPtr custom;
+           [FieldOffset(0)]
+           public IntPtr custom;
     }
 
     [StructLayout(LayoutKind.Sequential) ]
@@ -295,7 +295,7 @@ namespace libtcodWrapper
             return TCOD_struct_is_mandatory(m_parserStructure, new StringBuilder(name));
         }
 
-        public TCODValue GetType(string name)
+        public TCODValueType GetType(string name)
         {
             return TCOD_struct_get_type(m_parserStructure, new StringBuilder(name));
         }
@@ -324,15 +324,23 @@ namespace libtcodWrapper
         private extern static bool TCOD_struct_is_mandatory(IntPtr str, StringBuilder name);
 
         [DllImport(DLLName.name)]
-        private extern static TCODValue TCOD_struct_get_type(IntPtr str, StringBuilder name);
+        private extern static TCODValueType TCOD_struct_get_type(IntPtr str, StringBuilder name);
+
     }
 
 
     public class TCODFileParserTest
     {
-        static private bool parserCallbackTestFailed = false;
-        enum currentStructType { none, item, video, input };
-        static private currentStructType currentState = none;
+        enum currentStructType { none, item, video, input, mouse, inputDone };
+        static private currentStructType currentState = currentStructType.none;
+        static bool cost_defined = false;
+        static bool weight_defined = false;
+        static bool deal_damage_defined = false;
+        static bool damages_defined = false;
+        static bool color_defined = false;
+        static bool damaged_color_defined = false;
+        static bool damage_type_defined = false;
+        static bool list_defined = false;
 
         static public bool TestFileParser()
         {
@@ -341,7 +349,7 @@ namespace libtcodWrapper
             {
                 if (ImplementedParserTest())
                 {
-                    return !parserCallbackTestFailed;
+                    return true;
                 }
                 else
                 {
@@ -356,29 +364,116 @@ namespace libtcodWrapper
 
         private static bool NewStructCallbackTest(IntPtr str, StringBuilder name)
         {
-            TCODParserStructure cur = new TCODParserStructure(str);
-            System.Console.Out.WriteLine("New Structure - Type : " + name + ", Name : " + cur.GetName());
+            TCODParserStructure cur = new TCODParserStructure(str);                      
+
+            switch (currentState)
+            {
+                case currentStructType.none:
+                    if (name.ToString() != "blade" && cur.GetName() != "item_type")
+                        return false;
+                    
+                    if(!cur.IsManatory("cost"))
+                        return false;
+                    if (cur.GetType("cost") != TCODValueType.TCOD_TYPE_INT)
+                        return false;
+                    
+                    currentState = currentStructType.item;
+                    break;
+                case currentStructType.item:
+                    if (name != null && cur.GetName() != "video")
+                        return false;
+                    currentState = currentStructType.video;
+                    break;
+                case currentStructType.video:
+                    if (name != null && cur.GetName() != "input")
+                        return false;
+                    currentState = currentStructType.input;
+                    break;
+                case currentStructType.input:
+                    if (name != null && cur.GetName() != "mouse")
+                        return false;
+                    currentState = currentStructType.mouse;
+                    break;
+                case currentStructType.inputDone:
+                    return false;   //Should never get here
+                case currentStructType.mouse:
+                    return false;   //Should never get here
+            }
             return true;
         }
         private static bool NewFlagCallbackTest(StringBuilder name)
         {
-            System.Console.Out.WriteLine("New flag:" + name);
-            return true;
+            if (name.ToString() != "abstract")
+                return false;
+            if (!cost_defined || !weight_defined || !deal_damage_defined || !damages_defined || !color_defined ||
+                !damaged_color_defined || !damage_type_defined || !list_defined)
+                return false;
+            return true;           
         }
         private static bool NewPropertyCallbackTest(StringBuilder name, TCODValueType type, TCODValue value)
         {
-            System.Console.Out.WriteLine("New Property - Name : " + name + ", Value = " + type.ToString() );
+            switch (type)
+            {
+                case TCODValueType.TCOD_TYPE_BOOL:
+                    deal_damage_defined = true;
+                    break;
+                case TCODValueType.TCOD_TYPE_COLOR:
+                    if (name.ToString() == "color")
+                        color_defined = true;
+                    else
+                        damaged_color_defined = true;
+                    break;
+                case TCODValueType.TCOD_TYPE_DICE:
+                    damages_defined = true;
+                    break;
+                case TCODValueType.TCOD_TYPE_FLOAT:
+                    weight_defined = true;
+                    break;
+                case TCODValueType.TCOD_TYPE_INT:
+                    cost_defined = true;
+                    break;
+                case TCODValueType.TCOD_TYPE_STRING:
+                    damage_type_defined = true;
+                    break;
+                case TCODValueType.TCOD_TYPE_VALUELIST00:
+                    list_defined = true;
+                    break;
+                default:
+                    return false;
+            }
             return true;
         }
         private static bool EndStructCallbackTest(IntPtr str, StringBuilder name)
         {
             TCODParserStructure cur = new TCODParserStructure(str);
-            System.Console.Out.WriteLine("Structure Ending - Type : " + name + ", Name : " + cur.GetName());
+            switch (currentState)
+            {
+                case currentStructType.none:
+                    return false;
+                case currentStructType.item:
+                    if (name.ToString() != "blade" || cur.GetName() != "item_type")
+                        return false;
+                    break;
+                case currentStructType.video:
+                    if (name != null || cur.GetName() != "video")
+                        return false;
+                    break;
+                case currentStructType.mouse:
+                    if (name != null || cur.GetName() != "mouse")
+                        return false;
+                    currentState = currentStructType.inputDone;
+                    break;
+                case currentStructType.inputDone:
+                    if (name != null || cur.GetName() != "input")
+                        return false;
+                    break;
+                case currentStructType.input:
+                    return false;
+            }
             return true;
         }
         private static void ErrorCallbackTest(StringBuilder msg)
         {
-            parserCallbackTestFailed = true;
         }
 
         private static bool ImplementedParserTest()
