@@ -47,6 +47,7 @@
     <Compile Include="libtcodWrapper\TCODConsole.cs" />
     <Compile Include="libtcodWrapper\TCODFileParser.cs" />
     <Compile Include="libtcodWrapper\TCODFov.cs" />
+    <Compile Include="libtcodWrapper\TCODImage.cs" />
     <Compile Include="libtcodWrapper\TCODKeyboard.cs" />
     <Compile Include="libtcodWrapper\TCODLineDrawing.cs" />
     <Compile Include="libtcodWrapper\TCODNoise.cs" />

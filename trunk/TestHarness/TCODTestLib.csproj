@@ -45,6 +45,7 @@
     <Compile Include="TestSuite\Manual Tests\TCODKeyboardTest.cs" />
     <Compile Include="TestSuite\TCODColorTest.cs" />
     <Compile Include="TestSuite\Manual Tests\TCODFovTest.cs" />
+    <Compile Include="TestSuite\TCODImageTest.cs" />
     <Compile Include="TestSuite\TCODLineDrawingTest.cs" />
     <Compile Include="TestSuite\TCODNoiseTest.cs" />
     <Compile Include="TestSuite\TCODParserTest.cs" />
