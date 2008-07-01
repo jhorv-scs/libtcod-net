@@ -9,12 +9,11 @@ namespace libtcodWrapperTests
         private static bool inRealTimeTest = false;
         public static bool TestTCODKeyboard()
         {
-
             bool testPassed = true;
             try
             {
-                CustomFontRequest font = new CustomFontRequest("Herrbdog_16x16_tileset.bmp", 16, 16, 16, 16, true, new TCODColor(255, 0, 255));
-                TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Keyboard Tester", false, font);
+                //CustomFontRequest font = new CustomFontRequest("Herrbdog_16x16_tileset.bmp", 16, 16, 16, 16, true, new TCODColor(255, 0, 255));
+                TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Keyboard Tester", false);
                 TCODKeyboard keyboard = new TCODKeyboard();
 
                 TCOD_key key = new TCOD_key();
