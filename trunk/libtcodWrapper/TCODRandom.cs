@@ -41,7 +41,7 @@ namespace libtcodWrapper
             return TCOD_random_get_int_from_byte_array(min, max, new StringBuilder(data), data.Length);
         }
 
-        private IntPtr m_instance;
+        internal IntPtr m_instance;
 
         [DllImport(DLLName.name)]
         private extern static IntPtr TCOD_random_get_instance();

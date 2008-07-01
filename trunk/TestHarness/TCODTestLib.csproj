@@ -46,6 +46,7 @@
     <Compile Include="TestSuite\TCODColorTest.cs" />
     <Compile Include="TestSuite\Manual Tests\TCODFovTest.cs" />
     <Compile Include="TestSuite\TCODLineDrawingTest.cs" />
+    <Compile Include="TestSuite\TCODNoiseTest.cs" />
     <Compile Include="TestSuite\TCODParserTest.cs" />
     <Compile Include="TestSuite\TCODRandomTest.cs" />
   </ItemGroup>
