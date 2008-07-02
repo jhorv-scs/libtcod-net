@@ -10,7 +10,7 @@ namespace libtcodWrapperTests
     {
         static void WaitForDebugger()
         {
-            TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Keyboard Tester", false);
+            TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Waiting for Debugger", false);
             TCODKeyboard keyboard = new TCODKeyboard();
             keyboard.WaitForKeyPress(false);
         }
@@ -19,7 +19,7 @@ namespace libtcodWrapperTests
         {
             //TCODFovTest.TestTCODFovTest();
             //TCODKeyboardTest.TestTCODKeyboard();
-            WaitForDebugger();
+            //WaitForDebugger();
             return 0;
         }
     }
