@@ -68,9 +68,9 @@ namespace libtcodWrapper
             TCOD_image_set_key_color(m_instance, keyColor);
         }
 
-        public void Blit(TCODConsole console, float x, float y, TCOD_bkgnd_flag bkgnd_flag, float scalex, float scaley, float angle)
+        public void Blit(TCODConsole console, float x, float y, TCOD_bkgnd_flag bkgnd_flag, double scalex, double scaley, double angle)
         {
-            TCOD_image_blit(m_instance, console.m_consolePtr, x, y, bkgnd_flag, scalex, scaley, angle);
+            TCOD_image_blit(m_instance, console.m_consolePtr, x, y, bkgnd_flag, (float)scalex, (float)scaley, (float)angle);
         }
 
         public void BlitRect(TCODConsole console, int x, int y, int w, int h, TCOD_bkgnd_flag bkgnd_flag)
