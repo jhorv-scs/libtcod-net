@@ -1,0 +1,16 @@
+<Combine name="TCODTestLib" fileversion="2.0">
+  <Configurations active="Debug|Any CPU">
+    <Configuration name="Debug|Any CPU" ctype="CombineConfiguration">
+      <Entry build="True" name="TCODTestLib" configuration="Debug|Any CPU" />
+    </Configuration>
+    <Configuration name="Release|Any CPU" ctype="CombineConfiguration">
+      <Entry build="True" name="TCODTestLib" configuration="Release|Any CPU" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="TCODTestLib" single="True">
+    <Execute type="None" entry="TCODTestLib" />
+  </StartMode>
+  <Entries>
+    <Entry filename="TCODTestLib.csproj" />
+  </Entries>
+</Combine>

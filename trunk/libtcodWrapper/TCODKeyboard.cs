@@ -117,6 +117,12 @@ namespace libtcodWrapper
             get { return ((modifiers & 0x20) > 0); }
             set { }
         }
+		
+		TCOD_key(TCOD_key k)
+		{
+			vk = TCOD_keycode.TCODK_CHAR;
+			c = 0;			modifiers = 0;			
+		}
     }
 
     public enum TCOD_keypressed

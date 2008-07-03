@@ -251,9 +251,6 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static TCODDice TCOD_parser_get_dice_property(IntPtr parser, StringBuilder name);
-
-        [DllImport(DLLName.name)]
-        private extern static IntPtr TCOD_parser_get_custom_property(IntPtr parser, StringBuilder name);
     }
 
     public class TCODParserStructure

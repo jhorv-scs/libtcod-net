@@ -66,12 +66,6 @@ namespace libtcodWrapperTests
             AssertRange(r.GetIntFromByteArray(0, 1000, "Hello"), 0, 1000);
         }
 
-
-        private static void AssertRange(uint result, uint low, uint high)
-        {
-            Assert.IsFalse(result < low || result > high);
-        }
-
         private static void AssertRange(double result, double low, double high)
         {
             Assert.IsFalse(result < low || result > high);

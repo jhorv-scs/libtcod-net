@@ -44,9 +44,6 @@ namespace libtcodWrapper
         internal IntPtr m_instance;
 
         [DllImport(DLLName.name)]
-        private extern static IntPtr TCOD_random_get_instance();
-
-        [DllImport(DLLName.name)]
         private extern static IntPtr TCOD_random_new();
 
         [DllImport(DLLName.name)]
