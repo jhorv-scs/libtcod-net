@@ -93,7 +93,8 @@ namespace libtcodWrapperTests
             using (TCODImage i = new TCODImage(40, 80))
             {
                 i.Clear(TCODColor.TCOD_dark_purple);
-                TCODColor foo = i.GetMipMaps(2, 4, 10, 20);
+                i.GetMipMaps(2, 4, 10, 20);
+				
             }
         }
 

@@ -7,7 +7,8 @@ namespace libtcodWrapper
     internal class DLLName
     {
         //internal const string name = @"libtcod-VS.dll";
-        internal const string name = @"libtcod.dll";
+        //internal const string name = @"libtcod.dll";
+		internal const string name = @"libtcod.so";
     }
 
     public enum TCOD_bkgnd_flag
@@ -253,7 +254,7 @@ namespace libtcodWrapper
 
     public class TCODConsoleBliter
     {
-        static void ConsoleBlit(TCODConsole source, int xSrc, int ySrc, int wSrc, int hSrc, TCODConsole dest, int xDst, int yDst, int fade)
+        public static void ConsoleBlit(TCODConsole source, int xSrc, int ySrc, int wSrc, int hSrc, TCODConsole dest, int xDst, int yDst, int fade)
         {
             TCOD_console_blit(source.m_consolePtr, xSrc, ySrc, wSrc, hSrc, dest.m_consolePtr, xDst, yDst, fade);
         }

@@ -45,7 +45,7 @@ namespace libtcodWrapper
         public float GetTurbulence(ref float[] f, float octaves)
         {
             CheckDimension(f.Length);
-            return TCOD_noise_fbm(m_instance, ref f, octaves);
+            return TCOD_noise_turbulence(m_instance, ref f, octaves);
         }
       
         public void Dispose()
