@@ -12,7 +12,6 @@ namespace libtcodWrapperTests
             bool testPassed = true;
             try
             {
-                //CustomFontRequest font = new CustomFontRequest("Herrbdog_16x16_tileset.bmp", 16, 16, 16, 16, true, new TCODColor(255, 0, 255));
                 TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Keyboard Tester", false);
                 TCODKeyboard keyboard = new TCODKeyboard();
 
@@ -32,6 +31,11 @@ namespace libtcodWrapperTests
             }
             return testPassed;
         }
+		
+		private static void PrintStatus(TCODConsole console, string name, bool status, int x, int y)
+		{
+			TCODConsoleLinePrinter.PrintLine(console, "Pressed " + name + " = " + (status  ? "On" : "Off"), x, y, TCODLineAlign.Left);
+		}
 
         private static void TurnBasedLoopTest(TCODConsoleRoot console, TCODKeyboard keyboard, ref TCOD_key key)
         {
@@ -45,13 +49,14 @@ namespace libtcodWrapperTests
             else
                 TCODConsoleLinePrinter.PrintLine(console, "Special Key Hit = " + key.vk.ToString(), 10, 10, TCODLineAlign.Left);
 
-            TCODConsoleLinePrinter.PrintLine(console, "Pressed Status = " + (key.pressed ? "On" : "Off"), 10, 12, TCODLineAlign.Left);
-            TCODConsoleLinePrinter.PrintLine(console, "lalt Status = " + (key.lalt ? "On" : "Off"), 10, 13, TCODLineAlign.Left);
-            TCODConsoleLinePrinter.PrintLine(console, "lctrl Status = " + (key.lctrl ? "On" : "Off"), 10, 14, TCODLineAlign.Left);
-            TCODConsoleLinePrinter.PrintLine(console, "ralt Status = " + (key.ralt ? "On" : "Off"), 10, 15, TCODLineAlign.Left);
-            TCODConsoleLinePrinter.PrintLine(console, "rctrl Status = " + (key.rctrl ? "On" : "Off"), 10, 16, TCODLineAlign.Left);
-            TCODConsoleLinePrinter.PrintLine(console, "shift Status = " + (key.shift ? "On" : "Off"), 10, 17, TCODLineAlign.Left);
-
+			PrintStatus(console, "Status", key.pressed, 10, 12);
+			PrintStatus(console, "lalt", key.lalt, 10, 13);
+			PrintStatus(console, "lctrl", key.lctrl, 10, 14);
+			PrintStatus(console, "ralt", key.ralt, 10, 15);
+			PrintStatus(console, "rctrl", key.rctrl, 10, 16);
+			PrintStatus(console, "shift", key.shift, 10, 17);
+           
+            
             TCODConsoleLinePrinter.PrintLine(console, "F1 Key Pressed = " + (keyboard.IsKeyPressed(TCOD_keycode.TCODK_F1) ? "Yes" : "No"), 10, 20, TCODLineAlign.Left);
 
             console.Flush();
