@@ -63,6 +63,7 @@
     <Compile Include="libtcodWrapper\TCODRandom.cs" />
     <Compile Include="libtcodWrapper\TCODSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="libtcodWrapper\TCODMouse.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

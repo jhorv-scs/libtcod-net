@@ -78,8 +78,12 @@ namespace libtcodWrapper
     public struct TCOD_key
     {
         public TCOD_keycode vk; //  key code
-	public byte c; // character if vk == TCODK_CHAR else 0
-        public byte modifiers;
+		public byte c; // character if vk == TCODK_CHAR else 0
+		
+		//This field is set by libtcod when struct is marshalled. Disable the incorrect warning. 
+		#pragma warning disable 0649
+        private byte modifiers;
+		#pragma warning restore 0649
 
         public bool pressed
         {
