@@ -78,51 +78,33 @@ namespace libtcodWrapper
     public struct TCOD_key
     {
         public TCOD_keycode vk; //  key code
-	    public byte c; // character if vk == TCODK_CHAR else 0
-        private UInt32 modifiers;
-	    /*public byte pressed; // does this correspond to a key press or key release event ?
-        public byte lalt;
-        public byte lctrl;
-        public byte ralt;
-        public byte rctrl;
-        public byte shift;*/
+	public byte c; // character if vk == TCODK_CHAR else 0
+        public byte modifiers;
 
         public bool pressed
         {
             get { return ((modifiers & 0x01) > 0); }
-            set { }
         }
         public bool lalt
         {
             get { return ((modifiers & 0x02) > 0); }
-            set { }
         }
         public bool lctrl
         {
             get { return ((modifiers & 0x04) > 0); }
-            set { }
         }
         public bool ralt
         {
             get { return ((modifiers & 0x8) > 0); }
-            set { }
         }
         public bool rctrl
         {
             get { return ((modifiers & 0x10) > 0); }
-            set { }
         }
         public bool shift
         {
             get { return ((modifiers & 0x20) > 0); }
-            set { }
         }
-		
-		TCOD_key(TCOD_key k)
-		{
-			vk = TCOD_keycode.TCODK_CHAR;
-			c = 0;			modifiers = 0;			
-		}
     }
 
     public enum TCOD_keypressed
