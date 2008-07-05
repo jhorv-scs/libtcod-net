@@ -1,6 +1,6 @@
 ﻿<NUnitProject>
   <Settings activeconfig="Default" />
   <Config name="Default" binpathtype="Auto">
-    <assembly path="TestHarness\bin\Release\TCODTestLib.dll" />
+    <assembly path="TestLibrary\bin\Release\TCODTestLib.dll" />
   </Config>
 </NUnitProject>
