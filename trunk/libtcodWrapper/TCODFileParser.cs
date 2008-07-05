@@ -115,45 +115,94 @@ namespace libtcodWrapper
             return !lhs.Equals(rhs);
         }
     }
-
-    //Parser Struct
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate bool new_struct_delegate(IntPtr str, StringBuilder name);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate bool new_flag_delegate(StringBuilder name);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate bool new_property_delegate(StringBuilder name, TCODValueType type, TCODValue value);
-
-    //Parser Struct
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate bool end_struct_delegate(IntPtr str, StringBuilder name);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void error_delegate(StringBuilder msg);
-
-    [StructLayout(LayoutKind.Sequential) ]
-    public struct TCODParserCallbackStruct
-    {
-        public new_struct_delegate new_structure;
-
-        public new_flag_delegate new_flag;
-
-        public new_property_delegate new_property;
-
-        public end_struct_delegate end_struct;
-
-        public error_delegate error;
-
-        public void ReturnErrorToParser(string error)
+	
+	public delegate bool NewStructureCallback(TCODParserStructure str, string name);
+	public delegate bool NewFlagCallback(string name);
+	public delegate bool NewPropertyCallback(string name, TCODValueType type, TCODValue v);
+	public delegate bool EndStructureCallback(TCODParserStructure str, string name);
+	public delegate void ErrorCallback(string msg);
+	
+	public class TCODParserCallbackStruct
+	{
+		private NewStructureCallback ns;
+		private NewFlagCallback nf;
+		private NewPropertyCallback np;
+		private EndStructureCallback es;
+		private ErrorCallback er;
+		internal TCODParserNativeCallback nativeCallback;
+		
+		public TCODParserCallbackStruct(NewStructureCallback newStruct, NewFlagCallback newFlag, NewPropertyCallback newProp,
+		                         EndStructureCallback endStruct, ErrorCallback error)
+		{
+			ns = newStruct;
+			nf = newFlag;
+			np = newProp;
+			es = endStruct;
+			er = error;
+			nativeCallback = new TCODParserNativeCallback();
+			nativeCallback.new_structure = new new_struct_delegate(this.NativeNewStructCallback); 
+			nativeCallback.new_flag = new new_flag_delegate(this.NativeNewFlagCallback);
+			nativeCallback.new_property = new new_property_delegate(this.NativePropertyCallback);
+			nativeCallback.end_structure = new end_struct_delegate(this.NativeEndStructCallback);
+			nativeCallback.error = new error_delegate(this.NativeErrorCallback);
+		}
+		
+		private bool NativeNewStructCallback(IntPtr str, StringBuilder name)
+        {
+            TCODParserStructure cur = new TCODParserStructure(str);
+			return ns(cur, name.ToString());
+        }
+        private bool NativeNewFlagCallback(StringBuilder name)
+        {
+			return nf(name.ToString());
+        }
+        private bool NativePropertyCallback(StringBuilder name, TCODValueType type, TCODValue v)
+		{			return np(name.ToString(), type, v);
+        }
+        private bool NativeEndStructCallback(IntPtr str, StringBuilder name)
+        {
+			TCODParserStructure cur = new TCODParserStructure(str);
+			return es(cur, name.ToString());
+        }
+        private void NativeErrorCallback(StringBuilder msg)
+		{
+			er(msg.ToString());
+        }
+		
+		public void ReturnErrorToParser(string error)
         {
             TCOD_parser_error(new StringBuilder(error));
         }
 
-        [DllImport(DLLName.name)]
+		[StructLayout(LayoutKind.Sequential) ]
+		internal struct TCODParserNativeCallback
+		{
+			internal new_struct_delegate new_structure;
+			internal new_flag_delegate new_flag;
+			internal new_property_delegate new_property;
+			internal end_struct_delegate end_structure;
+			internal error_delegate error;
+		};
+		
+		[DllImport(DLLName.name)]
         private extern static void TCOD_parser_error(StringBuilder msg);
-	};
+		
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		internal delegate bool new_struct_delegate(IntPtr str, StringBuilder name);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		internal delegate bool new_flag_delegate(StringBuilder name);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		internal delegate bool new_property_delegate(StringBuilder name, TCODValueType type, TCODValue v);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    	internal delegate bool end_struct_delegate(IntPtr str, StringBuilder name);
+
+    	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]	
+    	internal delegate void error_delegate(StringBuilder msg);
+	}
+
+    
 
     public class TCODFileParser : IDisposable
     {
@@ -171,7 +220,7 @@ namespace libtcodWrapper
 
         public void Run(string filename, ref TCODParserCallbackStruct listner)
         {
-            TCOD_parser_run(m_fileParser, new StringBuilder(filename), ref listner);
+            TCOD_parser_run(m_fileParser, new StringBuilder(filename), ref listner.nativeCallback);
         }
 
         public void Run(string filename)
@@ -218,7 +267,7 @@ namespace libtcodWrapper
         private extern static IntPtr TCOD_parser_new();
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_parser_run(IntPtr parser, StringBuilder filename, ref TCODParserCallbackStruct listener);
+        private extern static void TCOD_parser_run(IntPtr parser, StringBuilder filename, ref TCODParserCallbackStruct.TCODParserNativeCallback listener);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_parser_run(IntPtr parser, StringBuilder filename, IntPtr nullListener);
@@ -255,7 +304,7 @@ namespace libtcodWrapper
 
     public class TCODParserStructure
     {
-        public TCODParserStructure(IntPtr p)
+        internal TCODParserStructure(IntPtr p)
         {
             m_parserStructure = p;
         }
