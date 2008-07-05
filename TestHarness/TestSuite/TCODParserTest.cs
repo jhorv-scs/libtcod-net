@@ -20,10 +20,8 @@ namespace libtcodWrapperTests
         static bool damage_type_defined = false;
         static bool list_defined = false;
 
-        private static bool NewStructCallbackTest(IntPtr str, StringBuilder name)
+        private static bool NewStructCallbackTest(TCODParserStructure cur, string name)
         {
-            TCODParserStructure cur = new TCODParserStructure(str);
-
             switch (currentState)
             {
                 case currentStructType.none:
@@ -59,7 +57,7 @@ namespace libtcodWrapperTests
             }
             return true;
         }
-        private static bool NewFlagCallbackTest(StringBuilder name)
+        private static bool NewFlagCallbackTest(string name)
         {
             if (name.ToString() != "abstract")
                 return false;
@@ -68,7 +66,7 @@ namespace libtcodWrapperTests
                 return false;
             return true;
         }
-        private static bool NewPropertyCallbackTest(StringBuilder name, TCODValueType type, TCODValue value)
+        private static bool NewPropertyCallbackTest(string name, TCODValueType type, TCODValue value)
         {
             switch (type)
             {
@@ -101,9 +99,8 @@ namespace libtcodWrapperTests
             }
             return true;
         }
-        private static bool EndStructCallbackTest(IntPtr str, StringBuilder name)
+        private static bool EndStructCallbackTest(TCODParserStructure cur, string name)
         {
-            TCODParserStructure cur = new TCODParserStructure(str);
             switch (currentState)
             {
                 case currentStructType.none:
@@ -130,19 +127,16 @@ namespace libtcodWrapperTests
             }
             return true;
         }
-        private static void ErrorCallbackTest(StringBuilder msg)
+        private static void ErrorCallbackTest(string msg)
         {
         }
 
         [Test]
         public void ImplementedParserTest()
         {
-            TCODParserCallbackStruct callback = new TCODParserCallbackStruct();
-            callback.new_structure = new new_struct_delegate(NewStructCallbackTest);
-            callback.new_flag = new new_flag_delegate(NewFlagCallbackTest);
-            callback.new_property = new new_property_delegate(NewPropertyCallbackTest);
-            callback.end_struct = new end_struct_delegate(EndStructCallbackTest);
-            callback.error = new error_delegate(ErrorCallbackTest);
+			TCODParserCallbackStruct callback = new TCODParserCallbackStruct(new NewStructureCallback(NewStructCallbackTest), new NewFlagCallback(NewFlagCallbackTest),			                                                                 
+			                                                                 new NewPropertyCallback(NewPropertyCallbackTest), new EndStructureCallback(EndStructCallbackTest),
+			                                                                 new ErrorCallback(ErrorCallbackTest));
 
             using (TCODFileParser parser = new TCODFileParser())
             {
