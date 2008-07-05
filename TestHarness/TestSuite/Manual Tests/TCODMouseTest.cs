@@ -13,6 +13,7 @@ namespace libtcodWrapperTests
 		
         public static bool TestTCODMouse()
         {
+			bool cursorVisible = true;
             bool testPassed = true;
             try
             {
@@ -23,11 +24,19 @@ namespace libtcodWrapperTests
 				do
                 {
                     console.Clear();
-					TCOD_key pressedKey = keyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSEDANDRELEASED);
-					TCODMouse m = TCODMouse.GetStatus();
+					TCOD_key pressedKey = keyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_RELEASED);
+					TCODMouse m = TCODMouse.GetStatus();;					
+					TCODMouse.ShowCursor(cursorVisible);
+
+					if(pressedKey.c == 't')
+						cursorVisible = !TCODMouse.GetCursorStatus();
+					if(pressedKey.c == 'm')
+						TCODMouse.MoveMouse(10, 10);
 
 		            TCODConsoleLinePrinter.PrintLine(console, "Mouse Test Suite", 40, 5, TCODLineAlign.Center);
 		            TCODConsoleLinePrinter.PrintLine(console, "Close Window to quit.", 40, 7, TCODLineAlign.Center);
+					TCODConsoleLinePrinter.PrintLine(console, "Press \"t\" to toggle cursor", 40, 8, TCODLineAlign.Center);
+					TCODConsoleLinePrinter.PrintLine(console, "Press \"m\" to move cursor to (10,10)", 40, 9, TCODLineAlign.Center);
 					
 					PrintStatus(console, "lbutton", m.lbutton, 10, 12);
 					PrintStatus(console, "rbutton", m.rbutton, 10, 13);
@@ -35,6 +44,7 @@ namespace libtcodWrapperTests
 					PrintStatus(console, "lbutton_pressed", m.lbutton_pressed, 10, 15);
 					PrintStatus(console, "rbutton_pressed", m.rbutton_pressed, 10, 16);
 					PrintStatus(console, "mbutton_pressed", m.mbutton_pressed, 10, 17);
+					TCODConsoleLinePrinter.PrintLine(console, "Cursor Visible = " + (cursorVisible ? "On" : "Off"), 10, 18, TCODLineAlign.Left);
 					
 					TCODConsoleLinePrinter.PrintLine(console, "x = " + m.x, 10, 20, TCODLineAlign.Left);
 					TCODConsoleLinePrinter.PrintLine(console, "y = " + m.y, 10, 21, TCODLineAlign.Left);
