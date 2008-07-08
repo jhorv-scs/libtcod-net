@@ -146,27 +146,34 @@ namespace libtcodWrapper
 			nativeCallback.end_structure = new end_struct_delegate(this.NativeEndStructCallback);
 			nativeCallback.error = new error_delegate(this.NativeErrorCallback);
 		}
+
+        private static string GetStringIfValid(StringBuilder name)
+        {
+            return (name != null ? name.ToString() : null);
+        }
 		
 		private bool NativeNewStructCallback(IntPtr str, StringBuilder name)
         {
             TCODParserStructure cur = new TCODParserStructure(str);
-			return ns(cur, name.ToString());
+            return ns(cur, GetStringIfValid(name));
         }
+
         private bool NativeNewFlagCallback(StringBuilder name)
         {
-			return nf(name.ToString());
+            return nf(GetStringIfValid(name));
         }
         private bool NativePropertyCallback(StringBuilder name, TCODValueType type, TCODValue v)
-		{			return np(name.ToString(), type, v);
+		{
+            return np(GetStringIfValid(name), type, v);
         }
         private bool NativeEndStructCallback(IntPtr str, StringBuilder name)
         {
 			TCODParserStructure cur = new TCODParserStructure(str);
-			return es(cur, name.ToString());
+            return es(cur, GetStringIfValid(name));
         }
         private void NativeErrorCallback(StringBuilder msg)
 		{
-			er(msg.ToString());
+            er(GetStringIfValid(msg));
         }
 		
 		public void ReturnErrorToParser(string error)
@@ -191,7 +198,8 @@ namespace libtcodWrapper
 		internal delegate bool new_struct_delegate(IntPtr str, StringBuilder name);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate bool new_flag_delegate(StringBuilder name);
+		internal delegate bool new_flag_delegate(StringBuilder name);
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		internal delegate bool new_property_delegate(StringBuilder name, TCODValueType type, TCODValue v);
 
