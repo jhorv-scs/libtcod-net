@@ -21,7 +21,7 @@ namespace libtcodWrapper
             TCOD_sys_sleep_milli(miliseconds);
         }
 
-        public static void saveScreenshot(String fileName)
+        public static void SaveScreenshot(String fileName)
         {
             TCOD_sys_save_screenshot(new StringBuilder(fileName));
         }
