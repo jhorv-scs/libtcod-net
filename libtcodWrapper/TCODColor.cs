@@ -82,12 +82,20 @@ namespace libtcodWrapper
 
         public static TCODColor Interpolate(TCODColor c1, TCODColor c2, float coef)
         {
-            return TCOD_color_lerp(c1, c2, coef);
+        	TCODColor ret =  new TCODColor(); 
+			ret.r=(byte)(c1.r+(c2.r-c1.r)*coef);
+			ret.g=(byte)(c1.g+(c2.g-c1.g)*coef);
+			ret.b=(byte)(c1.b+(c2.b-c1.b)*coef);
+			return ret;
         }
 
         public static TCODColor Interpolate(TCODColor c1, TCODColor c2, double coef)
         {
-            return TCOD_color_lerp(c1, c2, (float)coef);
+        	TCODColor ret =  new TCODColor(); 
+			ret.r=(byte)(c1.r+(c2.r-c1.r)*coef);
+			ret.g=(byte)(c1.g+(c2.g-c1.g)*coef);
+			ret.b=(byte)(c1.b+(c2.b-c1.b)*coef);
+			return ret;
         }
 
         [DllImport(DLLName.name)]
@@ -101,9 +109,6 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static TCODColor TCOD_color_multiply_scalar (TCODColor c1, float value);
-
-        [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_color_lerp(TCODColor c1, TCODColor c2, float coef);
 
         // 0<= h < 360, 0 <= s <= 1, 0 <= v <= 1 
         [DllImport(DLLName.name)]

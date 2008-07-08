@@ -68,22 +68,22 @@ namespace libtcodWrapper
             TCOD_image_set_key_color(m_instance, keyColor);
         }
 
-        public void Blit(TCODConsole console, float x, float y, TCOD_bkgnd_flag bkgnd_flag, double scalex, double scaley, double angle)
+        public void Blit(TCODConsole console, float x, float y, TCODBackground background, double scalex, double scaley, double angle)
         {
-            TCOD_image_blit(m_instance, console.m_consolePtr, x, y, bkgnd_flag, (float)scalex, (float)scaley, (float)angle);
+            TCOD_image_blit(m_instance, console.m_consolePtr, x, y, background.m_value, (float)scalex, (float)scaley, (float)angle);
         }
 
-        public void BlitRect(TCODConsole console, int x, int y, int w, int h, TCOD_bkgnd_flag bkgnd_flag)
+        public void BlitRect(TCODConsole console, int x, int y, int w, int h, TCODBackground  background)
         {
-            TCOD_image_blit_rect(m_instance, console.m_consolePtr, x, y, w, h, bkgnd_flag);
+            TCOD_image_blit_rect(m_instance, console.m_consolePtr, x, y, w, h, background.m_value);
         }
         
         [DllImport(DLLName.name)]
-        private extern static void TCOD_image_blit_rect(IntPtr image, IntPtr console, int x, int y, int w, int h, TCOD_bkgnd_flag bkgnd_flag);
+        private extern static void TCOD_image_blit_rect(IntPtr image, IntPtr console, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int bkgnd_flag);
 
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_image_blit(IntPtr image, IntPtr console, float x, float y, TCOD_bkgnd_flag bkgnd_flag, float scalex, float scaley, float angle);
+        private extern static void TCOD_image_blit(IntPtr image, IntPtr console, float x, float y, /*TCOD_bkgnd_flag*/ int bkgnd_flag, float scalex, float scaley, float angle);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_image_set_key_color(IntPtr image, TCODColor key_color); 

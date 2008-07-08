@@ -105,9 +105,9 @@ namespace libtcodWrapperTests
             {
                 console.Clear();
                 i.Clear(TCODColor.TCOD_red);
-                i.BlitRect(console, 10, 10, 40, 80, TCOD_bkgnd_flag.TCOD_BKGND_ADD);
+                i.BlitRect(console, 10, 10, 40, 80, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADD));
                 i.Clear(TCODColor.TCOD_purple);
-                i.Blit(console, 40, 50, TCOD_bkgnd_flag.TCOD_BKGND_ADD, 1.0, 1.5, 45);
+                i.Blit(console, 40, 50, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADD), 1.0, 1.5, 45);
                 console.Flush();
             }
         }
