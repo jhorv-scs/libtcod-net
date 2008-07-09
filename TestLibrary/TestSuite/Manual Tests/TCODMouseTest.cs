@@ -8,7 +8,7 @@ namespace libtcodWrapperTests
     {
 		private static void PrintStatus(TCODConsole console, string name, bool status, int x, int y)
 		{
-			TCODConsoleLinePrinter.PrintLine(console, "Pressed " + name + " = " + (status  ? "On" : "Off"), x, y, TCODLineAlign.Left);
+            console.PrintLine("Pressed " + name + " = " + (status ? "On" : "Off"), x, y, TCODLineAlign.Left);
 		}
 		
         public static bool TestTCODMouse()
@@ -33,10 +33,10 @@ namespace libtcodWrapperTests
 					if(pressedKey.c == 'm')
 						TCODMouse.MoveMouse(10, 10);
 
-		            TCODConsoleLinePrinter.PrintLine(console, "Mouse Test Suite", 40, 5, TCODLineAlign.Center);
-		            TCODConsoleLinePrinter.PrintLine(console, "Close Window to quit.", 40, 7, TCODLineAlign.Center);
-					TCODConsoleLinePrinter.PrintLine(console, "Press \"t\" to toggle cursor", 40, 8, TCODLineAlign.Center);
-					TCODConsoleLinePrinter.PrintLine(console, "Press \"m\" to move cursor to (10,10)", 40, 9, TCODLineAlign.Center);
+                    console.PrintLine("Mouse Test Suite", 40, 5, TCODLineAlign.Center);
+                    console.PrintLine("Close Window to quit.", 40, 7, TCODLineAlign.Center);
+                    console.PrintLine("Press \"t\" to toggle cursor", 40, 8, TCODLineAlign.Center);
+                    console.PrintLine("Press \"m\" to move cursor to (10,10)", 40, 9, TCODLineAlign.Center);
 					
 					PrintStatus(console, "lbutton", m.lbutton, 10, 12);
 					PrintStatus(console, "rbutton", m.rbutton, 10, 13);
@@ -44,16 +44,16 @@ namespace libtcodWrapperTests
 					PrintStatus(console, "lbutton_pressed", m.lbutton_pressed, 10, 15);
 					PrintStatus(console, "rbutton_pressed", m.rbutton_pressed, 10, 16);
 					PrintStatus(console, "mbutton_pressed", m.mbutton_pressed, 10, 17);
-					TCODConsoleLinePrinter.PrintLine(console, "Cursor Visible = " + (cursorVisible ? "On" : "Off"), 10, 18, TCODLineAlign.Left);
-					
-					TCODConsoleLinePrinter.PrintLine(console, "x = " + m.x, 10, 20, TCODLineAlign.Left);
-					TCODConsoleLinePrinter.PrintLine(console, "y = " + m.y, 10, 21, TCODLineAlign.Left);
-					TCODConsoleLinePrinter.PrintLine(console, "dx = " + m.dx, 10, 22, TCODLineAlign.Left);
-					TCODConsoleLinePrinter.PrintLine(console, "dy = " + m.dy, 10, 23, TCODLineAlign.Left);
-					TCODConsoleLinePrinter.PrintLine(console, "cx = " + m.cx, 10, 24, TCODLineAlign.Left);
-					TCODConsoleLinePrinter.PrintLine(console, "cy = " + m.cy, 10, 25, TCODLineAlign.Left);
-					TCODConsoleLinePrinter.PrintLine(console, "dcx = " + m.dcx, 10, 26, TCODLineAlign.Left);
-					TCODConsoleLinePrinter.PrintLine(console, "dcy = " + m.dcy, 10, 27, TCODLineAlign.Left);
+                    console.PrintLine("Cursor Visible = " + (cursorVisible ? "On" : "Off"), 10, 18, TCODLineAlign.Left);
+
+                    console.PrintLine("x = " + m.x, 10, 20, TCODLineAlign.Left);
+                    console.PrintLine("y = " + m.y, 10, 21, TCODLineAlign.Left);
+                    console.PrintLine("dx = " + m.dx, 10, 22, TCODLineAlign.Left);
+                    console.PrintLine("dy = " + m.dy, 10, 23, TCODLineAlign.Left);
+                    console.PrintLine("cx = " + m.cx, 10, 24, TCODLineAlign.Left);
+                    console.PrintLine("cy = " + m.cy, 10, 25, TCODLineAlign.Left);
+                    console.PrintLine("dcx = " + m.dcx, 10, 26, TCODLineAlign.Left);
+                    console.PrintLine("dcy = " + m.dcy, 10, 27, TCODLineAlign.Left);
 					
 					console.Flush();
                 }
