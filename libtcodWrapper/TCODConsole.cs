@@ -7,7 +7,7 @@ namespace libtcodWrapper
     internal class DLLName
     {
 #if Linux
-        //internal const string name = @"libtcod.so";
+        internal const string name = @"libtcod.so";
 #else
         internal const string name = @"libtcod.dll";
 #endif
