@@ -82,7 +82,11 @@ namespace libtcodWrapper
 		
 		//This field is set by libtcod when struct is marshalled. Disable the incorrect warning. 
 		#pragma warning disable 0649
+#if Linux
         private byte modifiers;
+#else
+        private int modifiers;
+#endif
 		#pragma warning restore 0649
 
         public bool pressed

@@ -7,29 +7,20 @@ namespace libtcodWrapperTests
     public class TCODKeyboardTest
     {
         private static bool inRealTimeTest = false;
-        public static bool TestTCODKeyboard()
+        public static void TestTCODKeyboard()
         {
-            bool testPassed = true;
-            try
-            {
-                TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Keyboard Tester", false);
-                TCODKeyboard keyboard = new TCODKeyboard();
+            TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Keyboard Tester", false);
+            TCODKeyboard keyboard = new TCODKeyboard();
 
-                TCOD_key key = new TCOD_key();
-                do
-                {
-                    if (inRealTimeTest)
-                        RealTimeLoopTest(console, keyboard);
-                    else
-                        TurnBasedLoopTest(console, keyboard, ref key);
-                }
-                while (key.c != 'q' && !console.IsWindowClosed());
-            }
-            catch
+            TCOD_key key = new TCOD_key();
+            do
             {
-                testPassed = false;
+                if (inRealTimeTest)
+                    RealTimeLoopTest(console, keyboard);
+                else
+                    TurnBasedLoopTest(console, keyboard, ref key);
             }
-            return testPassed;
+            while (key.c != 'q' && !console.IsWindowClosed());
         }
 		
 		private static void PrintStatus(TCODConsole console, string name, bool status, int x, int y)
