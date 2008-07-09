@@ -6,9 +6,12 @@ namespace libtcodWrapper
 {
     internal class DLLName
     {
-        //internal const string name = @"libtcod-VS.dll";
+#if Linux
+        //internal const string name = @"libtcod.so";
+#else
         internal const string name = @"libtcod.dll";
-		//internal const string name = @"libtcod.so";
+#endif
+		
     }
     
     public class TCODBackground

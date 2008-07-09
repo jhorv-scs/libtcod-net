@@ -5,30 +5,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AAD8AD5C-566D-445E-A60A-EB5FFACF34C9}</ProjectGuid>
+    <ProjectGuid>{8C7FE811-72A7-4EAB-AAA2-C39B3000A69B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestLibrary</RootNamespace>
+    <RootNamespace>TCODTestLib</RootNamespace>
     <AssemblyName>TCODTestLib</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,11 +23,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <OutputType>Library</OutputType>
-    <AssemblyName>TCODTestLib</AssemblyName>
-    <RootNamespace>TestLibrary</RootNamespace>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,12 +31,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <OutputType>Library</OutputType>
-    <AssemblyName>TCODTestLib</AssemblyName>
-    <DebugSymbols>true</DebugSymbols>
-    <RootNamespace>TestLibrary</RootNamespace>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -67,20 +41,20 @@
   </Target>
   -->
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="TestSuite\Manual Tests\ManualTestMain.cs" />
-    <Compile Include="TestSuite\Manual Tests\TCODKeyboardTest.cs" />
-    <Compile Include="TestSuite\TCODColorTest.cs" />
     <Compile Include="TestSuite\Manual Tests\TCODFovTest.cs" />
+    <Compile Include="TestSuite\Manual Tests\TCODKeyboardTest.cs" />
+    <Compile Include="TestSuite\Manual Tests\TCODMouseTest.cs" />
+    <Compile Include="TestSuite\TCODColorTest.cs" />
     <Compile Include="TestSuite\TCODImageTest.cs" />
     <Compile Include="TestSuite\TCODLineDrawingTest.cs" />
     <Compile Include="TestSuite\TCODNoiseTest.cs" />
     <Compile Include="TestSuite\TCODParserTest.cs" />
     <Compile Include="TestSuite\TCODRandomTest.cs" />
-    <Compile Include="TestSuite\Manual Tests\TCODMouseTest.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
-    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\libtcodWrapper.csproj">
@@ -103,33 +77,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libSDL.so">
+    <None Include="libSDL.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libtcod.so">
+    </None>
+    <None Include="libtcod.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
+    </None>
   </ItemGroup>
 </Project>
