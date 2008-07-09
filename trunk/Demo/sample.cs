@@ -122,7 +122,7 @@ namespace TCODDemo
             sampleConsole.SetForegroundColor(textColor);
             /* the background behind the text is slightly darkened using the BKGND_MULTIPLY flag */
             sampleConsole.SetBackgroundColor(TCODColor.TCOD_grey);
-            TCODConsoleLinePrinter.PrintLineRect(sampleConsole, "The Doryen library uses 24 bits colors, for both background and foreground.", SAMPLE_SCREEN_WIDTH / 2, 5, SAMPLE_SCREEN_WIDTH - 2, SAMPLE_SCREEN_HEIGHT - 1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY), TCODLineAlign.Center);
+            sampleConsole.PrintLineRect("The Doryen library uses 24 bits colors, for both background and foreground.", SAMPLE_SCREEN_WIDTH / 2, 5, SAMPLE_SCREEN_WIDTH - 2, SAMPLE_SCREEN_HEIGHT - 1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY), TCODLineAlign.Center);
 
             /* put random text (for performance tests) */
             for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
@@ -151,14 +151,14 @@ namespace TCODDemo
             if (!off_init)
             {
                 off_init = true;
-                TCODConsolePainter.DrawBox(off_secondary, 0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, false, "Offscreen console");
-                TCODConsoleLinePrinter.PrintLineRect(off_secondary, "You can render to an offscreen console and blit in on another one, simulating alpha transparency.", SAMPLE_SCREEN_WIDTH / 4, 2, SAMPLE_SCREEN_WIDTH / 2 - 2, SAMPLE_SCREEN_HEIGHT / 2, TCODLineAlign.Center);
+                off_secondary.DrawBox(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, false, "Offscreen console");
+                off_secondary.PrintLineRect("You can render to an offscreen console and blit in on another one, simulating alpha transparency.", SAMPLE_SCREEN_WIDTH / 4, 2, SAMPLE_SCREEN_WIDTH / 2 - 2, SAMPLE_SCREEN_HEIGHT / 2, TCODLineAlign.Center);
             }
             if (first)
             {
                 TCODSystem.SetFPS(30); // fps limited to 30
                 // get a "screenshot" of the current sample screen
-                TCODConsoleBliter.ConsoleBlit(sampleConsole, 0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, off_screenshot, 0, 0, 255);
+                sampleConsole.ConsoleBlit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, off_screenshot, 0, 0, 255);
 
             }
             off_counter++;
@@ -179,10 +179,10 @@ namespace TCODDemo
             off_alpha = (byte)(255 * (1.0f + Math.Cos(TCODSystem.GetElapsedSeconds() * 2.0f)) / 2.0f);
 
             // restore the initial screen
-            TCODConsoleBliter.ConsoleBlit(off_screenshot, 0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0, 255);
+            off_screenshot.ConsoleBlit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0, 255);
 
             // blit the overlapping screen
-            TCODConsoleBliter.ConsoleBlit(off_secondary, 0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, sampleConsole, off_x, off_y, off_alpha);
+            off_secondary.ConsoleBlit(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, sampleConsole, off_x, off_y, off_alpha);
         }
 
         static TCODConsole line_bk;
@@ -318,9 +318,9 @@ namespace TCODDemo
 
             string s = s1 + s2 + s3 + s4 + s5 + s6;
 
-            TCODConsoleLinePrinter.PrintLine(sampleConsole, s, 1, 1, TCODLineAlign.Left);
+            sampleConsole.PrintLine(s, 1, 1, TCODLineAlign.Left);
 
-            TCODConsoleLinePrinter.PrintLine(sampleConsole, "1 : Hide cursor\n2 : Show cursor", 1, 10, TCODLineAlign.Left);
+            sampleConsole.PrintLine("1 : Hide cursor\n2 : Show cursor", 1, 10, TCODLineAlign.Left);
             if (key.c == '1')
                 TCODMouse.ShowCursor(false);
             else if (key.c == '2')
@@ -452,19 +452,19 @@ namespace TCODDemo
                         rootConsole.SetForegroundColor(TCODColor.TCOD_grey);
                         rootConsole.SetBackgroundColor(TCODColor.TCOD_black);
                     }
-                    TCODConsoleLinePrinter.PrintLine(rootConsole, sampleList[i].name, 2, 47 - (sampleList.Length - i) * 2, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET), TCODLineAlign.Left);
+                    rootConsole.PrintLine(sampleList[i].name, 2, 47 - (sampleList.Length - i) * 2, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET), TCODLineAlign.Left);
                 }
                 rootConsole.SetForegroundColor(TCODColor.TCOD_grey);
                 rootConsole.SetBackgroundColor(TCODColor.TCOD_black);
-                TCODConsoleLinePrinter.PrintLine(rootConsole, "last frame : " + (TCODSystem.GetLastFrameLength() * 1000).ToString() + " ms ( " + TCODSystem.GetFPS() + "fps)", 79, 46, TCODLineAlign.Right);
-                TCODConsoleLinePrinter.PrintLine(rootConsole, "elapsed : " + TCODSystem.GetElapsedMilli() + "ms " + (TCODSystem.GetElapsedSeconds().ToString("0.00")) + "s", 79, 47, TCODLineAlign.Right);
-                TCODConsoleLinePrinter.PrintLine(rootConsole, TCODSpecialChar.TCOD_CHAR_ARROW_N + TCODSpecialChar.TCOD_CHAR_ARROW_S + " : select a sample", 2, 47, TCODLineAlign.Left);
-                TCODConsoleLinePrinter.PrintLine(rootConsole, "ALT-ENTER : switch to " + (rootConsole.IsFullscreen() ? "windowed mode  " : "fullscreen mode"), 2, 48, TCODLineAlign.Left);
+                rootConsole.PrintLine("last frame : " + (TCODSystem.GetLastFrameLength() * 1000).ToString() + " ms ( " + TCODSystem.GetFPS() + "fps)", 79, 46, TCODLineAlign.Right);
+                rootConsole.PrintLine("elapsed : " + TCODSystem.GetElapsedMilli() + "ms " + (TCODSystem.GetElapsedSeconds().ToString("0.00")) + "s", 79, 47, TCODLineAlign.Right);
+                rootConsole.PrintLine(TCODSpecialChar.TCOD_CHAR_ARROW_N + TCODSpecialChar.TCOD_CHAR_ARROW_S + " : select a sample", 2, 47, TCODLineAlign.Left);
+                rootConsole.PrintLine("ALT-ENTER : switch to " + (rootConsole.IsFullscreen() ? "windowed mode  " : "fullscreen mode"), 2, 48, TCODLineAlign.Left);
 
                 sampleList[curSample].render(first, key);
                 first = false;
 
-                TCODConsoleBliter.ConsoleBlit(sampleConsole, 0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, rootConsole, SAMPLE_SCREEN_X, SAMPLE_SCREEN_Y, 255);
+                sampleConsole.ConsoleBlit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, rootConsole, SAMPLE_SCREEN_X, SAMPLE_SCREEN_Y, 255);
 
                 rootConsole.Flush();
                 key = keyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSED);

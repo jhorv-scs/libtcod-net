@@ -199,7 +199,120 @@ namespace libtcodWrapper
         {
             return (char)TCOD_console_get_char(m_consolePtr, x, y);
         }
+
+        public void PrintLine(string str, int x, int y, TCODLineAlign align)
+        {
+            PrintLine(str, x, y, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE), align);
+        }
+        public void PrintLine(string str, int x, int y, TCODBackground flag, TCODLineAlign align)
+        {
+            switch (align)
+            {
+                case TCODLineAlign.Left:
+                    TCOD_console_print_left(m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
+                    break;
+                case TCODLineAlign.Center:
+                    TCOD_console_print_center(m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
+                    break;
+                case TCODLineAlign.Right:
+                    TCOD_console_print_right(m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
+                    break;
+            }
+        }
+
+        public int PrintLineRect(string str, int x, int y, int w, int h, TCODLineAlign align)
+        {
+            return PrintLineRect(str, x, y, w, h, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE), align);
+        }
+
+        public int PrintLineRect(string str, int x, int y, int w, int h, TCODBackground flag, TCODLineAlign align)
+        {
+            switch (align)
+            {
+                case TCODLineAlign.Left:
+                    return TCOD_console_print_left_rect(m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
+                case TCODLineAlign.Center:
+                    return TCOD_console_print_center_rect(m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
+                case TCODLineAlign.Right:
+                    return TCOD_console_print_right_rect(m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
+                default:
+                    throw new Exception("Must Pass Alignment to PrintLineRect");
+            }
+        }
+
+        public void ConsoleBlit(int xSrc, int ySrc, int wSrc, int hSrc, TCODConsole dest, int xDst, int yDst, int fade)
+        {
+            TCOD_console_blit(m_consolePtr, xSrc, ySrc, wSrc, hSrc, dest.m_consolePtr, xDst, yDst, fade);
+        }
+
+        public void DrawRect(int x, int y, int w, int h, bool clear, TCODBackground flag)
+        {
+            TCOD_console_rect(m_consolePtr, x, y, w, h, clear, flag.m_value);
+        }
         
+		public void DrawRect(int x, int y, int w, int h, bool clear)
+        {
+             DrawRect(x, y, w, h, clear, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE));
+        }
+
+        public void DrawHLine(int x, int y, int l)
+        {
+            TCOD_console_hline(m_consolePtr, x, y, l);
+        }
+
+        public void DrawVLine(int x, int y, int l)
+        {
+            TCOD_console_vline(m_consolePtr, x, y, l);
+        }
+        
+        public void DrawBox(int x, int y, int w, int h, bool clear, String str)
+        {
+            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, new StringBuilder(str));
+        }
+
+        #region DLLImports
+
+        /* Printing shapes to console */
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_rect(IntPtr con, int x, int y, int w, int h, bool clear, /*TCOD_bkgnd_flag*/ int flag);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_hline(IntPtr con, int x, int y, int l);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_vline(IntPtr con, int x, int y, int l);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_print_frame(IntPtr con, int x, int y, int w, int h, bool clear, StringBuilder str);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_blit(IntPtr src, int xSrc, int ySrc, int wSrc, int hSrc, IntPtr dst, int xDst, int yDst, int fade);
+
+        /* Prints Strings to Screen */
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_print_left(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_print_right(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_print_center(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+
+        //Returns height of the printed string
+        [DllImport(DLLName.name)]
+        private extern static int TCOD_console_print_left_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+
+        //Returns height of the printed string
+        [DllImport(DLLName.name)]
+        private extern static int TCOD_console_print_right_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+
+        //Returns height of the printed string
+        [DllImport(DLLName.name)]
+        private extern static int TCOD_console_print_center_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+
+
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_set_background_color(IntPtr con, TCODColor back);
@@ -242,130 +355,9 @@ namespace libtcodWrapper
         [DllImport(DLLName.name)]
         private extern static int TCOD_console_get_char(IntPtr con, int x, int y);
 
-
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_delete(IntPtr console);
-    }
-
-    public class TCODConsoleLinePrinter
-    {
-        public static void PrintLine(TCODConsole con, string str, int x, int y, TCODLineAlign align)
-        {
-            PrintLine(con, str, x, y, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE), align);
-        }
-        public static void PrintLine(TCODConsole con, string str, int x, int y, TCODBackground flag, TCODLineAlign align)
-        {
-            switch(align)
-            {
-                case TCODLineAlign.Left:
-                    TCOD_console_print_left(con.m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
-                    break;
-                case TCODLineAlign.Center:
-                    TCOD_console_print_center(con.m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
-                    break;
-                case TCODLineAlign.Right:
-                    TCOD_console_print_right(con.m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
-                    break;
-            }
-        }
-
-        public static void PrintLineRect(TCODConsole con, string str, int x, int y, int w, int h, TCODLineAlign align)
-        {
-            PrintLineRect(con, str, x, y, w, h, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE), align);
-        }
-
-        public static void PrintLineRect(TCODConsole con, string str, int x, int y, int w, int h, TCODBackground flag, TCODLineAlign align)
-        {
-            switch (align)
-            {
-                case TCODLineAlign.Left:
-                    TCOD_console_print_left_rect(con.m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
-                    break;
-                case TCODLineAlign.Center:
-                    TCOD_console_print_center_rect(con.m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
-                    break;
-                case TCODLineAlign.Right:
-                    TCOD_console_print_right_rect(con.m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
-                    break;
-            }
-        }
-
-        /* Prints Strings to Screen */
-
-        [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_left(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
-
-        [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_right(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
-
-        [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_center(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
-
-        //Returns height of the printed string
-        [DllImport(DLLName.name)]
-        private extern static int TCOD_console_print_left_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
-
-        //Returns height of the printed string
-        [DllImport(DLLName.name)]
-        private extern static int TCOD_console_print_right_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
-
-        //Returns height of the printed string
-        [DllImport(DLLName.name)]
-        private extern static int TCOD_console_print_center_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
-    }
-
-    public class TCODConsoleBliter
-    {
-        public static void ConsoleBlit(TCODConsole source, int xSrc, int ySrc, int wSrc, int hSrc, TCODConsole dest, int xDst, int yDst, int fade)
-        {
-            TCOD_console_blit(source.m_consolePtr, xSrc, ySrc, wSrc, hSrc, dest.m_consolePtr, xDst, yDst, fade);
-        }
-
-        [DllImport(DLLName.name)]
-        private extern static void TCOD_console_blit(IntPtr src, int xSrc, int ySrc, int wSrc, int hSrc, IntPtr dst, int xDst, int yDst, int fade);
-
-    }
-
-    public class TCODConsolePainter
-    {
-        public static void DrawRect(TCODConsole con, int x, int y, int w, int h, bool clear, TCODBackground flag)
-        {
-            TCOD_console_rect(con.m_consolePtr, x, y, w, h, clear, flag.m_value);
-        }
-        
-		public static void DrawRect(TCODConsole con, int x, int y, int w, int h, bool clear)
-        {
-             DrawRect(con, x, y, w, h, clear, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE));
-        }
-
-        public static void DrawHLine(TCODConsole con, int x, int y, int l)
-        {
-            TCOD_console_hline(con.m_consolePtr, x, y, l);
-        }
-
-        public static void DrawVLine(TCODConsole con, int x, int y, int l)
-        {
-            TCOD_console_vline(con.m_consolePtr, x, y, l);
-        }
-        
-        public static void DrawBox(TCODConsole con, int x, int y, int w, int h, bool clear, String str)
-        {
-            TCOD_console_print_frame(con.m_consolePtr, x, y, w, h, clear, new StringBuilder(str));
-        }
-
-        /* Printing shapes to console */
-
-        [DllImport(DLLName.name)]
-        private extern static void TCOD_console_rect(IntPtr con, int x, int y, int w, int h, bool clear, /*TCOD_bkgnd_flag*/ int flag);
-
-        [DllImport(DLLName.name)]
-        private extern static void TCOD_console_hline(IntPtr con, int x, int y, int l);
-
-        [DllImport(DLLName.name)]
-        private extern static void TCOD_console_vline(IntPtr con, int x, int y, int l);
-
-        [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_frame(IntPtr con, int x, int y, int w, int h, bool clear, StringBuilder str);
+        #endregion
     }
 
     /* One should not make more than one of these, on pain of bugs */
@@ -422,6 +414,8 @@ namespace libtcodWrapper
             return new TCODConsole(TCOD_console_new(w, h));
         }
 
+        #region DLLImports
+
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_init_root(int w, int h, StringBuilder title, bool fullscreen);
 
@@ -460,6 +454,8 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static IntPtr TCOD_console_new(int w, int h);
+
+        #endregion
     }
 
 }
