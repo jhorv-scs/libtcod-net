@@ -1,4 +1,4 @@
-//#define ManualTest
+#define ManualTest
 
 using System;
 using libtcodWrapper;
@@ -25,7 +25,7 @@ namespace libtcodWrapperTests
 			//WaitForDebugger();
 			TCODMouseTest.TestTCODMouse();
             TCODFovTest.TestTCODFovTest();
-            TCODKeyboardTest.TestTCODKeyboard();
+            //TCODKeyboardTest.TestTCODKeyboard();
             return 0;
         }
     }
