@@ -25,7 +25,7 @@ namespace libtcodWrapperTests
 			//WaitForDebugger();
 			TCODMouseTest.TestTCODMouse();
             TCODFovTest.TestTCODFovTest();
-            //TCODKeyboardTest.TestTCODKeyboard();
+            TCODKeyboardTest.TestTCODKeyboard();
             return 0;
         }
     }
