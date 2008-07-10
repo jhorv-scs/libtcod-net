@@ -30,22 +30,22 @@ namespace libtcodWrapper
             m_instance = TCOD_noise_new(dimensions, (float)hurst, (float)lacunarity, random.m_instance);
         }
 
-        public float GetPerlinNoise(ref float[] f)
+        public float GetPerlinNoise(float[] f)
         {
             CheckDimension(f.Length);
-            return TCOD_noise_get(m_instance, ref f);
+            return TCOD_noise_get(m_instance, f);
         }
 
-        public float GetBrownianMotion(ref float[] f, float octaves)
+        public float GetBrownianMotion(float[] f, float octaves)
         {
             CheckDimension(f.Length);
-            return TCOD_noise_fbm(m_instance, ref f, octaves);
+            return TCOD_noise_fbm(m_instance, f, octaves);
         }
 
-        public float GetTurbulence(ref float[] f, float octaves)
+        public float GetTurbulence(float[] f, float octaves)
         {
             CheckDimension(f.Length);
-            return TCOD_noise_turbulence(m_instance, ref f, octaves);
+            return TCOD_noise_turbulence(m_instance, f, octaves);
         }
       
         public void Dispose()
@@ -53,8 +53,8 @@ namespace libtcodWrapper
             TCOD_noise_delete(m_instance);
         }
 
-        private const float NoiseDefaultHurst = 0.5f;
-        private const float NoiseDefaultLacunarity = 2.0f;
+        public const float NoiseDefaultHurst = 0.5f;
+        public const float NoiseDefaultLacunarity = 2.0f;
 
         private IntPtr m_instance;
         int m_dimensions;
@@ -64,15 +64,15 @@ namespace libtcodWrapper
         
         // basic perlin noise
         [DllImport(DLLName.name)]
-        private extern static float TCOD_noise_get(IntPtr noise, ref float [] f);
+        private extern static float TCOD_noise_get(IntPtr noise, float [] f);
 
         // fractional brownian motion
         [DllImport(DLLName.name)]
-        private extern static float TCOD_noise_fbm(IntPtr noise, ref float [] f, float octaves);
+        private extern static float TCOD_noise_fbm(IntPtr noise, float [] f, float octaves);
 
         // turbulence
         [DllImport(DLLName.name)]
-        private extern static float TCOD_noise_turbulence(IntPtr noise, ref float [] f, float octaves);
+        private extern static float TCOD_noise_turbulence(IntPtr noise, float [] f, float octaves);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_noise_delete(IntPtr noise);

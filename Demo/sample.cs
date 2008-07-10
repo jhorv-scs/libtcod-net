@@ -32,14 +32,6 @@ namespace TCODDemo
             sampleConsole = new TCODConsoleRoot(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, "TCOD Demo", false);
         }
 
-        public void Dispose()
-        {
-            sampleConsole.Dispose();
-            rootConsole.Dispose();
-            off_secondary.Dispose();
-            off_screenshot.Dispose();
-        }
-
         private bool ArgsRemaining(string[] args, int pos, int numberRequested)
         {
             return (pos + numberRequested < args.Length);
@@ -188,21 +180,6 @@ namespace TCODDemo
         static TCODConsole line_bk;
         static TCODBackground line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET);
         static bool line_init = false;
-        static string[] line_flagNames = {
-			    "TCOD_BKGND_NONE",
-			    "TCOD_BKGND_SET",
-			    "TCOD_BKGND_MULTIPLY",
-			    "TCOD_BKGND_LIGHTEN",
-			    "TCOD_BKGND_DARKEN",
-			    "TCOD_BKGND_SCREEN",
-			    "TCOD_BKGND_COLOR_DODGE",
-			    "TCOD_BKGND_COLOR_BURN",
-			    "TCOD_BKGND_ADD",
-			    "TCOD_BKGND_ADDALPHA",
-			    "TCOD_BKGND_BURN",
-			    "TCOD_BKGND_OVERLAY",
-			    "TCOD_BKGND_ALPHA"
-		    };
         void render_lines(bool first, TCOD_key key)
         {
             sampleConsole.Clear();
@@ -292,9 +269,152 @@ namespace TCODDemo
             sampleConsole.PrintLine(line_bkFlag.GetBackgroundFlag().ToString() + " (ENTER to change)", 2, 2, TCODLineAlign.Left);
         }
 
+        enum noiseFunctions { Noise, FBM, Turbulence };
+        static string [] noise_funcName = 
+        {
+            "1 : perlin noise",
+		    "2 : fbm         ",
+		    "3 : turbulence  "
+        };
+        noiseFunctions noise_func = noiseFunctions.Noise;
+        TCODNoise noise;
+        float noise_dx = 0.0f, noise_dy = 0.0f;
+        float noise_octaves = 4.0f;
+        float noise_hurst = TCODNoise.NoiseDefaultHurst;
+        float noise_lacunarity = TCODNoise.NoiseDefaultLacunarity;
+        float noise_zoom = 3.0f;
         void render_noise(bool first, TCOD_key key)
         {
+            if ( first ) 
+            {
+                TCODSystem.SetFPS(30); /* limited to 30 fps */
+            }
             sampleConsole.Clear();
+    
+            /* texture animation */
+            noise_dx += 0.01f;
+            noise_dy += 0.01f;
+            
+            /* render the 2d noise function */
+            for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++ ) 
+            {
+                for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++ ) 
+                {
+                    float [] f = new float[2];
+                    float value = 0.0f;
+                    byte c;
+                    TCODColor col = new TCODColor();
+                    f[0] = noise_zoom * x / SAMPLE_SCREEN_WIDTH + noise_dx;
+                    f[1] = noise_zoom * y / SAMPLE_SCREEN_HEIGHT + noise_dy;
+        
+                    switch (noise_func) 
+                    {
+                        case noiseFunctions.Noise:
+                            value = noise.GetPerlinNoise(f); 
+                            break;
+                        case noiseFunctions.FBM:
+                            value = noise.GetBrownianMotion(f, noise_octaves);
+                            break;
+                        case noiseFunctions.Turbulence:
+                            value = noise.GetTurbulence(f, noise_octaves);
+                            break;
+                    }
+        
+                    c = (byte)((value+1.0f)/2.0f*255);
+                    /* use a bluish color */
+                    col.r = (byte)(c / 2);
+                    col.g = (byte)(c / 2);
+                    col.b = c;
+                    sampleConsole.SetCharBackground(x, y, col, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                }
+            }
+            
+            /* draw a transparent rectangle */
+            sampleConsole.SetBackgroundColor(TCODColor.TCOD_grey);
+            sampleConsole.DrawRect(2, 2, (noise_func == noiseFunctions.Noise ? 16 : 24), (noise_func == noiseFunctions.Noise ? 4 : 7), false, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY));
+
+            /* draw the text */
+            for (noiseFunctions curfunc = noiseFunctions.Noise; curfunc <= noiseFunctions.Turbulence; curfunc++) 
+            {
+                if (curfunc == noise_func) 
+                {
+                    sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
+                    sampleConsole.SetBackgroundColor(TCODColor.TCOD_light_blue);
+                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET), TCODLineAlign.Left);
+                }
+                else
+                {
+                    sampleConsole.SetForegroundColor(TCODColor.TCOD_grey);
+                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE), TCODLineAlign.Left);
+                }
+            }
+            /* draw parameters */
+            sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
+            sampleConsole.PrintLine("Y/H : zome (" + noise_zoom.ToString("0.0") + ")", 2, 5, TCODLineAlign.Left);
+
+            if (noise_func != noiseFunctions.Noise) 
+            {
+                sampleConsole.PrintLine("E/D : hurst (" + noise_hurst.ToString("0.0") + ")", 2, 6, TCODLineAlign.Left);
+                sampleConsole.PrintLine("R/F : lacunarity (" + noise_lacunarity.ToString("0.0") + ")", 2, 7, TCODLineAlign.Left);
+                sampleConsole.PrintLine("T/G : octaves (" + noise_octaves.ToString("0.0") + ")", 2, 8, TCODLineAlign.Left);
+            }
+
+            /* handle keypress */
+            if (key.vk == TCOD_keycode.TCODK_NONE)
+                return;
+            if (key.c >= '1' && key.c <= '3')
+            {
+                noise_func = (noiseFunctions)(key.c - '1');
+            }
+            else if ( key.c == 'E' || key.c == 'e' ) 
+            {
+                /* increase hurst */
+                noise_hurst+=0.1f;
+                noise.Dispose();
+                noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
+            }
+            else if ( key.c == 'D' || key.c == 'd' ) 
+            {
+                /* decrease hurst */
+                noise_hurst-=0.1f;
+                noise.Dispose();
+                noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
+            }
+            else if ( key.c == 'R' || key.c == 'r' ) 
+            {
+                /* increase lacunarity */
+                noise_lacunarity+=0.5f;
+                noise.Dispose();
+                noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
+            }
+            else if ( key.c == 'F' || key.c == 'f' ) 
+            {
+                /* decrease lacunarity */
+                noise_lacunarity -= 0.5f;
+                noise.Dispose();
+                noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
+            }
+            else if (key.c == 'T' || key.c == 't')
+            {
+                /* increase octaves */
+                noise_octaves += 0.5f;
+            }
+            else if ( key.c == 'G' || key.c == 'g' ) 
+            {
+                /* decrease octaves */
+                noise_octaves -= 0.5f;
+            }
+            else if ( key.c == 'Y' || key.c == 'y' ) 
+            {
+                /* increase zoom */
+                noise_zoom += 0.2f;
+            }
+            else if ( key.c == 'H' || key.c == 'h' ) 
+            {
+                /* decrease zoom */
+                noise_zoom -= 0.2f;
+            }
+
         }
 
         void render_fov(bool first, TCOD_key key)
@@ -376,8 +496,19 @@ namespace TCODDemo
             off_secondary = rootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2);
             off_screenshot = rootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
             line_bk = rootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+            noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
         }
 
+        public void Dispose()
+        {
+            sampleConsole.Dispose();
+            rootConsole.Dispose();
+            off_secondary.Dispose();
+            off_screenshot.Dispose();
+            line_bk.Dispose();
+            noise.Dispose();
+            random.Dispose();
+        }
 
         TCODConsoleRoot rootConsole;
         public int Run(string[] args)
