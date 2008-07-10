@@ -27,10 +27,47 @@ namespace libtcodWrapper
 		
 		public TCODBackground(TCOD_bkgnd_flag flag, float val)
     	{
-    		if(flag != TCOD_bkgnd_flag.TCOD_BKGND_ADDA && flag != TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
-    			throw new Exception("Must not use TCODBackagroudn constructor which takes value");
-    		m_value = (int)flag | (((byte)(val*255))<<8);
+            NewBackgroundCore(flag, val);
 		}
+
+        public TCODBackground(TCOD_bkgnd_flag flag, double val)
+        {
+            NewBackgroundCore(flag, (float)val);
+        }
+
+        private void NewBackgroundCore(TCOD_bkgnd_flag flag, float val)
+        {
+            if (flag != TCOD_bkgnd_flag.TCOD_BKGND_ADDA && flag != TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
+                throw new Exception("Must not use TCODBackagroudn constructor which takes value");
+            m_value = (int)flag | (((byte)(val * 255)) << 8);
+        }
+
+
+        public static TCODBackground operator ++(TCODBackground lhs)
+        {
+            if (lhs.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
+                throw new Exception("Can not increment past end of TCOD_bkgnd_flag enum");
+            lhs.m_value += 1;
+            return lhs;
+        }
+
+        public static TCODBackground operator --(TCODBackground lhs)
+        {
+            if (lhs.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_NONE)
+                throw new Exception("Can not decrement past end of TCOD_bkgnd_flag enum");
+            lhs.m_value -= 1;
+            return lhs;
+        }
+
+        public TCOD_bkgnd_flag GetBackgroundFlag()
+        {
+            return (TCOD_bkgnd_flag)(m_value & 0xff);
+        }
+
+        public byte GetAlphaValue()
+        {
+            return (byte)(m_value >> 8);
+        }
 	}
 
     public enum TCOD_bkgnd_flag
@@ -240,7 +277,7 @@ namespace libtcodWrapper
             }
         }
 
-        public void ConsoleBlit(int xSrc, int ySrc, int wSrc, int hSrc, TCODConsole dest, int xDst, int yDst, int fade)
+        public void Blit(int xSrc, int ySrc, int wSrc, int hSrc, TCODConsole dest, int xDst, int yDst, int fade)
         {
             TCOD_console_blit(m_consolePtr, xSrc, ySrc, wSrc, hSrc, dest.m_consolePtr, xDst, yDst, fade);
         }

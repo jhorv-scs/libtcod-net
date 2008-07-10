@@ -158,7 +158,7 @@ namespace TCODDemo
             {
                 TCODSystem.SetFPS(30); // fps limited to 30
                 // get a "screenshot" of the current sample screen
-                sampleConsole.ConsoleBlit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, off_screenshot, 0, 0, 255);
+                sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, off_screenshot, 0, 0, 255);
 
             }
             off_counter++;
@@ -179,14 +179,14 @@ namespace TCODDemo
             off_alpha = (byte)(255 * (1.0f + Math.Cos(TCODSystem.GetElapsedSeconds() * 2.0f)) / 2.0f);
 
             // restore the initial screen
-            off_screenshot.ConsoleBlit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0, 255);
+            off_screenshot.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0, 255);
 
             // blit the overlapping screen
-            off_secondary.ConsoleBlit(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, sampleConsole, off_x, off_y, off_alpha);
+            off_secondary.Blit(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, sampleConsole, off_x, off_y, off_alpha);
         }
 
         static TCODConsole line_bk;
-        static TCOD_bkgnd_flag line_bkFlag = TCOD_bkgnd_flag.TCOD_BKGND_SET; // current blending mode
+        static TCODBackground line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET);
         static bool line_init = false;
         static string[] line_flagNames = {
 			    "TCOD_BKGND_NONE",
@@ -206,71 +206,90 @@ namespace TCODDemo
         void render_lines(bool first, TCOD_key key)
         {
             sampleConsole.Clear();
-            /*		if ( key->vk == TCODK_ENTER || key->vk == TCODK_KPENTER ) {
-                    // switch to the next blending mode
-                    bkFlag++;
-                    if ( (bkFlag &0xff) > TCOD_BKGND_ALPH) bkFlag=TCOD_BKGND_NONE;
-                }
-                if ( (bkFlag & 0xff) == TCOD_BKGND_ALPH) {
-                    // for the alpha mode, update alpha every frame
-                    float alpha = (1.0f+cosf(TCODSystem::getElapsedSeconds()*2))/2.0f;
-                    bkFlag=TCOD_BKGND_ALPHA(alpha);
-                } else if ( (bkFlag & 0xff) == TCOD_BKGND_ADDA) {
-                    // for the add alpha mode, update alpha every frame
-                    float alpha = (1.0f+cosf(TCODSystem::getElapsedSeconds()*2))/2.0f;
-                    bkFlag=TCOD_BKGND_ADDALPHA(alpha);
-                }
-                if (!init) {
-                    // initialize the colored background
-                    for (int x=0; x < SAMPLE_SCREEN_WIDTH; x ++) {
-                        for (int y=0; y < SAMPLE_SCREEN_HEIGHT; y++) {
-                            TCODColor col;
-                            col.r = (uint8)(x* 255 / (SAMPLE_SCREEN_WIDTH-1));
-                            col.g = (uint8)((x+y)* 255 / (SAMPLE_SCREEN_WIDTH-1+SAMPLE_SCREEN_HEIGHT-1));
-                            col.b = (uint8)(y* 255 / (SAMPLE_SCREEN_HEIGHT-1));
-                            bk.setBack(x,y,col);
-                        }
-                    }
-                    init=true;
-                }
-                if ( first ) {
-                    TCODSystem::setFps(30); // fps limited to 30
-                    sampleConsole.setForegroundColor(TCODColor::white);
-                }
-                // blit the background
-                TCODConsole::blit(&bk,0,0,SAMPLE_SCREEN_WIDTH,SAMPLE_SCREEN_HEIGHT,&sampleConsole,0,0);
-                // render the gradient
-                int recty=(int)((SAMPLE_SCREEN_HEIGHT-2)*((1.0f+cosf(TCOD_sys_elapsed_seconds()))/2.0f));
-                for (int x=0;x < SAMPLE_SCREEN_WIDTH; x++) {
-                    TCODColor col;
-                    col.r=(uint8)(x*255/SAMPLE_SCREEN_WIDTH);
-                    col.g=(uint8)(x*255/SAMPLE_SCREEN_WIDTH);
-                    col.b=(uint8)(x*255/SAMPLE_SCREEN_WIDTH);
-                    sampleConsole.setBack(x,recty,col,(TCOD_bkgnd_flag_t)bkFlag);
-                    sampleConsole.setBack(x,recty+1,col,(TCOD_bkgnd_flag_t)bkFlag);
-                    sampleConsole.setBack(x,recty+2,col,(TCOD_bkgnd_flag_t)bkFlag);
-                }
-                // calculate the segment ends
-                float angle = TCOD_sys_elapsed_seconds()*2.0f;
-                float cosAngle=cosf(angle);
-                float sinAngle=sinf(angle);
-                int xo = (int)(SAMPLE_SCREEN_WIDTH/2*(1 + cosAngle));
-                int yo = (int)(SAMPLE_SCREEN_HEIGHT/2 + sinAngle * SAMPLE_SCREEN_WIDTH/2);
-                int xd = (int)(SAMPLE_SCREEN_WIDTH/2*(1 - cosAngle));
-                int yd = (int)(SAMPLE_SCREEN_HEIGHT/2 - sinAngle * SAMPLE_SCREEN_WIDTH/2);
+            if ( key.vk == TCOD_keycode.TCODK_ENTER || key.vk == TCOD_keycode.TCODK_KPENTER ) 
+            {
+                // switch to the next blending mode
+                if ( line_bkFlag.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
+                    line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE);
+                else
+                    line_bkFlag++;
+            }
+            if (line_bkFlag.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ALPH) 
+            {
+                // for the alpha mode, update alpha every frame
+                double alpha = (1.0f+Math.Cos(TCODSystem.GetElapsedSeconds()*2))/2.0f;
+                line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ALPH, alpha);
+            }
+            else if (line_bkFlag.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ADDA) 
+            {
+                // for the add alpha mode, update alpha every frame
+                double alpha = (1.0f + Math.Cos(TCODSystem.GetElapsedSeconds() * 2)) / 2.0f;
+                line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADDA, alpha);
+            }
 
-                // render the line
-                int x=xo,y=yo;
-                TCODLine::init(x,y,xd,yd);
-                do {
-                    if ( x>= 0 && y >= 0 && x < SAMPLE_SCREEN_WIDTH && y < SAMPLE_SCREEN_HEIGHT) {
-                        sampleConsole.setBack(x,y,TCODColor::lightBlue,(TCOD_bkgnd_flag_t)bkFlag);
+            if (!line_init)
+            {
+                // initialize the colored background
+                for (int x=0; x < SAMPLE_SCREEN_WIDTH; x ++) 
+                {
+                    for (int y=0; y < SAMPLE_SCREEN_HEIGHT; y++) 
+                    {
+                        TCODColor col = new TCODColor();
+                        col.r = (byte)(x* 255 / (SAMPLE_SCREEN_WIDTH-1));
+                        col.g = (byte)((x+y)* 255 / (SAMPLE_SCREEN_WIDTH-1+SAMPLE_SCREEN_HEIGHT-1));
+                        col.b = (byte)(y* 255 / (SAMPLE_SCREEN_HEIGHT-1));
+                        line_bk.SetCharBackground(x, y, col, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
                     }
-                } while ( ! TCODLine::step(&x,&y));
+                }
+                line_init = true;
+            }
+            if ( first )
+            {
+                TCODSystem.SetFPS(30); // fps limited to 30
+                sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
+            }
+            
+            // blit the background
+            line_bk.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0, 255);
+                
+               
+            
+            // render the gradient
+            int recty = (int)((SAMPLE_SCREEN_HEIGHT - 2) * ((1.0f + Math.Cos(TCODSystem.GetElapsedSeconds())) / 2.0f));
+            for (int x = 0 ; x < SAMPLE_SCREEN_WIDTH; x++) 
+            {
+                TCODColor col = new TCODColor();
+                col.r = (byte)(x*255/SAMPLE_SCREEN_WIDTH);
+                col.g = (byte)(x * 255 / SAMPLE_SCREEN_WIDTH);
+                col.b = (byte)(x * 255 / SAMPLE_SCREEN_WIDTH);
+                sampleConsole.SetCharBackground(x, recty, col, line_bkFlag);
+                sampleConsole.SetCharBackground(x, recty+1, col, line_bkFlag);
+                sampleConsole.SetCharBackground(x, recty+2, col, line_bkFlag);
+            }
 
-                // print the current flag
-                sampleConsole.printLeft(2,2,TCOD_BKGND_NONE,"%s (ENTER to change)",flagNames[bkFlag&0xff]);
-            */
+            // calculate the segment ends
+            float angle = TCODSystem.GetElapsedSeconds()*2.0f;
+            float cosAngle = (float)Math.Cos(angle);
+            float sinAngle = (float)Math.Sin(angle);
+            int xo = (int)(SAMPLE_SCREEN_WIDTH/2*(1 + cosAngle));
+            int yo = (int)(SAMPLE_SCREEN_HEIGHT/2 + sinAngle * SAMPLE_SCREEN_WIDTH/2);
+            int xd = (int)(SAMPLE_SCREEN_WIDTH/2*(1 - cosAngle));
+            int yd = (int)(SAMPLE_SCREEN_HEIGHT/2 - sinAngle * SAMPLE_SCREEN_WIDTH/2);
+
+            // render the line
+            int xx=xo,yy=yo;
+            TCODLineDrawing.InitLine(xx,yy,xd,yd);
+            do
+            {
+                if (xx >= 0 && yy >= 0 && xx < SAMPLE_SCREEN_WIDTH && yy < SAMPLE_SCREEN_HEIGHT)
+                {
+                    sampleConsole.SetCharBackground(xx, yy, TCODColor.TCOD_light_blue, line_bkFlag);
+                }
+            }
+            while (!TCODLineDrawing.StepLine(ref xx, ref yy));
+
+            // print the current flag
+            sampleConsole.PrintLine(line_bkFlag.GetBackgroundFlag().ToString() + " (ENTER to change)", 2, 2, TCODLineAlign.Left);
         }
 
         void render_noise(bool first, TCOD_key key)
@@ -464,7 +483,7 @@ namespace TCODDemo
                 sampleList[curSample].render(first, key);
                 first = false;
 
-                sampleConsole.ConsoleBlit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, rootConsole, SAMPLE_SCREEN_X, SAMPLE_SCREEN_Y, 255);
+                sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, rootConsole, SAMPLE_SCREEN_X, SAMPLE_SCREEN_Y, 255);
 
                 rootConsole.Flush();
                 key = keyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSED);

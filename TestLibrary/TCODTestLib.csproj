@@ -45,6 +45,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestSuite\TCODConsoleTest.cs" />
     <Compile Include="TestSuite\Manual Tests\ManualTestMain.cs" />
     <Compile Include="TestSuite\Manual Tests\TCODFovTest.cs" />
     <Compile Include="TestSuite\Manual Tests\TCODKeyboardTest.cs" />
