@@ -1,4 +1,4 @@
-#define ManualTest
+//#define ManualTest
 
 using System;
 using libtcodWrapper;

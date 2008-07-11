@@ -422,9 +422,65 @@ namespace TCODDemo
             sampleConsole.Clear();
         }
 
+        TCODImage img;
+        TCODImage circle;
+        TCODColor blue = new TCODColor(0, 0, 255);
+        TCODColor green = new TCODColor(0, 255, 0);
+        uint lastSwitch = 0;
+        bool swap = false;
         void render_image(bool first, TCOD_key key)
         {
             sampleConsole.Clear();
+
+            if (img == null)
+            {
+                img = new TCODImage("skull.bmp");
+                circle = new TCODImage("circle.bmp");
+            }
+
+            if (first)
+                TCODSystem.SetFPS(30);  /* limited to 30 fps */
+
+            sampleConsole.SetBackgroundColor(TCODColor.TCOD_black);
+            sampleConsole.Clear();
+
+            float x = SAMPLE_SCREEN_WIDTH / 2 + (float)Math.Cos(TCODSystem.GetElapsedSeconds()) * 10.0f;
+            float y = (float)(SAMPLE_SCREEN_HEIGHT/2);
+            float scalex = 0.2f + 1.8f * (1.0f + (float)Math.Cos(TCODSystem.GetElapsedSeconds() / 2)) / 2.0f;
+            float scaley = scalex;
+            float angle = TCODSystem.GetElapsedSeconds();
+            uint elapsed = TCODSystem.GetElapsedMilli() / 2000;
+
+            if (elapsed > lastSwitch)
+            {
+                lastSwitch = elapsed;
+                swap = !swap;
+            }
+
+            if (swap)
+            {  
+                /* split the color channels of circle.bmp */
+                /* the red channel */
+                sampleConsole.SetBackgroundColor(TCODColor.TCOD_red);
+                sampleConsole.DrawRect(0, 3, 15, 15, false, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                circle.BlitRect(sampleConsole, 0, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY));
+                /* the green channel */
+                sampleConsole.SetBackgroundColor(green);
+                sampleConsole.DrawRect(15, 3, 15, 15, false, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                circle.BlitRect(sampleConsole, 15, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY));
+                /* the blue channel */
+                sampleConsole.SetBackgroundColor(blue);
+                sampleConsole.DrawRect(30, 3, 15, 15, false, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                circle.BlitRect(sampleConsole, 30, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY));
+            }
+            else 
+            {
+                /* render circle.bmp with normal blitting */
+                circle.BlitRect(sampleConsole, 0, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                circle.BlitRect(sampleConsole, 15, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                circle.BlitRect(sampleConsole, 30, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+            }
+           img.Blit(sampleConsole, x, y, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADDA, .6), scalex, scaley, angle);
         }
 
         bool mouse_lbut = false, mouse_rbut = false, mouse_mbut = false;
@@ -508,6 +564,10 @@ namespace TCODDemo
             line_bk.Dispose();
             noise.Dispose();
             random.Dispose();
+            if (img != null)
+                img.Dispose();
+            if (circle != null)
+                circle.Dispose();
         }
 
         TCODConsoleRoot rootConsole;
