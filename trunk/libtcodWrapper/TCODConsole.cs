@@ -90,42 +90,42 @@ namespace libtcodWrapper
     
     public class TCODSpecialChar 
     {
-		public const char TCOD_CHAR_HLINE = (char)196;
-		public const char TCOD_CHAR_VLINE = (char)179;
-		public const char TCOD_CHAR_NE = (char)191;
-		public const char TCOD_CHAR_NW = (char)218; 
-		public const char TCOD_CHAR_SE = (char)217; 
-		public const char TCOD_CHAR_SW = (char)192;
-		public const char TCOD_CHAR_DHLINE = (char)205;
-		public const char TCOD_CHAR_DVLINE = (char)186;
-		public const char TCOD_CHAR_DNE = (char)187;
-		public const char TCOD_CHAR_DNW = (char)201; 
-		public const char TCOD_CHAR_DSE = (char)188; 
-		public const char TCOD_CHAR_DSW = (char)200;
-		public const char TCOD_CHAR_TEEW = (char)180; 
-		public const char TCOD_CHAR_TEEE = (char)195; 
-		public const char TCOD_CHAR_TEEN = (char)193;
-		public const char TCOD_CHAR_TEES = (char)194;
-		public const char TCOD_CHAR_DTEEW = (char)181; 
-		public const char TCOD_CHAR_DTEEE = (char)198; 
-		public const char TCOD_CHAR_DTEEN = (char)208;
-		public const char TCOD_CHAR_DTEES = (char)210;
-		public const char TCOD_CHAR_CHECKER = (char)178; 
-		public const char TCOD_CHAR_BLOCK = (char)219;
-		public const char TCOD_CHAR_BLOCK1 = (char)178;
-		public const char TCOD_CHAR_BLOCK2 = (char)177; 
-		public const char TCOD_CHAR_BLOCK3 = (char)176;
-		public const char TCOD_CHAR_BLOCK_B = (char)220; 
-		public const char TCOD_CHAR_BLOCK_T = (char)223;
-		public const char TCOD_CHAR_DS_CROSSH = (char)216; 
-		public const char TCOD_CHAR_DS_CROSSV = (char)215;
-		public const char TCOD_CHAR_CROSS = (char)197;
-		public const char TCOD_CHAR_LIGHT = (char)15;
-		public const char TCOD_CHAR_TREE = (char)5;
-		public const char TCOD_CHAR_ARROW_N = (char)24; 
-		public const char TCOD_CHAR_ARROW_S = (char)25; 
-		public const char TCOD_CHAR_ARROW_E = (char)26; 
-		public const char TCOD_CHAR_ARROW_W = (char)27;
+		public const byte TCOD_CHAR_HLINE = 196;
+        public const byte TCOD_CHAR_VLINE = 179;
+        public const byte TCOD_CHAR_NE = 191;
+        public const byte TCOD_CHAR_NW = 218;
+        public const byte TCOD_CHAR_SE = 217;
+        public const byte TCOD_CHAR_SW = 192;
+        public const byte TCOD_CHAR_DHLINE = 205;
+        public const byte TCOD_CHAR_DVLINE = 186;
+        public const byte TCOD_CHAR_DNE = 187;
+        public const byte TCOD_CHAR_DNW = 201;
+        public const byte TCOD_CHAR_DSE = 188;
+        public const byte TCOD_CHAR_DSW = 200;
+        public const byte TCOD_CHAR_TEEW = 180;
+        public const byte TCOD_CHAR_TEEE = 195;
+        public const byte TCOD_CHAR_TEEN = 193;
+        public const byte TCOD_CHAR_TEES = 194;
+        public const byte TCOD_CHAR_DTEEW = 181;
+        public const byte TCOD_CHAR_DTEEE = 198;
+        public const byte TCOD_CHAR_DTEEN = 208;
+        public const byte TCOD_CHAR_DTEES = 210;
+        public const byte TCOD_CHAR_CHECKER = 178;
+        public const byte TCOD_CHAR_BLOCK = 219;
+        public const byte TCOD_CHAR_BLOCK1 = 178;
+        public const byte TCOD_CHAR_BLOCK2 = 177;
+        public const byte TCOD_CHAR_BLOCK3 = 176;
+        public const byte TCOD_CHAR_BLOCK_B = 220;
+        public const byte TCOD_CHAR_BLOCK_T = 223;
+        public const byte TCOD_CHAR_DS_CROSSH = 216;
+        public const byte TCOD_CHAR_DS_CROSSV = 215;
+        public const byte TCOD_CHAR_CROSS = 197;
+        public const byte TCOD_CHAR_LIGHT = 15;
+        public const byte TCOD_CHAR_TREE = 5;
+        public const byte TCOD_CHAR_ARROW_N = 24;
+        public const byte TCOD_CHAR_ARROW_S = 25;
+        public const byte TCOD_CHAR_ARROW_E = 26;
+        public const byte TCOD_CHAR_ARROW_W = 27;
 	};
 
     public struct CustomFontRequest
@@ -193,11 +193,21 @@ namespace libtcodWrapper
             TCOD_console_put_char(m_consolePtr, x, y, (int)c, flag.m_value);
         }
 
+        public void PutChar(int x, int y, byte c, TCODBackground flag)
+        {
+            TCOD_console_put_char(m_consolePtr, x, y, (int)c, flag.m_value);
+        }
+
         public void PutChar(int x, int y, char c)
         {
             PutChar(x, y, c, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE));
         }
 
+        public void PutChar(int x, int y, byte c)
+        {
+            PutChar(x, y, c, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE));
+        }
+        
         public void SetCharBackground(int x, int y, TCODColor col, TCODBackground flag)
         {
             TCOD_console_set_back(m_consolePtr, x, y, col, flag.m_value);

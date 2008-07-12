@@ -867,7 +867,9 @@ namespace TCODDemo
                 rootConsole.SetBackgroundColor(TCODColor.TCOD_black);
                 rootConsole.PrintLine("last frame : " + (TCODSystem.GetLastFrameLength() * 1000).ToString() + " ms ( " + TCODSystem.GetFPS() + "fps)", 79, 46, TCODLineAlign.Right);
                 rootConsole.PrintLine("elapsed : " + TCODSystem.GetElapsedMilli() + "ms " + (TCODSystem.GetElapsedSeconds().ToString("0.00")) + "s", 79, 47, TCODLineAlign.Right);
-                rootConsole.PrintLine(TCODSpecialChar.TCOD_CHAR_ARROW_N + TCODSpecialChar.TCOD_CHAR_ARROW_S + " : select a sample", 2, 47, TCODLineAlign.Left);
+                rootConsole.PutChar(2, 47, TCODSpecialChar.TCOD_CHAR_ARROW_N);
+                rootConsole.PutChar(3, 47, TCODSpecialChar.TCOD_CHAR_ARROW_S);
+                rootConsole.PrintLine(" : select a sample", 4, 47, TCODLineAlign.Left);
                 rootConsole.PrintLine("ALT-ENTER : switch to " + (rootConsole.IsFullscreen() ? "windowed mode  " : "fullscreen mode"), 2, 48, TCODLineAlign.Left);
 
                 sampleList[curSample].render(first, key);
