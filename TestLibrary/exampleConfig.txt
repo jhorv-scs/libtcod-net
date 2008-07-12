@@ -6,6 +6,7 @@ item_type "blade" {            // structure's type : 'item_type'. structure's na
 	color="#FF0000"            // a color property, using #RRGGBB syntax
 	damaged_color="128,96,96"  // another color property, using rrr,ggg,bbb syntax
 	damage_type="slash"        // a string property
+	list="foo"				   // a string list property
 	abstract                   // a flag (simplified boolean property)
 }
 
