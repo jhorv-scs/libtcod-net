@@ -18,10 +18,11 @@ namespace libtcodWrapperTests
         static bool color_defined = false;
         static bool damaged_color_defined = false;
         static bool damage_type_defined = false;
-        static bool list_defined = false;
+//        static bool list_defined = false;
 
         private static bool NewStructCallbackTest(TCODParserStructure cur, string name)
         {
+        System.Console.Out.WriteLine("New Struct");
             switch (currentState)
             {
                 case currentStructType.none:
@@ -59,15 +60,17 @@ namespace libtcodWrapperTests
         }
         private static bool NewFlagCallbackTest(string name)
         {
+        	System.Console.Out.WriteLine("New Flag");
             if (name.ToString() != "abstract")
                 return false;
             if (!cost_defined || !weight_defined || !deal_damage_defined || !damages_defined || !color_defined ||
-                !damaged_color_defined || !damage_type_defined || !list_defined)
+                !damaged_color_defined || !damage_type_defined)
                 return false;
             return true;
         }
         private static bool NewPropertyCallbackTest(string name, TCODValueType type, TCODValue value)
         {
+        System.Console.Out.WriteLine("New Prop");
             switch (type)
             {
                 case TCODValueType.TCOD_TYPE_BOOL:
@@ -91,9 +94,9 @@ namespace libtcodWrapperTests
                 case TCODValueType.TCOD_TYPE_STRING:
                     damage_type_defined = true;
                     break;
-                case TCODValueType.TCOD_TYPE_VALUELIST00:
-                    list_defined = true;
-                    break;
+//                case TCODValueType.TCOD_TYPE_VALUELIST00:
+ //                   list_defined = true;
+ //                   break;
                 default:
                     return false;
             }
@@ -101,6 +104,7 @@ namespace libtcodWrapperTests
         }
         private static bool EndStructCallbackTest(TCODParserStructure cur, string name)
         {
+        System.Console.Out.WriteLine("End Flag");
             switch (currentState)
             {
                 case currentStructType.none:
@@ -134,13 +138,15 @@ namespace libtcodWrapperTests
         [Test]
         public void ImplementedParserTest()
         {
+        	System.Console.Out.WriteLine("Impl");
 			TCODParserCallbackStruct callback = new TCODParserCallbackStruct(new NewStructureCallback(NewStructCallbackTest), new NewFlagCallback(NewFlagCallbackTest),			                                                                 
 			                                                                 new NewPropertyCallback(NewPropertyCallbackTest), new EndStructureCallback(EndStructCallbackTest),
 			                                                                 new ErrorCallback(ErrorCallbackTest));
-
+			System.Console.Out.WriteLine("Impl2");
             using (TCODFileParser parser = new TCODFileParser())
             {
                 AddParserTestStructs(parser);
+                System.Console.Out.WriteLine("Impl3");
                 parser.Run("exampleConfig.txt", ref callback);
             }
         }
@@ -189,7 +195,7 @@ namespace libtcodWrapperTests
             item.AddProperty("color", TCODValueType.TCOD_TYPE_COLOR, true);
             item.AddProperty("damaged_color", TCODValueType.TCOD_TYPE_COLOR, true);
             item.AddProperty("damage_type", TCODValueType.TCOD_TYPE_STRING, true);
-            item.AddValueList("list", strList, true);
+            //item.AddValueList("list", strList, true);
             item.AddFlag("abstract");
 
             TCODParserStructure video = parser.RegisterNewStructure("video");
