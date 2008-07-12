@@ -26,11 +26,6 @@ namespace libtcodWrapperTests
 			//TCODMouseTest.TestTCODMouse();
             //TCODFovTest.TestTCODFovTest();
             //TCODKeyboardTest.TestTCODKeyboard();
-            libtcodWrapperTests.TCODNoiseTest t = new TCODNoiseTest();
-            t.Init();
-            t.GetBrownianTest1d();
-            t.GetBrownianTest2d();
-            t.Cleanup();
             return 0;
         }
     }

@@ -270,7 +270,7 @@ namespace TCODDemo
         }
 
         enum noiseFunctions { Noise, FBM, Turbulence };
-        static string [] noise_funcName = 
+        string [] noise_funcName = 
         {
             "1 : perlin noise",
 		    "2 : fbm         ",
@@ -417,9 +417,206 @@ namespace TCODDemo
 
         }
 
+        const float TORCH_RADIUS = 10.0f;
+        const float SQUARED_TORCH_RADIUS = (TORCH_RADIUS * TORCH_RADIUS);
+	    int px=20,py=10; // player position
+	    bool recomputeFov=true; // the player moved. must recompute fov
+	    bool torch=false; // torch fx on ?
+        TCODFov map;
+	    TCODColor darkWall = new TCODColor(0,0,100);
+	    TCODColor lightWall = new TCODColor(130,110,50);
+	    TCODColor darkGround = new TCODColor(50,50,150);
+	    TCODColor lightGround = new TCODColor(200,180,50);
+	    TCODNoise map_noise;
+	    float torchx=0.0f; // torch light position in the perlin noise
+
+        #region Map
+        string [] smap = {
+		"##############################################",
+		"#######################      #################",
+		"#####################    #     ###############",
+		"######################  ###        ###########",
+		"##################      #####             ####",
+		"################       ########    ###### ####",
+		"###############      #################### ####",
+		"################    ######                  ##",
+		"########   #######  ######   #     #     #  ##",
+		"########   ######      ###                  ##",
+		"########                                    ##",
+		"####       ######      ###   #     #     #  ##",
+		"#### ###   ########## ####                  ##",
+		"#### ###   ##########   ###########=##########",
+		"#### ##################   #####          #####",
+		"#### ###             #### #####          #####",
+		"####           #     ####                #####",
+		"########       #     #### #####          #####",
+		"########       #####      ####################",
+		"##############################################"
+        };
+        #endregion
+
         void render_fov(bool first, TCOD_key key)
         {
-            sampleConsole.Clear();
+            if (map == null) 
+            {
+		        // initialize the map for the fov toolkit
+                map = new TCODFov(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+		        for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++ ) 
+                {
+			        for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++ ) 
+                    {
+				        if ( smap[y][x] == ' ' )
+                            map.SetCell(x,y, true, true);// ground
+				        else if ( smap[y][x] == '=' )
+                            map.SetCell(x, y, true, false); // window
+			        }
+		        }
+		        // 1d noise used for the torch flickering
+                map_noise = new TCODNoise(1);
+	        }
+
+            if ( first )
+            {
+                TCODSystem.SetFPS(30); // fps limited to 30
+                // we draw the foreground only the first time.
+                // during the player movement, only the @ is redrawn.
+                // the rest impacts only the background color
+                // draw the help text & player @
+                sampleConsole.Clear();
+                sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
+                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, TCODLineAlign.Left);
+                sampleConsole.SetForegroundColor(TCODColor.TCOD_black);
+                sampleConsole.PutChar(px, py, '@');
+                // draw windows
+                for (int y=0; y < SAMPLE_SCREEN_HEIGHT; y++ )
+                {
+                    for (int x=0; x < SAMPLE_SCREEN_WIDTH; x++ )
+                    {
+                        if ( smap[y][x] == '=' ) 
+                        {
+                            sampleConsole.PutChar(x, y, '=');
+                        }
+                    }
+                }
+            }
+ 
+            if ( recomputeFov ) 
+            {
+                // calculate the field of view from the player position
+                recomputeFov = false;
+                map.CalculateFOV(px, py, torch ? (int)TORCH_RADIUS : 0); 
+            }
+            // torch position & intensity variation
+            float dx=0.0f,dy=0.0f,di=0.0f;
+            if ( torch ) 
+            {
+                // slightly change the perlin noise parameter
+                torchx+=0.2f;
+                // randomize the light position between -1.5 and 1.5
+                float[] tdx = { torchx + 20.0f };
+                dx = map_noise.GetPerlinNoise(tdx) * 1.5f;
+                tdx[0] += 30.0f;
+                dy = map_noise.GetPerlinNoise(tdx) * 1.5f;
+                // randomize the light intensity between -0.2 and 0.2
+                float[] torchxArray = { torchx };
+                di = 0.2f * map_noise.GetPerlinNoise(torchxArray);
+            }
+
+            // draw the dungeon
+            for (int y=0; y < SAMPLE_SCREEN_HEIGHT; y++ ) 
+            {
+                for (int x=0; x < SAMPLE_SCREEN_WIDTH; x++ ) 
+                {
+                    bool visible = map.CheckTileFOV(x, y);
+                    bool wall = (smap[y][x] == '#');
+                    if ( !visible ) 
+                    {
+                        sampleConsole.SetCharBackground(x, y, (wall ? darkWall : darkGround), new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                    }
+                    else 
+                    {
+                        if ( !torch ) 
+                        {
+                            sampleConsole.SetCharBackground(x, y, wall ? lightWall : lightGround, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                        } 
+                        else 
+                        {
+                            // torch flickering fx
+                            TCODColor baseColor = new TCODColor(wall ? darkWall : darkGround);
+                            TCODColor light = new TCODColor(wall ? lightWall : lightGround);
+                            // cell distance to torch (squared)
+                            float r = (float)((x-px+dx)*(x-px+dx)+(y-py+dy)*(y-py+dy));
+                            if ( r < SQUARED_TORCH_RADIUS ) {
+                                // l = 1.0 at player position, 0.0 at a radius of 10 cells
+                                float l = (SQUARED_TORCH_RADIUS-r)/SQUARED_TORCH_RADIUS +di;
+                                // clamp between 0 and 1
+                                if (l  < 0.0f )
+                                    l = 0.0f;
+                                else if ( l> 1.0f ) 
+                                    l = 1.0f;
+                                // interpolate the color
+                                baseColor.r = (byte)(baseColor.r + (light.r - baseColor.r) * l);
+                                baseColor.g = (byte)(baseColor.g + (light.g - baseColor.g) * l);
+                                baseColor.b = (byte)(baseColor.b + (light.b - baseColor.b) * l);
+                            }
+                            sampleConsole.SetCharBackground(x, y, baseColor, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                        }
+                    }
+                }
+            }
+
+            if ( key.c == 'I' || key.c == 'i' )
+            {
+                // player move north
+                if ( smap[py-1][px] == ' ' )
+                {
+                    sampleConsole.PutChar(px, py, ' ');
+                    py--;
+                    sampleConsole.PutChar(px, py, '@');
+                    recomputeFov = true;
+                }
+            }
+            else if ( key.c == 'K' || key.c == 'k' )
+            {
+                // player move south
+                if ( smap[py+1][px] == ' ' )
+                {
+                    sampleConsole.PutChar(px,py,' ');
+                    py++;
+                    sampleConsole.PutChar(px,py,'@');
+                    recomputeFov = true;
+                }
+            } 
+            else if ( key.c == 'J' || key.c == 'j' )
+            {
+                // player move west
+                if ( smap[py][px-1] == ' ' )
+                {
+                    sampleConsole.PutChar(px,py,' ');
+                    px--;
+                    sampleConsole.PutChar(px,py,'@');
+                    recomputeFov = true;
+                }
+            }
+            else if ( key.c == 'L' || key.c == 'l' )
+            {
+                // player move east
+                if ( smap[py][px+1] == ' ' ) 
+                {
+                    sampleConsole.PutChar(px,py,' ');
+                    px++;
+                    sampleConsole.PutChar(px,py,'@');
+                    recomputeFov=true;
+                }
+            }
+            else if ( key.c == 'T' || key.c == 't' )
+            {
+                // enable/disable the torch fx
+                torch=!torch;
+                sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
+                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, TCODLineAlign.Left);
+                sampleConsole.SetForegroundColor(TCODColor.TCOD_black);
+            }
         }
 
         TCODImage img;
@@ -568,6 +765,8 @@ namespace TCODDemo
                 img.Dispose();
             if (circle != null)
                 circle.Dispose();
+            if (map != null)
+                map.Dispose();
         }
 
         TCODConsoleRoot rootConsole;
