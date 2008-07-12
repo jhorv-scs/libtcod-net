@@ -328,11 +328,11 @@ namespace libtcodWrapper
         {
             TCOD_struct_add_property(m_parserStructure, new StringBuilder(name), type, mandatory);
         }
-/*
+
         public void AddValueList(string name, string[] list, bool mandatory)
         {
             TCOD_struct_add_value_list_sized(m_parserStructure, new StringBuilder(name), list, list.Length, mandatory);
-        }*/
+        }
 
         public void AddSubStructure(TCODParserStructure substructure)
         {
@@ -360,8 +360,8 @@ namespace libtcodWrapper
         [DllImport(DLLName.name)]
         private extern static void TCOD_struct_add_property(IntPtr def, StringBuilder name, TCODValueType type, bool mandatory);
 
-//        [DllImport(DLLName.name)]
-//        private extern static void TCOD_struct_add_value_list_sized(IntPtr def, StringBuilder name, [In, Out] String[] value_list, int size, bool mandatory);
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_struct_add_value_list_sized(IntPtr def, StringBuilder name, [In, Out] String[] value_list, int size, bool mandatory);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_struct_add_structure(IntPtr str, IntPtr sub_structure);
