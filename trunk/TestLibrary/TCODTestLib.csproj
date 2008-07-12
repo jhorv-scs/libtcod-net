@@ -67,6 +67,9 @@
     <Content Include="exampleConfig.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="libtcod-VS.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="libtcod.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
