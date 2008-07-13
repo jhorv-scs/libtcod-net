@@ -9,7 +9,6 @@ namespace libtcodWrapper
 #if Linux
         internal const string name = @"libtcod.so";
 #else
-        //Switch to using shipped DLL once parser bug is fixed.
         internal const string name = @"libtcod-VS.dll";
 #endif
 		
