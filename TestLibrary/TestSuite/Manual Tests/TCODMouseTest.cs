@@ -28,7 +28,7 @@ namespace libtcodWrapperTests
 					TCODMouse.ShowCursor(cursorVisible);
 
 					if(pressedKey.c == 't')
-						cursorVisible = !TCODMouse.GetCursorStatus();
+						cursorVisible = !TCODMouse.IsVisible();
 					if(pressedKey.c == 'm')
 						TCODMouse.MoveMouse(10, 10);
 

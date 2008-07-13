@@ -46,27 +46,45 @@ namespace libtcodWrapper
             get { return ((modifiers & 0x20) > 0); }
         }
 		
+        /// <summary>
+        /// Changes visiblity of mouse while in our window(s)
+        /// </summary>
+        /// <param name="visible">Is mouse visible?</param>
 		public static void ShowCursor(bool visible)
 		{
 			TCOD_mouse_show_cursor(visible);
 		}
 		
-		public static  bool GetCursorStatus()
+        /// <summary>
+        /// Return if cursor is visible
+        /// </summary>
+        /// <returns>Is Visible?</returns>
+		public static  bool IsVisible()
 		{
 			return TCOD_mouse_is_cursor_visible();
 		}
 		
+        /// <summary>
+        /// Move user's mouse to that location
+        /// </summary>
+        /// <param name="x">Pixel x location</param>
+        /// <param name="y">Pixel y location</param>
 		public static void MoveMouse(int x, int y)
 		{
 			TCOD_mouse_move(x, y);
 		}
 		
+        /// <summary>
+        /// Get current mouse status
+        /// </summary>
+        /// <returns>TCODMouse struct with location, movement, and buttom presses</returns>
 		public static TCODMouse GetStatus()
 		{
 			return TCOD_mouse_get_status();
-		}
-		
-		[DllImport(DLLName.name)]
+        }
+
+        #region DllImport
+        [DllImport(DLLName.name)]
         private extern static void TCOD_mouse_show_cursor(bool visible);
 		
 		[DllImport(DLLName.name)]
@@ -77,7 +95,7 @@ namespace libtcodWrapper
 		
 		[DllImport(DLLName.name)]
         private extern static TCODMouse TCOD_mouse_get_status();
-
-	};
+        #endregion
+    };
 
 }
