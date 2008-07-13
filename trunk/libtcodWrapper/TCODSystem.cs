@@ -60,7 +60,7 @@ namespace libtcodWrapper
         /// </summary>
         /// <param name="w">Current Width</param>
         /// <param name="h">Current Height</param>
-        public static void GetCurrentResolution(out w, out h)
+        public static void GetCurrentResolution(out int w, out int h)
         {
             TCOD_sys_get_current_resolution(out w, out h);
         }
@@ -94,7 +94,7 @@ namespace libtcodWrapper
 
         #region DllImport
         [DllImport(DLLName.name)]
-        private extern static UInt32 TCOD_sys_elapsed_milli();
+        private extern static uint TCOD_sys_elapsed_milli();
 
         [DllImport(DLLName.name)]
         private extern static float TCOD_sys_elapsed_seconds();
@@ -109,7 +109,7 @@ namespace libtcodWrapper
         private extern static void TCOD_sys_force_fullscreen_resolution(int width, int height);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_sys_get_current_resolution(ref int w, ref int h);
+        private extern static void TCOD_sys_get_current_resolution(out int w, out int h);
 
         [DllImport(DLLName.name)]
         private extern static float TCOD_sys_get_last_frame_length();
