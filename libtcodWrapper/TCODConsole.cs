@@ -189,7 +189,7 @@ namespace libtcodWrapper
 
         public void PutChar(int x, int y, byte c, TCODBackground flag)
         {
-            TCOD_console_put_char(m_consolePtr, x, y, (int)c, flag.m_value);
+            TCOD_console_put_char(m_consolePtr, x, y, c, flag.m_value);
         }
 
         public void PutChar(int x, int y, char c)
