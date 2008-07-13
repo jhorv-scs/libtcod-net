@@ -65,9 +65,6 @@
     <Content Include="circle.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="libtcod-VS.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="libtcod.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
