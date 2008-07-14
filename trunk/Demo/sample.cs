@@ -865,7 +865,7 @@ namespace TCODDemo
                 }
                 rootConsole.SetForegroundColor(TCODColor.TCOD_grey);
                 rootConsole.SetBackgroundColor(TCODColor.TCOD_black);
-                rootConsole.PrintLine("last frame : " + (TCODSystem.GetLastFrameLength() * 1000).ToString() + " ms ( " + TCODSystem.GetFPS() + "fps)", 79, 46, TCODLineAlign.Right);
+                rootConsole.PrintLine("last frame : " + ((int)(TCODSystem.GetLastFrameLength() * 1000)).ToString() + " ms ( " + TCODSystem.GetFPS() + "fps)", 79, 46, TCODLineAlign.Right);
                 rootConsole.PrintLine("elapsed : " + TCODSystem.GetElapsedMilli() + "ms " + (TCODSystem.GetElapsedSeconds().ToString("0.00")) + "s", 79, 47, TCODLineAlign.Right);
                 rootConsole.PutChar(2, 47, TCODSpecialChar.TCOD_CHAR_ARROW_N);
                 rootConsole.PutChar(3, 47, TCODSpecialChar.TCOD_CHAR_ARROW_S);
