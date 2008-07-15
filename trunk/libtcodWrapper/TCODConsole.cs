@@ -6,6 +6,9 @@ namespace libtcodWrapper
 {
     internal class DLLName
     {
+        /// <summary>
+        /// Defines the name of the DLL we look for on disk. The runtime adds {.dll,.so} to the end
+        /// </summary>
         internal const string name = @"libtcod";
     }
     
