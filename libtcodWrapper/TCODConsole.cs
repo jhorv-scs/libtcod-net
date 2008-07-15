@@ -129,7 +129,7 @@ namespace libtcodWrapper
 	};
 
     /// <summary>
-    /// Request for font other than "terminal.bmp"
+    /// Request for console to draw with font other than "terminal.bmp"
     /// </summary>
     public struct CustomFontRequest
     {
@@ -629,7 +629,10 @@ namespace libtcodWrapper
         #endregion
     }
 
-    /* One should not make more than one of these, on pain of bugs */
+    /// <summary>
+    /// "Root" console, one which blits onto window or fullscreen
+    /// </summary>
+    /// <remarks>One should not make more than one of these</remarks>
     public class TCODConsoleRoot : TCODConsole
     {
         /// <summary>
