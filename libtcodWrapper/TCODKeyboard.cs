@@ -149,7 +149,7 @@ namespace libtcodWrapper
             TCOD_console_disable_keyboard_repeat();
         }
 
-
+        #region DllImport
         [DllImport(DLLName.name)]
         private extern static TCOD_key TCOD_console_wait_for_keypress(bool flush);
 
@@ -164,5 +164,6 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_disable_keyboard_repeat();
+        #endregion
     }
 }

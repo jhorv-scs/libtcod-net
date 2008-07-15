@@ -271,15 +271,18 @@ namespace libtcodWrapper
         {
             return nf(GetStringIfValid(name));
         }
+
         private bool NativePropertyCallback(StringBuilder name, TCODValueType type, TCODValue v)
 		{
             return np(GetStringIfValid(name), type, v);
         }
+
         private bool NativeEndStructCallback(IntPtr str, StringBuilder name)
         {
 			TCODParserStructure cur = new TCODParserStructure(str);
             return es(cur, GetStringIfValid(name));
         }
+
         private void NativeErrorCallback(StringBuilder msg)
 		{
             er(GetStringIfValid(msg));
