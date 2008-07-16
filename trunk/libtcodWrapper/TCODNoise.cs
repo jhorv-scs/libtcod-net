@@ -98,7 +98,14 @@ namespace libtcodWrapper
             TCOD_noise_delete(m_instance);
         }
 
+        /// <summary>
+        /// Default hurst value for noise generator
+        /// </summary>
         public const float NoiseDefaultHurst = 0.5f;
+        
+        /// <summary>
+        /// Default Lacunarity value for noise generator
+        /// </summary>
         public const float NoiseDefaultLacunarity = 2.0f;
 
         private IntPtr m_instance;

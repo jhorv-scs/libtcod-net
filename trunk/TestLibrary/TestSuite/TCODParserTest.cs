@@ -28,7 +28,7 @@ namespace libtcodWrapperTests
                     if (name.ToString() != "blade" && cur.GetName() != "item_type")
                         return false;
 
-                    if (!cur.IsManatory("cost"))
+                    if (!cur.IsMandatory("cost"))
                         return false;
                     if (cur.GetType("cost") != TCODValueType.TCOD_TYPE_INT)
                         return false;
