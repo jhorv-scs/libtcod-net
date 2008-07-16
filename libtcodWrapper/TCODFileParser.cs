@@ -8,8 +8,9 @@ namespace libtcodWrapper
     /// Types of values parsed from config file
     /// </summary>
     public enum TCODValueType
-    { 
-	    TCOD_TYPE_NONE,
+    {
+        #pragma warning disable 1591  //Disable warning about lack of xml comments
+        TCOD_TYPE_NONE,
 	    TCOD_TYPE_BOOL,
 	    TCOD_TYPE_CHAR,
 	    TCOD_TYPE_INT,
@@ -48,7 +49,8 @@ namespace libtcodWrapper
 	    TCOD_TYPE_CUSTOM12,
 	    TCOD_TYPE_CUSTOM13,
 	    TCOD_TYPE_CUSTOM14,
-	    TCOD_TYPE_CUSTOM15	
+        TCOD_TYPE_CUSTOM15
+        #pragma warning restore 1591  //Disable warning about lack of xml comments
     }
 
     /// <summary>
@@ -57,6 +59,7 @@ namespace libtcodWrapper
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Ansi)]
     unsafe public struct TCODValue
     {
+        #pragma warning disable 1591  //Disable warning about lack of xml comments
         [FieldOffset(0)]
         public bool b;
           
@@ -68,9 +71,9 @@ namespace libtcodWrapper
         
         [FieldOffset(0)]
         public float f;
-        
-        [FieldOffset(0)]
-        public fixed char s[512];        
+
+//      [FieldOffset(0)]
+//      public fixed char s[512];        
 
         [FieldOffset(0)]
         public TCODColor col;
@@ -80,6 +83,7 @@ namespace libtcodWrapper
 
         [FieldOffset(0)]
         public IntPtr custom;
+        #pragma warning restore 1591  //Disable warning about lack of xml comments
     }
 
     /// <summary>
@@ -288,6 +292,10 @@ namespace libtcodWrapper
             er(GetStringIfValid(msg));
         }
 		
+        /// <summary>
+        /// If called in delegate handing parser events, will return string to be outputted along with position and abort the parsing.
+        /// </summary>
+        /// <param name="error">String explaining error</param>
 		public void ReturnErrorToParser(string error)
         {
             TCOD_parser_error(new StringBuilder(error));
@@ -481,6 +489,9 @@ namespace libtcodWrapper
         #endregion
     }
 
+    /// <summary>
+    /// Created by RegisterNewStructure and represents one valid "structure in the config file"
+    /// </summary>
     public class TCODParserStructure
     {
         internal TCODParserStructure(IntPtr p)
@@ -490,36 +501,70 @@ namespace libtcodWrapper
 
         internal IntPtr m_parserStructure;
 
+        /// <summary>
+        /// Add flag to structure
+        /// </summary>
+        /// <param name="name">Flag Name</param>
         public void AddFlag(string name)
         {
             TCOD_struct_add_flag(m_parserStructure, new StringBuilder(name));
         }
 
+        /// <summary>
+        /// Add new property to structure
+        /// </summary>
+        /// <param name="name">Name of Property</param>
+        /// <param name="type">Property Type</param>
+        /// <param name="mandatory">Is Mandatory?</param>
         public void AddProperty(string name, TCODValueType type, bool mandatory)
         {
             TCOD_struct_add_property(m_parserStructure, new StringBuilder(name), type, mandatory);
         }
 
+        /// <summary>
+        /// Add new "value list", set of possible string values
+        /// </summary>
+        /// <param name="name">Name of List</param>
+        /// <param name="list">Possible Values</param>
+        /// <param name="mandatory">Is Mandatory?</param>
         public void AddValueList(string name, string[] list, bool mandatory)
         {
             TCOD_struct_add_value_list_sized(m_parserStructure, new StringBuilder(name), list, list.Length, mandatory);
         }
 
+        /// <summary>
+        /// Add substructure to structure
+        /// </summary>
+        /// <param name="substructure">New Substructure to add</param>
         public void AddSubStructure(TCODParserStructure substructure)
         {
             TCOD_struct_add_structure(m_parserStructure, substructure.m_parserStructure);
         }
 
+        /// <summary>
+        /// Get Name of Structure
+        /// </summary>
+        /// <returns>Name</returns>
         public string GetName()
         {
             return TCOD_struct_get_name_helper(m_parserStructure);
         }
 
-        public bool IsManatory(string name)
+        /// <summary>
+        /// Returns if structure is a mandatory value
+        /// </summary>
+        /// <param name="name">Name of Structure</param>
+        /// <returns>Is Mandatory?</returns>
+        public bool IsMandatory(string name)
         {
             return TCOD_struct_is_mandatory(m_parserStructure, new StringBuilder(name));
         }
 
+        /// <summary>
+        /// Get Value's type of structure
+        /// </summary>
+        /// <param name="name">Property's Name</param>
+        /// <returns>Type</returns>
         public TCODValueType GetType(string name)
         {
             return TCOD_struct_get_type(m_parserStructure, new StringBuilder(name));

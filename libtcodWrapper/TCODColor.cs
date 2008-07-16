@@ -10,7 +10,20 @@ namespace libtcodWrapper
     [StructLayout(LayoutKind.Sequential)]
     public struct TCODColor
     {
-        public byte r, g, b;
+        /// <summary>
+        /// Red
+        /// </summary>
+        public byte r;
+
+        /// <summary>
+        /// Green
+        /// </summary>
+        public byte g;
+
+        /// <summary>
+        /// Blue
+        /// </summary>
+        public byte b;
 
         /// <summary>
         /// Copy Constructor for TCODColor
@@ -201,6 +214,7 @@ namespace libtcodWrapper
         [DllImport(DLLName.name)]
         private extern static void TCOD_color_get_HSV(TCODColor c, out float h, out float s, out float v);
 
+        #pragma warning disable 1591  //Disable warning about lack of xml comments
         public static TCODColor TCOD_black = new TCODColor(0, 0, 0);
         public static TCODColor TCOD_dark_grey = new TCODColor(96, 96, 96);
         public static TCODColor TCOD_grey = new TCODColor(196, 196, 196);
@@ -220,5 +234,6 @@ namespace libtcodWrapper
         public static TCODColor TCOD_gold = new TCODColor(255, 255, 102);
         public static TCODColor TCOD_purple = new TCODColor(204, 51, 153);
         public static TCODColor TCOD_dark_purple = new TCODColor(51, 0, 51);
+        #pragma warning restore 1591
     }
 }

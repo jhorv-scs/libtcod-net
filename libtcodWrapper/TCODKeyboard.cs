@@ -4,9 +4,14 @@ using System.Text;
 
 namespace libtcodWrapper
 {
+    #pragma warning disable 1591  //Disable warning about lack of xml comments
+
+    /// <summary>
+    /// Types of "special" keycodes"
+    /// </summary>
     public enum TCOD_keycode
     {
-	    TCODK_NONE,
+        TCODK_NONE,
 	    TCODK_ESCAPE,
 	    TCODK_BACKSPACE,
 	    TCODK_TAB,
@@ -71,9 +76,12 @@ namespace libtcodWrapper
 	    TCODK_NUMLOCK,
 	    TCODK_SCROLLLOCK,
 	    TCODK_SPACE,
-	    TCODK_CHAR
+        TCODK_CHAR
     }
     
+    /// <summary>
+    /// Keystroke structure returned from TCODKeyboard methods
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct TCOD_key
     {
@@ -115,36 +123,67 @@ namespace libtcodWrapper
         }
     }
 
+    /// <summary>
+    /// Is event returned when key is pressed, release, or both?
+    /// </summary>
     public enum TCOD_keypressed
     {
-	    TCOD_KEY_PRESSED=1,
+        TCOD_KEY_PRESSED =1,
 	    TCOD_KEY_RELEASED=2,
         TCOD_KEY_PRESSEDANDRELEASED=3,
     };
 
+    #pragma warning restore 1591  //Disable warning about lack of xml comments
+
+    /// <summary>
+    /// Holds static methods for interacting with keyboard
+    /// </summary>
     public class TCODKeyboard
     {
-        public TCOD_key WaitForKeyPress(bool flushInputBuffer)
+        /// <summary>
+        /// Block until user presses key
+        /// </summary>
+        /// <param name="flushInputBuffer">Flush all outstanding keystrokes and wait for next stroke</param>
+        /// <returns>Keypress</returns>
+        public static TCOD_key WaitForKeyPress(bool flushInputBuffer)
         {
             return TCOD_console_wait_for_keypress(flushInputBuffer);
         }
 
-        public TCOD_key CheckForKeypress(TCOD_keypressed pressFlags)
+        /// <summary>
+        /// Non-blockingly check for user key press
+        /// </summary>
+        /// <param name="pressFlags">Determines what type of events are returned</param>
+        /// <returns>Keypress</returns>
+        public static TCOD_key CheckForKeypress(TCOD_keypressed pressFlags)
         {
             return TCOD_console_check_for_keypress(pressFlags);
         }
 
-        public bool IsKeyPressed(TCOD_keycode key)
+        /// <summary>
+        /// Determine if a given key is currently being pressed
+        /// </summary>
+        /// <param name="key">Key in question</param>
+        /// <returns>Is Key Pressed?</returns>
+        public static bool IsKeyPressed(TCOD_keycode key)
         {
             return TCOD_console_is_key_pressed(key);
         }
 
-        public void SetRepeat(int initialDelay, int interval)
+        /// <summary>
+        /// Set repeat rate of keyboard
+        /// </summary>
+        /// <param name="initialDelay">How long before repeating</param>
+        /// <param name="interval">How often afterwards to repeat</param>
+        public static void SetRepeat(int initialDelay, int interval)
         {
             TCOD_console_set_keyboard_repeat(initialDelay, interval);
         }
 
-        public void DisableRepeat()
+        /// <summary>
+        /// Disable all repeating of keystrokes
+        /// </summary>
+        public static void DisableRepeat()
         {
             TCOD_console_disable_keyboard_repeat();
         }

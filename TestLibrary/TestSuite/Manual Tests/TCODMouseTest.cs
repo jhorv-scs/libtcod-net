@@ -23,7 +23,7 @@ namespace libtcodWrapperTests
 				do
 	            {
 	                console.Clear();
-					TCOD_key pressedKey = keyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_RELEASED);
+                    TCOD_key pressedKey = TCODKeyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_RELEASED);
 					TCODMouse m = TCODMouse.GetStatus();;					
 					TCODMouse.ShowCursor(cursorVisible);
 

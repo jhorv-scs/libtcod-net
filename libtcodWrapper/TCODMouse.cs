@@ -4,16 +4,50 @@ using System.Text;
 
 namespace libtcodWrapper
 {
+    /// <summary>
+    /// Constains information about current mouse status
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
 	public struct TCODMouse 
 	{
+        /// <summary>
+        /// Position in x direction in pixels
+        /// </summary>
 		public int x;
+
+        /// <summary>
+        /// Position in y direction in pixels
+        /// </summary>
 		public int y;
+
+        /// <summary>
+        /// Mouse velocity in x direction in pixels
+        /// </summary>
 		public int dx;
+
+        /// <summary>
+        /// Mouse velocity in y direction in pixels
+        /// </summary>
 		public int dy;
+
+        /// <summary>
+        /// Position in x directory in character sized blocks
+        /// </summary>
 		public int cx;
+
+        /// <summary>
+        /// Position in y directory in character sized blocks
+        /// </summary>
 		public int cy;
+
+        /// <summary>
+        /// Mouse velocity in x direction in character sized blocks
+        /// </summary>
 		public int dcx;
+
+        /// <summary>
+        /// Mouse velocity in y direction in character sized blocks
+        /// </summary>
 		public int dcy;
 		
 		//This field is set by libtcod when struct is marshalled. Disable the incorrect warning. 
@@ -21,7 +55,8 @@ namespace libtcodWrapper
 		private byte modifiers;
 		#pragma warning restore 0649
 
-		public bool lbutton
+        #pragma warning disable 1591  //Disable warning about lack of xml comments
+        public bool lbutton
 		{
 			get { return ((modifiers & 0x01) > 0); }
         }
@@ -45,7 +80,8 @@ namespace libtcodWrapper
         {
             get { return ((modifiers & 0x20) > 0); }
         }
-		
+        #pragma warning restore 1591
+
         /// <summary>
         /// Changes visiblity of mouse while in our window(s)
         /// </summary>

@@ -51,11 +51,11 @@ namespace libtcodWrapperTests
 			PrintStatus(console, "shift", key.shift, 10, 17);
 
 
-            console.PrintLine("F1 Key Pressed = " + (keyboard.IsKeyPressed(TCOD_keycode.TCODK_F1) ? "Yes" : "No"), 10, 20, TCODLineAlign.Left);
+            console.PrintLine("F1 Key Pressed = " + (TCODKeyboard.IsKeyPressed(TCOD_keycode.TCODK_F1) ? "Yes" : "No"), 10, 20, TCODLineAlign.Left);
 
             console.Flush();
 
-            key = keyboard.WaitForKeyPress(false);
+            key = TCODKeyboard.WaitForKeyPress(false);
 
             if (key.vk == TCOD_keycode.TCODK_F10)
                 inRealTimeTest = true;
@@ -70,7 +70,7 @@ namespace libtcodWrapperTests
             console.PrintLine("Keyboard Test Suite", 40, 5, TCODLineAlign.Center);
             console.PrintLine("Press 'F10' to enter Turn Based Test.", 40, 6, TCODLineAlign.Center);
 
-            TCOD_key pressedKey = keyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSEDANDRELEASED);
+            TCOD_key pressedKey = TCODKeyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSEDANDRELEASED);
 
             console.PrintLine("F2 Key Pressed = " + ((pressedKey.vk == TCOD_keycode.TCODK_F2 && pressedKey.pressed) ? "Yes" : "No"), 10, 10, TCODLineAlign.Left);
             console.PrintLine("'d' to disable repeat keys", 10, 11, TCODLineAlign.Left);
@@ -79,9 +79,9 @@ namespace libtcodWrapperTests
             console.Flush();
 
             if (pressedKey.c == 'd')
-                keyboard.DisableRepeat();
+                TCODKeyboard.DisableRepeat();
             if (pressedKey.c == 'e')
-                keyboard.SetRepeat(0, 10);
+                TCODKeyboard.SetRepeat(0, 10);
 
             if (pressedKey.vk == TCOD_keycode.TCODK_F10 && pressedKey.pressed)
                 inRealTimeTest = false;

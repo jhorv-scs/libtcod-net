@@ -22,7 +22,6 @@ namespace libtcodWrapperTests
 
             using(TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "FOV Tester", false))
             {
-        		TCODKeyboard keyboard =  new TCODKeyboard();
         	    console.Clear();
 
 	            using (TCODFov fov = new TCODFov(5, 5))
@@ -36,7 +35,7 @@ namespace libtcodWrapperTests
 	                {
 	                    PaintFOVTest(console, x, y, fov);
 
-	                    key = keyboard.WaitForKeyPress(false);
+                        key = TCODKeyboard.WaitForKeyPress(false);
 
 	                    switch (key.vk)
 	                    {

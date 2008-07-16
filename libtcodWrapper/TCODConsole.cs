@@ -4,6 +4,7 @@ using System.Text;
 
 namespace libtcodWrapper
 {
+    
     internal class DLLName
     {
         /// <summary>
@@ -19,6 +20,10 @@ namespace libtcodWrapper
     {
     	internal int m_value;
     	
+        /// <summary>
+        /// Create background with a given flag that does not take alpha paramater
+        /// </summary>
+        /// <param name="flag">Background Type</param>
     	public TCODBackground(TCOD_bkgnd_flag flag)
     	{
     		if(flag == TCOD_bkgnd_flag.TCOD_BKGND_ADDA || flag == TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
@@ -26,11 +31,21 @@ namespace libtcodWrapper
     		m_value = (int)flag;
 		}
 		
+        /// <summary>
+        /// Create background with a given flag that does take alpha paramater
+        /// </summary>
+        /// <param name="flag">Background Type</param>
+        /// <param name="val">Alpha Value</param>
 		public TCODBackground(TCOD_bkgnd_flag flag, float val)
     	{
             NewBackgroundCore(flag, val);
 		}
 
+        /// <summary>
+        /// Create background with a given flag that does take alpha paramater
+        /// </summary>
+        /// <param name="flag">Background Type</param>
+        /// <param name="val">Alpha Value</param>
         public TCODBackground(TCOD_bkgnd_flag flag, double val)
         {
             NewBackgroundCore(flag, (float)val);
@@ -44,6 +59,11 @@ namespace libtcodWrapper
         }
 
 
+        /// <summary>
+        /// Increment background type to next background in TCOD_bkgnd_flag enum
+        /// </summary>
+        /// <param name="lhs">Left Hand Side</param>
+        /// <returns>New Background</returns>
         public static TCODBackground operator ++(TCODBackground lhs)
         {
             if (lhs.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
@@ -52,6 +72,11 @@ namespace libtcodWrapper
             return lhs;
         }
 
+        /// <summary>
+        /// Decrement background type to next background in TCOD_bkgnd_flag enum
+        /// </summary>
+        /// <param name="lhs">Left Hand Side</param>
+        /// <returns>New Background</returns>
         public static TCODBackground operator --(TCODBackground lhs)
         {
             if (lhs.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_NONE)
@@ -60,17 +85,26 @@ namespace libtcodWrapper
             return lhs;
         }
 
+        /// <summary>
+        /// Get Current Background Type
+        /// </summary>
+        /// <returns>Background Enum</returns>
         public TCOD_bkgnd_flag GetBackgroundFlag()
         {
             return (TCOD_bkgnd_flag)(m_value & 0xff);
         }
 
+        /// <summary>
+        /// Get Current Alpha value
+        /// </summary>
+        /// <returns>Alpha Value</returns>
         public byte GetAlphaValue()
         {
             return (byte)(m_value >> 8);
         }
-	}
+    }
 
+    #pragma warning disable 1591  //Disable warning about lack of xml comments
     public enum TCOD_bkgnd_flag
     {
         TCOD_BKGND_NONE,
@@ -87,13 +121,15 @@ namespace libtcodWrapper
         TCOD_BKGND_OVERLAY,
         TCOD_BKGND_ALPH
     };
-    
+    #pragma warning restore 1591
+
     /// <summary>
     /// "Special" ascii characters such as arrows and lines
     /// </summary>
-    public class TCODSpecialChar 
+    public class TCODSpecialChar
     {
-		public const byte TCOD_CHAR_HLINE = 196;
+        #pragma warning disable 1591  //Disable warning about lack of xml comments
+        public const byte TCOD_CHAR_HLINE = 196;
         public const byte TCOD_CHAR_VLINE = 179;
         public const byte TCOD_CHAR_NE = 191;
         public const byte TCOD_CHAR_NW = 218;
@@ -129,7 +165,8 @@ namespace libtcodWrapper
         public const byte TCOD_CHAR_ARROW_S = 25;
         public const byte TCOD_CHAR_ARROW_E = 26;
         public const byte TCOD_CHAR_ARROW_W = 27;
-	};
+        #pragma warning restore 1591  //Disable warning about lack of xml comments
+    };
 
     /// <summary>
     /// Request for console to draw with font other than "terminal.bmp"
@@ -171,9 +208,11 @@ namespace libtcodWrapper
     /// </summary>
     public enum TCODLineAlign
     {
+        #pragma warning disable 1591  //Disable warning about lack of xml comments
         Left,
         Right,
         Center
+        #pragma warning restore 1591  //Disable warning about lack of xml comments
     }
 
     /// <summary>

@@ -841,7 +841,6 @@ namespace TCODDemo
 
             rootConsole = new TCODConsoleRoot(80, 50, "tcodlib C# sample", fullscreen, fontReq);
             sampleConsole = rootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
-            TCODKeyboard keyboard = new TCODKeyboard();
 
             setupStaticData();
             do
@@ -878,7 +877,7 @@ namespace TCODDemo
                 sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, rootConsole, SAMPLE_SCREEN_X, SAMPLE_SCREEN_Y, 255);
 
                 rootConsole.Flush();
-                key = keyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSED);
+                key = TCODKeyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSED);
 
                 if (key.vk == TCOD_keycode.TCODK_DOWN)
                 {
