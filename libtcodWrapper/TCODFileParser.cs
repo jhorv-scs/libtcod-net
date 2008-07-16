@@ -72,8 +72,8 @@ namespace libtcodWrapper
         [FieldOffset(0)]
         public float f;
 
-//      [FieldOffset(0)]
-//      public fixed char s[512];        
+        [FieldOffset(0)]
+        public fixed char s[512];        
 
         [FieldOffset(0)]
         public TCODColor col;

@@ -295,7 +295,7 @@ namespace libtcodWrapper
         /// <param name="c">Ascii character</param>
         public void PutChar(int x, int y, char c)
         {
-            TCOD_console_set_char(m_consolePtr, x, y, (int)c);
+            TCOD_console_put_char(m_consolePtr, x, y, (int)c, (int)TCOD_bkgnd_flag.TCOD_BKGND_SET);
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace libtcodWrapper
         /// <param name="c">Ascii character</param>
         public void PutChar(int x, int y, byte c)
         {
-            TCOD_console_set_char(m_consolePtr, x, y, c);
+            TCOD_console_put_char(m_consolePtr, x, y, c, (int)TCOD_bkgnd_flag.TCOD_BKGND_SET);
         }
         
         /// <summary>
