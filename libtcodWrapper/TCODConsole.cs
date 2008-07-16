@@ -220,9 +220,11 @@ namespace libtcodWrapper
     /// </summary>
     public class TCODConsole : IDisposable
     {
-        internal TCODConsole(IntPtr w)
+        internal TCODConsole(IntPtr w, int width, int height)
         {
             m_consolePtr = w;
+            m_width = width;
+            m_height = height;
         }
         
         /// <summary>
@@ -236,6 +238,26 @@ namespace libtcodWrapper
         }
 
         internal IntPtr m_consolePtr;
+        internal int m_width;
+        internal int m_height;
+
+        /// <summary>
+        /// Returns console's width
+        /// </summary>
+        /// <returns>Width</returns>
+        public int GetConsoleWidth()
+        {
+            return m_width;
+        }
+
+        /// <summary>
+        /// Returns console's height
+        /// </summary>
+        /// <returns>Height</returns>
+        public int GetConsoleHeight()
+        {
+            return m_height;
+        }
 
         /// <summary>
         /// Set the default background color of the console
@@ -684,7 +706,7 @@ namespace libtcodWrapper
         /// <param name="h">Height in characters</param>
         /// <param name="title">Title of window</param>
         /// <param name="fullscreen">Fullscreen?</param>
-        public TCODConsoleRoot(int w, int h, String title, bool fullscreen) : base(IntPtr.Zero)
+        public TCODConsoleRoot(int w, int h, String title, bool fullscreen) : base(IntPtr.Zero, w, h)
         {
             TCOD_console_init_root(w, h, new StringBuilder(title), fullscreen);
         }
@@ -697,7 +719,7 @@ namespace libtcodWrapper
         /// <param name="title">Title of window</param>
         /// <param name="fullscreen">Fullscreen?</param>
         /// <param name="font">Custom font request</param>
-        public TCODConsoleRoot(int w, int h, String title, bool fullscreen, CustomFontRequest font)  : base(IntPtr.Zero)
+        public TCODConsoleRoot(int w, int h, String title, bool fullscreen, CustomFontRequest font)  : base(IntPtr.Zero, w, h)
         {
             TCOD_console_set_custom_font(new StringBuilder(font.m_fontFile), font.m_char_width, 
                 font.m_char_height, font.m_nb_char_horiz, font.m_nb_char_vertic, font.m_chars_in_row, 
@@ -776,7 +798,7 @@ namespace libtcodWrapper
         /// <returns>New console</returns>
         public TCODConsole GetNewConsole(int w, int h)
         {
-            return new TCODConsole(TCOD_console_new(w, h));
+            return new TCODConsole(TCOD_console_new(w, h), w, h);
         }
 
         #region DLLImports
