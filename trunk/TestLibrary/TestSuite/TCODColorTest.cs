@@ -22,7 +22,8 @@ namespace libtcodWrapperTests
             normalConstructor = new TCODColor(2, 4, 6);
             sameConstructor = new TCODColor(2, 4, 6);
             diffConstructor = new TCODColor(4, 8, 12);
-            HSVConstructor = new TCODColor(1.0f, .5f, .3f);
+            HSVConstructor = new TCODColor();
+            HSVConstructor.SetHSV(1.0f, .5f, .3f);
         }
 
         [TearDown]
@@ -60,6 +61,16 @@ namespace libtcodWrapperTests
             Assert.IsTrue((normalConstructor + sameConstructor) == diffConstructor);
 
             TCODColor.Interpolate(mult, normalConstructor, .4f);
+        }
+
+        [Test]
+        public void TestDivide()
+        {
+            TCODColor Orig = new TCODColor(200, 100, 50);
+            TCODColor Div = Orig / 10;
+            Assert.AreEqual(Div.r, 20);
+            Assert.AreEqual(Div.g, 10);
+            Assert.AreEqual(Div.b, 5);
         }
 
         [Test]
