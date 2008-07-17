@@ -166,12 +166,31 @@ namespace libtcodWrapper
         /// <summary>
         /// Divide each component of a color by a give constant
         /// </summary>
-        /// <param name="lhs">Color</param>
-        /// <param name="rhs">Constant</param>
+        /// <param name="lhs">Left Hand Side Color</param>
+        /// <param name="rhs">Right Hand Side Constant</param>
         /// <returns>New Color</returns>
         public static TCODColor operator /(TCODColor lhs, int rhs)
         {
             return new TCODColor((byte)(lhs.r / rhs), (byte)(lhs.g / rhs), (byte)(lhs.b / rhs));
+        }
+
+        /// <summary>
+        /// Subtract each component of a color from another, flooring to zero.
+        /// </summary>
+        /// <param name="lhs">Left Hand Side</param>
+        /// <param name="rhs">Right Hand Side</param>
+        /// <returns>New Color</returns>
+        public static TCODColor operator -(TCODColor lhs, TCODColor rhs)
+        {
+            return new TCODColor(SubFloor(lhs.r, rhs.r), SubFloor(lhs.g, rhs.g), SubFloor(lhs.b, rhs.b));
+        }
+
+        private static byte SubFloor(byte lhs, byte rhs)
+        {
+            if (lhs < rhs)
+                return 0;
+            else
+                return (byte)(lhs - rhs);
         }
 
         /// <summary>
