@@ -53,7 +53,7 @@ namespace libtcodWrapperTests
         }
 
         [Test]
-        public void TestOperators()
+        public void TestNormalOperators()
         {
             TCODColor mult = sameConstructor * diffConstructor;
             mult = mult * 1.5f;
@@ -71,6 +71,17 @@ namespace libtcodWrapperTests
             Assert.AreEqual(Div.r, 20);
             Assert.AreEqual(Div.g, 10);
             Assert.AreEqual(Div.b, 5);
+        }
+
+        [Test]
+        public void TestSubtract()
+        {
+            TCODColor Big = new TCODColor(255, 255, 255);
+            TCODColor Tiny = new TCODColor(50, 50, 50);
+            TCODColor Zero = Tiny - Big;
+            TCODColor Middle = Big - Tiny;
+            Assert.IsTrue(Zero == new TCODColor(0, 0, 0));
+            Assert.IsTrue(Middle == new TCODColor(205, 205, 205));
         }
 
         [Test]
