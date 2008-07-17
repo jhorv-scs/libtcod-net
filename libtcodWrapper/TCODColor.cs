@@ -55,7 +55,7 @@ namespace libtcodWrapper
         /// <param name="h">Hue Component (0.0 - 360.0)</param>
         /// <param name="s">Saturation Component (0.0 - 1.0)</param>
         /// <param name="v">Value Component (0.0 - 1.0)</param>
-        public TCODColor(float h, float s, float v)
+        public void SetHSV(float h, float s, float v)
         {
             r = 0;
             g = 0;
@@ -161,6 +161,17 @@ namespace libtcodWrapper
         public static TCODColor operator *(TCODColor lhs, double rhs)
         {
             return TCOD_color_multiply_scalar(lhs, (float)rhs);
+        }
+
+        /// <summary>
+        /// Divide each component of a color by a give constant
+        /// </summary>
+        /// <param name="lhs">Color</param>
+        /// <param name="rhs">Constant</param>
+        /// <returns>New Color</returns>
+        public static TCODColor operator /(TCODColor lhs, int rhs)
+        {
+            return new TCODColor((byte)(lhs.r / rhs), (byte)(lhs.g / rhs), (byte)(lhs.b / rhs));
         }
 
         /// <summary>

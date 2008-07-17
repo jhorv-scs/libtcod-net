@@ -15,7 +15,7 @@ namespace libtcodWrapperTests
             using (TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Waiting for Debugger", false))
 			{
 				TCODKeyboard keyboard = new TCODKeyboard();
-				keyboard.WaitForKeyPress(false);
+                TCODKeyboard.WaitForKeyPress(false);
 			}
         }
 		#pragma warning restore 0649
