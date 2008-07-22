@@ -81,5 +81,16 @@ namespace libtcodWrapperTests
             b--;
             b--;
         }
+
+        [Test]
+        public void TestBackgroundCopyConstructor()
+        {
+            TCODBackground b = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_BURN);
+            TCODBackground newB = new TCODBackground(b);
+            Assert.IsTrue(b.GetAlphaValue() == newB.GetAlphaValue());
+            Assert.IsTrue(b.GetBackgroundFlag() == newB.GetBackgroundFlag());
+            b++;
+            Assert.IsFalse(b.GetBackgroundFlag() == newB.GetBackgroundFlag());
+        }
     }
 }

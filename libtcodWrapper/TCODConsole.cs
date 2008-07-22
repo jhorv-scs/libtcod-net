@@ -51,6 +51,15 @@ namespace libtcodWrapper
             NewBackgroundCore(flag, (float)val);
         }
 
+        /// <summary>
+        /// Create a copy of a background flag 
+        /// </summary>
+        /// <param name="b">Background to copy</param>
+        public TCODBackground(TCODBackground b)
+        {
+            m_value = b.m_value;
+        }
+
         private void NewBackgroundCore(TCOD_bkgnd_flag flag, float val)
         {
             if (flag != TCOD_bkgnd_flag.TCOD_BKGND_ADDA && flag != TCOD_bkgnd_flag.TCOD_BKGND_ALPH)

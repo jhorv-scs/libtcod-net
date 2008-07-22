@@ -431,7 +431,7 @@ namespace TCODDemo
 	    float torchx=0.0f; // torch light position in the perlin noise
 
         #region Map
-        string [] smap = {
+        	string [] smap = {
 		"##############################################",
 		"#######################      #################",
 		"#####################    #     ###############",
