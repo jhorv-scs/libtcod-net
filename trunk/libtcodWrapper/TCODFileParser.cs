@@ -84,6 +84,15 @@ namespace libtcodWrapper
         [FieldOffset(0)]
         public IntPtr custom;
         #pragma warning restore 1591  //Disable warning about lack of xml comments
+
+        /// <summary>
+        /// Marshal a string from the fixed field 's'
+        /// </summary>
+        /// <returns>String</returns>
+        public string GetStringFromFieldS()
+        {
+            return Marshal.PtrToStringAnsi(custom);
+        }
     }
 
     /// <summary>
@@ -138,6 +147,14 @@ namespace libtcodWrapper
             nb_faces = faces;
             multiplier = 1;
             addsub = 0;
+        }
+
+        public TCODDice(TCODDice d)
+        {
+            nb_dices = d.nb_dices;
+            nb_faces = d.nb_faces;
+            multiplier = d.multiplier;
+            addsub = d.addsub;
         }
         
         /// <summary>
