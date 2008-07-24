@@ -149,6 +149,10 @@ namespace libtcodWrapper
             addsub = 0;
         }
 
+        /// <summary>
+        /// Create Copy of TCODDIce
+        /// </summary>
+        /// <param name="d">Dice to copy</param>
         public TCODDice(TCODDice d)
         {
             nb_dices = d.nb_dices;
