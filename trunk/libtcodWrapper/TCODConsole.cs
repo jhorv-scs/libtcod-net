@@ -805,7 +805,7 @@ namespace libtcodWrapper
         /// <param name="w">Width in characters</param>
         /// <param name="h">Height in characters</param>
         /// <returns>New console</returns>
-        public TCODConsole GetNewConsole(int w, int h)
+        public static TCODConsole GetNewConsole(int w, int h)
         {
             return new TCODConsole(TCOD_console_new(w, h), w, h);
         }

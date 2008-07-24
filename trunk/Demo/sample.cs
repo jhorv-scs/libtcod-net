@@ -746,9 +746,9 @@ namespace TCODDemo
             render_dirg = new int[] { 1, -1, -1, 1 };
             render_dirb = new int[] { 1, 1, 1, -1 };
 
-            off_secondary = rootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2);
-            off_screenshot = rootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
-            line_bk = rootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+            off_secondary = TCODConsoleRoot.GetNewConsole(SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2);
+            off_screenshot = TCODConsoleRoot.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+            line_bk = TCODConsoleRoot.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
             noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
         }
 
@@ -840,7 +840,7 @@ namespace TCODDemo
                 TCODSystem.ForceFullscrenResolution(fullscreenWidth, fullscreenHeight);
 
             rootConsole = new TCODConsoleRoot(80, 50, "tcodlib C# sample", fullscreen, fontReq);
-            sampleConsole = rootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+            sampleConsole = TCODConsoleRoot.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
 
             setupStaticData();
             do
