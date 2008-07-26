@@ -62,6 +62,7 @@
     <Compile Include="libtcodWrapper\TCODKeyboard.cs" />
     <Compile Include="libtcodWrapper\TCODLineDrawing.cs" />
     <Compile Include="libtcodWrapper\TCODNoise.cs" />
+    <Compile Include="libtcodWrapper\TCODPathFinding.cs" />
     <Compile Include="libtcodWrapper\TCODRandom.cs" />
     <Compile Include="libtcodWrapper\TCODSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

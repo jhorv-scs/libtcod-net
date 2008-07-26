@@ -9,7 +9,7 @@ namespace libtcodWrapper
     /// </summary>
     public class TCODFov : IDisposable
     {
-        private IntPtr m_mapPtr;
+        internal IntPtr m_mapPtr;   //Used by TCODPathFinding
 
         /// <summary>
         /// Create a representation of a given map 
