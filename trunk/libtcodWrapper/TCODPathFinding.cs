@@ -8,7 +8,36 @@ namespace libtcodWrapper
     /// </summary>
     public class TCODPathFinding : IDisposable
     {
+        /// <summary>
+        /// Callback made from pathfinding engine to determine cell pathfinding information
+        /// </summary>
+        /// <param name="x">x coord</param>
+        /// <param name="y">c coord</param>
+        /// <returns>IsPassable?</returns>
+        public delegate bool TCODPathCallback(int x, int y);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate bool TCODPathCallbackInternal(int x, int y, IntPtr nullPtr);
+
+        bool TCODPathCallInternal(int x, int y, IntPtr nullPtr)
+        {
+            return m_callback(x, y);
+        }
+
         private IntPtr m_instance;
+        private TCODPathCallback m_callback;
+
+        /// <summary>
+        /// Create a new TCODPathFinding with a callback to determine cell information
+        /// </summary>
+        /// <param name="width">Map Width</param>
+        /// <param name="height">Map Height</param>
+        /// <param name="callback">Callback from path finder</param>
+        public TCODPathFinding(int width, int height, TCODPathCallback callback)
+        {
+            m_callback = callback;
+            m_instance = TCOD_path_new_using_function(width, height, new TCODPathCallbackInternal(this.TCODPathCallInternal), IntPtr.Zero);
+        }
 
         /// <summary>
         /// Create new TCODPathFinding using map from TCODFov instance
@@ -82,6 +111,9 @@ namespace libtcodWrapper
         }
 
         #region DllImport
+        [DllImport(DLLName.name)]
+        private extern static IntPtr TCOD_path_new_using_function(int map_width, int map_height, TCODPathCallbackInternal func, IntPtr nullData);
+
         [DllImport(DLLName.name)]
         private extern static IntPtr TCOD_path_new_using_map(IntPtr map);
 
