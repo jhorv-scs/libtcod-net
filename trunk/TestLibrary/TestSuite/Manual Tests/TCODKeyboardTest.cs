@@ -11,15 +11,13 @@ namespace libtcodWrapperTests
         {
             using(TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Keyboard Tester", false))
             {
-            	TCODKeyboard keyboard = new TCODKeyboard();
-
-            	TCOD_key key = new TCOD_key();
+                TCOD_key key = new TCOD_key();
 	            do
             	{
 	                if (inRealTimeTest)
-                    	RealTimeLoopTest(console, keyboard);
+                    	RealTimeLoopTest(console);
 	                else
-                    	TurnBasedLoopTest(console, keyboard, ref key);
+                    	TurnBasedLoopTest(console, ref key);
                     System.Console.Out.WriteLine((char)key.c);
 	            }
             	while (key.c != 'q' && !console.IsWindowClosed());
@@ -31,7 +29,7 @@ namespace libtcodWrapperTests
 			console.PrintLine("Pressed " + name + " = " + (status  ? "On" : "Off"), x, y, TCODLineAlign.Left);
 		}
 
-        private static void TurnBasedLoopTest(TCODConsoleRoot console, TCODKeyboard keyboard, ref TCOD_key key)
+        private static void TurnBasedLoopTest(TCODConsoleRoot console, ref TCOD_key key)
         {
             console.Clear();
             console.PrintLine("Keyboard Test Suite", 40, 5, TCODLineAlign.Center);
@@ -61,7 +59,7 @@ namespace libtcodWrapperTests
                 inRealTimeTest = true;
         }
 
-        private static void RealTimeLoopTest(TCODConsoleRoot console, TCODKeyboard keyboard)
+        private static void RealTimeLoopTest(TCODConsoleRoot console)
         {
             TCODSystem.SetFPS(25);
 
