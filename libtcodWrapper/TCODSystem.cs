@@ -7,7 +7,7 @@ namespace libtcodWrapper
     /// <summary>
     /// Represents System Level Functions
     /// </summary>
-    public class TCODSystem
+    public static class TCODSystem
     {
         /// <summary>
         /// Obtain number of milliseconds since the program started

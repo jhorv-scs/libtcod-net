@@ -138,7 +138,7 @@ namespace libtcodWrapper
     /// <summary>
     /// Holds static methods for interacting with keyboard
     /// </summary>
-    public class TCODKeyboard
+    public static class TCODKeyboard
     {
         /// <summary>
         /// Block until user presses key

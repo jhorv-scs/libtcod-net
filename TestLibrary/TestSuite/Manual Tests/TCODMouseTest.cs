@@ -17,7 +17,6 @@ namespace libtcodWrapperTests
             
             using(TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Mouse Tester", false))
             {
-				TCODKeyboard keyboard = new TCODKeyboard();
 				TCODSystem.SetFPS(30);
 
 				do

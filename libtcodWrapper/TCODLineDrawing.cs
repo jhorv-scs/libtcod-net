@@ -8,7 +8,7 @@ namespace libtcodWrapper
     /// Plots points of a line using Bresenham algorithm
     /// </summary>
     /// <remarks>This class is not thread safe, nor is it safe to use more than one "instance" at the same time</remarks>
-    public class TCODLineDrawing
+    public static class TCODLineDrawing
     {
         /// <summary>
         /// Initalize line drawing toolkit with beginning and end point
