@@ -1,4 +1,4 @@
-//#define ManualTest
+#define ManualTest
 
 using System;
 using libtcodWrapper;
@@ -14,7 +14,6 @@ namespace libtcodWrapperTests
         {
             using (TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Waiting for Debugger", false))
 			{
-				TCODKeyboard keyboard = new TCODKeyboard();
                 TCODKeyboard.WaitForKeyPress(false);
 			}
         }
@@ -23,6 +22,9 @@ namespace libtcodWrapperTests
         static int Main()
         {
 			WaitForDebugger();
+            var f = new TCODBSPTest();
+            f.SplitOnce();
+
 			//TCODMouseTest.TestTCODMouse();
             //TCODFovTest.TestTCODFovTest();
             //TCODKeyboardTest.TestTCODKeyboard();
