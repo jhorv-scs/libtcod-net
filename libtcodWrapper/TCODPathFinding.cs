@@ -32,20 +32,22 @@ namespace libtcodWrapper
         /// </summary>
         /// <param name="width">Map Width</param>
         /// <param name="height">Map Height</param>
+        /// <param name="slowDiagonals">Diagonal move weights 1.4 compared to a horizontal/vertical move</param>
         /// <param name="callback">Callback from path finder</param>
-        public TCODPathFinding(int width, int height, TCODPathCallback callback)
+        public TCODPathFinding(int width, int height, bool slowDiagonals, TCODPathCallback callback)
         {
             m_callback = callback;
-            m_instance = TCOD_path_new_using_function(width, height, new TCODPathCallbackInternal(this.TCODPathCallInternal), IntPtr.Zero);
+            m_instance = TCOD_path_new_using_function(width, height, new TCODPathCallbackInternal(this.TCODPathCallInternal), IntPtr.Zero, slowDiagonals);
         }
 
         /// <summary>
         /// Create new TCODPathFinding using map from TCODFov instance
         /// </summary>
         /// <param name="fovMap">Existing map</param>
-        public TCODPathFinding(TCODFov fovMap)
+        /// <param name="slowDiagonals">Diagonal move weights 1.4 compared to a horizontal/vertical move</param>
+        public TCODPathFinding(TCODFov fovMap, bool slowDiagonals)
         {
-            m_instance = TCOD_path_new_using_map(fovMap.m_mapPtr);
+            m_instance = TCOD_path_new_using_map(fovMap.m_mapPtr, slowDiagonals);
         }
 
         /// <summary>
@@ -112,10 +114,10 @@ namespace libtcodWrapper
 
         #region DllImport
         [DllImport(DLLName.name)]
-        private extern static IntPtr TCOD_path_new_using_function(int map_width, int map_height, TCODPathCallbackInternal func, IntPtr nullData);
+        private extern static IntPtr TCOD_path_new_using_function(int map_width, int map_height, TCODPathCallbackInternal func, IntPtr nullData, bool slowDiagonals);
 
         [DllImport(DLLName.name)]
-        private extern static IntPtr TCOD_path_new_using_map(IntPtr map);
+        private extern static IntPtr TCOD_path_new_using_map(IntPtr map, bool slowDiagonals);
 
         [DllImport(DLLName.name)]
         private extern static bool TCOD_path_compute(IntPtr path, int origX, int origY, int destX, int destY);

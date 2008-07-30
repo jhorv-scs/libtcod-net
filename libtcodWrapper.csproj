@@ -54,6 +54,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="libtcodWrapper\TCODBSP.cs" />
     <Compile Include="libtcodWrapper\TCODColor.cs" />
     <Compile Include="libtcodWrapper\TCODConsole.cs" />
     <Compile Include="libtcodWrapper\TCODFileParser.cs" />
@@ -65,10 +66,13 @@
     <Compile Include="libtcodWrapper\TCODPathFinding.cs" />
     <Compile Include="libtcodWrapper\TCODRandom.cs" />
     <Compile Include="libtcodWrapper\TCODSystem.cs" />
+    <Compile Include="libtcodWrapper\TCODTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="libtcodWrapper\TCODMouse.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>

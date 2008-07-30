@@ -6,7 +6,7 @@
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8C7FE811-72A7-4EAB-AAA2-C39B3000A69B}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TCODTestLib</RootNamespace>
     <AssemblyName>TCODTestLib</AssemblyName>
@@ -43,8 +43,11 @@
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestSuite\TCODBSPTest.cs" />
     <Compile Include="TestSuite\TCODConsoleTest.cs" />
     <Compile Include="TestSuite\Manual Tests\ManualTestMain.cs" />
     <Compile Include="TestSuite\Manual Tests\TCODFovTest.cs" />

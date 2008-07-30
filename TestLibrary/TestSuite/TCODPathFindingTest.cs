@@ -55,9 +55,9 @@ namespace libtcodWrapperTests
                 for (int j = 0; j < 5; ++j) //height
                     fov.SetCell(i, j, room[j, i] == '.', room[j, i] == '.');
 
-            pathFindingFOV = new TCODPathFinding(fov);
+            pathFindingFOV = new TCODPathFinding(fov,false);
 
-            pathFindingCallback = new TCODPathFinding(5, 5, new TCODPathFinding.TCODPathCallback(TCODPathCallback));
+            pathFindingCallback = new TCODPathFinding(5, 5, false, new TCODPathFinding.TCODPathCallback(TCODPathCallback));
         }
 
         [TestFixtureTearDown]
@@ -71,7 +71,7 @@ namespace libtcodWrapperTests
         [Test]
         public void TestHugeMap()
         {
-            TCODPathFinding p = new TCODPathFinding(hugeMapSize, hugeMapSize, new TCODPathFinding.TCODPathCallback(TCODPathCallbackHugeMap));
+            TCODPathFinding p = new TCODPathFinding(hugeMapSize, hugeMapSize, false, new TCODPathFinding.TCODPathCallback(TCODPathCallbackHugeMap));
             p.ComputePath(1, 1, hugeMapSize - 3, hugeMapSize - 3);
         }
 
