@@ -1,4 +1,4 @@
-#define ManualTest
+//#define ManualTest
 
 using System;
 using libtcodWrapper;
@@ -21,9 +21,7 @@ namespace libtcodWrapperTests
 
         static int Main()
         {
-			WaitForDebugger();
-            var f = new TCODBSPTest();
-            f.SplitOnce();
+			//WaitForDebugger();
 
 			//TCODMouseTest.TestTCODMouse();
             //TCODFovTest.TestTCODFovTest();

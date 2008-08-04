@@ -11,17 +11,19 @@ namespace libtcodWrapper
         /// <summary>
         /// Callback made from pathfinding engine to determine cell pathfinding information
         /// </summary>
-        /// <param name="x">x coord</param>
-        /// <param name="y">c coord</param>
-        /// <returns>IsPassable?</returns>
-        public delegate bool TCODPathCallback(int x, int y);
+        /// <param name="xFrom">staring x coord</param>
+        /// <param name="yFrom">starting y coord</param>
+        /// <param name="xTo">ending x coord</param>
+        /// <param name="yTo">ending y coord</param>
+        /// <returns>"Cost" to pass through cell</returns>
+        public delegate float TCODPathCallback(int xFrom, int yFrom, int xTo, int yTo);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate bool TCODPathCallbackInternal(int x, int y, IntPtr nullPtr);
+        private delegate float TCODPathCallbackInternal(int xFrom, int yFrom, int xTo, int yTo, IntPtr nullPtr);
 
-        bool TCODPathCallInternal(int x, int y, IntPtr nullPtr)
+        float TCODPathCallInternal(int xFrom, int yFrom, int xTo, int yTo, IntPtr nullPtr)
         {
-            return m_callback(x, y);
+            return m_callback(xFrom, yFrom, xTo, yTo);
         }
 
         private IntPtr m_instance;
@@ -32,22 +34,22 @@ namespace libtcodWrapper
         /// </summary>
         /// <param name="width">Map Width</param>
         /// <param name="height">Map Height</param>
-        /// <param name="slowDiagonals">Diagonal move weights 1.4 compared to a horizontal/vertical move</param>
+        /// <param name="diagonalCost">Factor diagonal moves cost more</param>
         /// <param name="callback">Callback from path finder</param>
-        public TCODPathFinding(int width, int height, bool slowDiagonals, TCODPathCallback callback)
+        public TCODPathFinding(int width, int height, double diagonalCost, TCODPathCallback callback)
         {
             m_callback = callback;
-            m_instance = TCOD_path_new_using_function(width, height, new TCODPathCallbackInternal(this.TCODPathCallInternal), IntPtr.Zero, slowDiagonals);
+            m_instance = TCOD_path_new_using_function(width, height, new TCODPathCallbackInternal(this.TCODPathCallInternal), IntPtr.Zero, (float)diagonalCost);
         }
 
         /// <summary>
         /// Create new TCODPathFinding using map from TCODFov instance
         /// </summary>
         /// <param name="fovMap">Existing map</param>
-        /// <param name="slowDiagonals">Diagonal move weights 1.4 compared to a horizontal/vertical move</param>
-        public TCODPathFinding(TCODFov fovMap, bool slowDiagonals)
+        /// <param name="diagonalCost">Factor diagonal moves cost more</param>
+        public TCODPathFinding(TCODFov fovMap, double diagonalCost)
         {
-            m_instance = TCOD_path_new_using_map(fovMap.m_mapPtr, slowDiagonals);
+            m_instance = TCOD_path_new_using_map(fovMap.m_mapPtr, (float)diagonalCost);
         }
 
         /// <summary>
@@ -114,10 +116,10 @@ namespace libtcodWrapper
 
         #region DllImport
         [DllImport(DLLName.name)]
-        private extern static IntPtr TCOD_path_new_using_function(int map_width, int map_height, TCODPathCallbackInternal func, IntPtr nullData, bool slowDiagonals);
+        private extern static IntPtr TCOD_path_new_using_function(int map_width, int map_height, TCODPathCallbackInternal func, IntPtr nullData, float diagonalCost);
 
         [DllImport(DLLName.name)]
-        private extern static IntPtr TCOD_path_new_using_map(IntPtr map, bool slowDiagonals);
+        private extern static IntPtr TCOD_path_new_using_map(IntPtr map, float diagonalCost);
 
         [DllImport(DLLName.name)]
         private extern static bool TCOD_path_compute(IntPtr path, int origX, int origY, int destX, int destY);
