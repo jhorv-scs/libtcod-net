@@ -49,7 +49,8 @@ namespace libtcodWrapper
 	    TCOD_TYPE_CUSTOM12,
 	    TCOD_TYPE_CUSTOM13,
 	    TCOD_TYPE_CUSTOM14,
-        TCOD_TYPE_CUSTOM15
+        TCOD_TYPE_CUSTOM15,
+        TCOD_TYPE_LIST=1024
         #pragma warning restore 1591  //Disable warning about lack of xml comments
     }
 
@@ -80,6 +81,9 @@ namespace libtcodWrapper
         
         [FieldOffset(0)]
         public TCODDice dice;
+
+        [FieldOffset(0)]
+        public IntPtr list;
 
         [FieldOffset(0)]
         public IntPtr custom;
@@ -507,6 +511,10 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static TCODDice TCOD_parser_get_dice_property(IntPtr parser, StringBuilder name);
+
+        [DllImport(DLLName.name)]
+        private extern static IntPtr TCOD_parser_get_list_property(IntPtr parser, StringBuilder name, TCODValueType type);
+
         #endregion
     }
 
@@ -597,6 +605,9 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_struct_add_property(IntPtr def, StringBuilder name, TCODValueType type, bool mandatory);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_struct_add_list_property(IntPtr def, StringBuilder name, TCODValueType type, bool mandatory);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_struct_add_value_list_sized(IntPtr def, StringBuilder name, [In, Out] String[] value_list, int size, bool mandatory);

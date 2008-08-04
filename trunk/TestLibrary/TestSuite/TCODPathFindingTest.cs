@@ -33,17 +33,17 @@ namespace libtcodWrapperTests
         private TCODPathFinding pathFindingCallback;
         private TCODFov fov;
 
-        public bool TCODPathCallback(int x, int y)
+        public float TCODPathCallback(int xFrom, int yFrom, int xTo, int yTo)
         {
-            return (room[y, x] == '.');
+            return ((room[yTo, xTo] == '.') ? 1 : 0);
         }
 
         int hugeMapSize = 150;
-        public bool TCODPathCallbackHugeMap(int x, int y)
+        public float TCODPathCallbackHugeMap(int xFrom, int yFrom, int xTo, int yTo)
         {
-            if (x == 0 || y == 0 || x == (hugeMapSize - 1) || y == (hugeMapSize - 1))
-                return false;
-            return true;
+            if (xTo == 0 || yTo == 0 || xTo == (hugeMapSize - 1) || yTo == (hugeMapSize - 1))
+                return 0;
+            return 1;
         }
 
         [TestFixtureSetUp]
@@ -55,9 +55,9 @@ namespace libtcodWrapperTests
                 for (int j = 0; j < 5; ++j) //height
                     fov.SetCell(i, j, room[j, i] == '.', room[j, i] == '.');
 
-            pathFindingFOV = new TCODPathFinding(fov,false);
+            pathFindingFOV = new TCODPathFinding(fov, 1.0);
 
-            pathFindingCallback = new TCODPathFinding(5, 5, false, new TCODPathFinding.TCODPathCallback(TCODPathCallback));
+            pathFindingCallback = new TCODPathFinding(5, 5, 1.0, new TCODPathFinding.TCODPathCallback(TCODPathCallback));
         }
 
         [TestFixtureTearDown]
@@ -71,7 +71,7 @@ namespace libtcodWrapperTests
         [Test]
         public void TestHugeMap()
         {
-            TCODPathFinding p = new TCODPathFinding(hugeMapSize, hugeMapSize, false, new TCODPathFinding.TCODPathCallback(TCODPathCallbackHugeMap));
+            TCODPathFinding p = new TCODPathFinding(hugeMapSize, hugeMapSize, 1.0, new TCODPathFinding.TCODPathCallback(TCODPathCallbackHugeMap));
             p.ComputePath(1, 1, hugeMapSize - 3, hugeMapSize - 3);
         }
 
