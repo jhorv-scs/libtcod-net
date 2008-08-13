@@ -28,6 +28,7 @@ namespace libtcodWrapper
 
         private IntPtr m_instance;
         private TCODPathCallback m_callback;
+        private TCODPathCallbackInternal m_internalCallback;
 
         /// <summary>
         /// Create a new TCODPathFinding with a callback to determine cell information
@@ -39,7 +40,8 @@ namespace libtcodWrapper
         public TCODPathFinding(int width, int height, double diagonalCost, TCODPathCallback callback)
         {
             m_callback = callback;
-            m_instance = TCOD_path_new_using_function(width, height, new TCODPathCallbackInternal(this.TCODPathCallInternal), IntPtr.Zero, (float)diagonalCost);
+            m_internalCallback = new TCODPathCallbackInternal(this.TCODPathCallInternal);
+            m_instance = TCOD_path_new_using_function(width, height, m_internalCallback, IntPtr.Zero, (float)diagonalCost);
         }
 
         /// <summary>
