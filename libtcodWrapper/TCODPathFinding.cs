@@ -4,20 +4,20 @@ using System.Runtime.InteropServices;
 namespace libtcodWrapper
 {
     /// <summary>
+    /// Callback made from pathfinding engine to determine cell pathfinding information
+    /// </summary>
+    /// <param name="xFrom">staring x coord</param>
+    /// <param name="yFrom">starting y coord</param>
+    /// <param name="xTo">ending x coord</param>
+    /// <param name="yTo">ending y coord</param>
+    /// <returns>"Cost" to pass through cell</returns>
+    public delegate float TCODPathCallback(int xFrom, int yFrom, int xTo, int yTo);
+
+    /// <summary>
     /// Calculates paths in maps using djikstra's algorithms
     /// </summary>
     public class TCODPathFinding : IDisposable
     {
-        /// <summary>
-        /// Callback made from pathfinding engine to determine cell pathfinding information
-        /// </summary>
-        /// <param name="xFrom">staring x coord</param>
-        /// <param name="yFrom">starting y coord</param>
-        /// <param name="xTo">ending x coord</param>
-        /// <param name="yTo">ending y coord</param>
-        /// <returns>"Cost" to pass through cell</returns>
-        public delegate float TCODPathCallback(int xFrom, int yFrom, int xTo, int yTo);
-
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate float TCODPathCallbackInternal(int xFrom, int yFrom, int xTo, int yTo, IntPtr nullPtr);
 
