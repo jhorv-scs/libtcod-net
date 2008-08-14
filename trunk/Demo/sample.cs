@@ -1,12 +1,14 @@
 using System;
 using libtcodWrapper;
 
+using Console = libtcodWrapper.Console;
+
 namespace TCODDemo
 {
 
     class TCODDemo : IDisposable
     {
-        TCODConsole sampleConsole;
+        Console sampleConsole;
 
         const int SAMPLE_SCREEN_WIDTH = 46;
         const int SAMPLE_SCREEN_HEIGHT = 20;
@@ -14,7 +16,7 @@ namespace TCODDemo
         const int SAMPLE_SCREEN_X = 20;
         const int SAMPLE_SCREEN_Y = 10;
 
-        delegate void SampleRender(bool first, TCOD_key key);
+        delegate void SampleRender(bool first, KeyPress key);
 
         struct sample
         {
@@ -28,33 +30,31 @@ namespace TCODDemo
         }
 
         public TCODDemo()
-        {
-            sampleConsole = new TCODConsoleRoot(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, "TCOD Demo", false);
-        }
+        {}
 
         private bool ArgsRemaining(string[] args, int pos, int numberRequested)
         {
             return (pos + numberRequested < args.Length);
         }
 
-        TCODColor[] render_cols;
+        Color[] render_cols;
         int[] render_dirr;
         int[] render_dirg;
         int[] render_dirb;
         TCODRandom random;
-        void render_colors(bool first, TCOD_key key)
+        void render_colors(bool first, KeyPress key)
         {
             int TOPLEFT = 0;
             int TOPRIGHT = 1;
             int BOTTOMLEFT = 2;
             int BOTTOMRIGHT = 3;
 
-            TCODColor textColor = new TCODColor();
+            Color textColor = new Color();
 
             /* ==== slighty modify the corner colors ==== */
             if (first)
             {
-                TCODSystem.SetFPS(0);
+                TCODSystem.FPS = 0;
                 sampleConsole.Clear();
             }
             /* ==== slighty modify the corner colors ==== */
@@ -65,24 +65,24 @@ namespace TCODDemo
                 switch (component)
                 {
                     case 0:
-                        render_cols[c].r += (byte)(5 * render_dirr[c]);
-                        if (render_cols[c].r == 255)
+                        render_cols[c].Red += (byte)(5 * render_dirr[c]);
+                        if (render_cols[c].Red == 255)
                             render_dirr[c] = -1;
-                        else if (render_cols[c].r == 0)
+                        else if (render_cols[c].Red == 0)
                             render_dirr[c] = 1;
                         break;
                     case 1:
-                        render_cols[c].g += (byte)(5 * render_dirg[c]);
-                        if (render_cols[c].g == 255)
+                        render_cols[c].Green += (byte)(5 * render_dirg[c]);
+                        if (render_cols[c].Green == 255)
                             render_dirg[c] = -1;
-                        else if (render_cols[c].g == 0)
+                        else if (render_cols[c].Green == 0)
                             render_dirg[c] = 1;
                         break;
                     case 2:
-                        render_cols[c].b += (byte)(5 * render_dirb[c]);
-                        if (render_cols[c].b == 255)
+                        render_cols[c].Blue += (byte)(5 * render_dirb[c]);
+                        if (render_cols[c].Blue == 255)
                             render_dirb[c] = -1;
-                        else if (render_cols[c].b == 0)
+                        else if (render_cols[c].Blue == 0)
                             render_dirb[c] = 1;
                         break;
                 }
@@ -93,14 +93,14 @@ namespace TCODDemo
             {
                 float xcoef = (float)(x) / (SAMPLE_SCREEN_WIDTH - 1);
                 /* get the current column top and bottom colors */
-                TCODColor top = TCODColor.Interpolate(render_cols[TOPLEFT], render_cols[TOPRIGHT], xcoef);
-                TCODColor bottom = TCODColor.Interpolate(render_cols[BOTTOMLEFT], render_cols[BOTTOMRIGHT], xcoef);
+                Color top = Color.Interpolate(render_cols[TOPLEFT], render_cols[TOPRIGHT], xcoef);
+                Color bottom = Color.Interpolate(render_cols[BOTTOMLEFT], render_cols[BOTTOMRIGHT], xcoef);
                 for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
                 {
                     float ycoef = (float)(y) / (SAMPLE_SCREEN_HEIGHT - 1);
                     /* get the current cell color */
-                    TCODColor curColor = TCODColor.Interpolate(top, bottom, ycoef);
-                    sampleConsole.SetCharBackground(x, y, curColor, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                    Color curColor = Color.Interpolate(top, bottom, ycoef);
+                    sampleConsole.SetCharBackground(x, y, curColor, new Background(BackgroundFlag.Set));
                 }
             }
 
@@ -108,47 +108,51 @@ namespace TCODDemo
             /* get the background color at the text position */
             textColor = sampleConsole.GetCharBackground(SAMPLE_SCREEN_WIDTH / 2, 5);
             /* and invert it */
-            textColor.r = (byte)(255 - textColor.r);
-            textColor.g = (byte)(255 - textColor.g);
-            textColor.b = (byte)(255 - textColor.b);
-            sampleConsole.SetForegroundColor(textColor);
+            textColor.Red = (byte)(255 - textColor.Red);
+            textColor.Green = (byte)(255 - textColor.Green);
+            textColor.Blue = (byte)(255 - textColor.Blue);
+            sampleConsole.ForegroundColor = textColor;
             /* the background behind the text is slightly darkened using the BKGND_MULTIPLY flag */
-            sampleConsole.SetBackgroundColor(TCODColor.TCOD_grey);
-            sampleConsole.PrintLineRect("The Doryen library uses 24 bits colors, for both background and foreground.", SAMPLE_SCREEN_WIDTH / 2, 5, SAMPLE_SCREEN_WIDTH - 2, SAMPLE_SCREEN_HEIGHT - 1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY), TCODLineAlign.Center);
+            sampleConsole.BackgroundColor = Color.Gray;
+            sampleConsole.PrintLineRect("The Doryen library uses 24 bits colors, " + 
+                "for both background and foreground.", 
+                SAMPLE_SCREEN_WIDTH / 2, 5, SAMPLE_SCREEN_WIDTH - 2, 
+                SAMPLE_SCREEN_HEIGHT - 1, new Background(BackgroundFlag.Multiply), 
+                LineAlignment.Center);
 
             /* put random text (for performance tests) */
             for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
             {
                 for (int y = 12; y < SAMPLE_SCREEN_HEIGHT; y++)
                 {
-                    TCODColor col = sampleConsole.GetCharBackground(x, y);
-                    col = TCODColor.Interpolate(col, TCODColor.TCOD_black, 0.5f);
+                    Color col = sampleConsole.GetCharBackground(x, y);
+                    col = Color.Interpolate(col, Color.Black, 0.5f);
                     int c = random.GetRandomInt(System.Convert.ToByte('a'), System.Convert.ToByte('z'));
-                    sampleConsole.SetForegroundColor(col);
+                    sampleConsole.ForegroundColor = col;
                     sampleConsole.PutChar(x, y, (char)c);
                 }
             }
         }
 
 
-        TCODConsole off_secondary;
-        TCODConsole off_screenshot;
+        Console off_secondary;
+        Console off_screenshot;
         byte off_alpha = 0; // alpha value for the blit operation
         bool off_init = false; // draw the secondary screen only the first time
         int off_counter = 0;
         int off_x = 0, off_y = 0; // secondary screen position
         int off_xdir = 1, off_ydir = 1; // movement direction
-        void render_offscreen(bool first, TCOD_key key)
+        void render_offscreen(bool first, KeyPress key)
         {
             if (!off_init)
             {
                 off_init = true;
                 off_secondary.DrawFrame(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, false, "Offscreen console");
-                off_secondary.PrintLineRect("You can render to an offscreen console and blit in on another one, simulating alpha transparency.", SAMPLE_SCREEN_WIDTH / 4, 2, SAMPLE_SCREEN_WIDTH / 2 - 2, SAMPLE_SCREEN_HEIGHT / 2, TCODLineAlign.Center);
+                off_secondary.PrintLineRect("You can render to an offscreen console and blit in on another one, simulating alpha transparency.", SAMPLE_SCREEN_WIDTH / 4, 2, SAMPLE_SCREEN_WIDTH / 2 - 2, SAMPLE_SCREEN_HEIGHT / 2, LineAlignment.Center);
             }
             if (first)
             {
-                TCODSystem.SetFPS(30); // fps limited to 30
+                TCODSystem.FPS = 30; // fps limited to 30
                 // get a "screenshot" of the current sample screen
                 sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, off_screenshot, 0, 0, 255);
 
@@ -168,7 +172,7 @@ namespace TCODDemo
                 else if (off_y == 0)
                     off_ydir = 1;
             }
-            off_alpha = (byte)(255 * (1.0f + Math.Cos(TCODSystem.GetElapsedSeconds() * 2.0f)) / 2.0f);
+            off_alpha = (byte)(255 * (1.0f + Math.Cos(TCODSystem.ElapsedSeconds * 2.0f)) / 2.0f);
 
             // restore the initial screen
             off_screenshot.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0, 255);
@@ -177,31 +181,31 @@ namespace TCODDemo
             off_secondary.Blit(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, sampleConsole, off_x, off_y, off_alpha);
         }
 
-        static TCODConsole line_bk;
-        static TCODBackground line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET);
+        static Console line_bk;
+        static Background line_bkFlag = new Background(BackgroundFlag.Set);
         static bool line_init = false;
-        void render_lines(bool first, TCOD_key key)
+        void render_lines(bool first, KeyPress key)
         {
             sampleConsole.Clear();
-            if ( key.vk == TCOD_keycode.TCODK_ENTER || key.vk == TCOD_keycode.TCODK_KPENTER ) 
+            if ( key.KeyCode == KeyCode.TCODK_ENTER || key.KeyCode == KeyCode.TCODK_KPENTER ) 
             {
                 // switch to the next blending mode
-                if ( line_bkFlag.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
-                    line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE);
+                if ( line_bkFlag.BackgroundFlag == BackgroundFlag.Alph)
+                    line_bkFlag = new Background(BackgroundFlag.None);
                 else
                     line_bkFlag++;
             }
-            if (line_bkFlag.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ALPH) 
+            if (line_bkFlag.BackgroundFlag == BackgroundFlag.Alph) 
             {
                 // for the alpha mode, update alpha every frame
-                double alpha = (1.0f+Math.Cos(TCODSystem.GetElapsedSeconds()*2))/2.0f;
-                line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ALPH, alpha);
+                double alpha = (1.0f+Math.Cos(TCODSystem.ElapsedSeconds*2))/2.0f;
+                line_bkFlag = new Background(BackgroundFlag.Alph, alpha);
             }
-            else if (line_bkFlag.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ADDA) 
+            else if (line_bkFlag.BackgroundFlag == BackgroundFlag.AddA) 
             {
                 // for the add alpha mode, update alpha every frame
-                double alpha = (1.0f + Math.Cos(TCODSystem.GetElapsedSeconds() * 2)) / 2.0f;
-                line_bkFlag = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADDA, alpha);
+                double alpha = (1.0f + Math.Cos(TCODSystem.ElapsedSeconds * 2)) / 2.0f;
+                line_bkFlag = new Background(BackgroundFlag.AddA, alpha);
             }
 
             if (!line_init)
@@ -211,19 +215,19 @@ namespace TCODDemo
                 {
                     for (int y=0; y < SAMPLE_SCREEN_HEIGHT; y++) 
                     {
-                        TCODColor col = new TCODColor();
-                        col.r = (byte)(x* 255 / (SAMPLE_SCREEN_WIDTH-1));
-                        col.g = (byte)((x+y)* 255 / (SAMPLE_SCREEN_WIDTH-1+SAMPLE_SCREEN_HEIGHT-1));
-                        col.b = (byte)(y* 255 / (SAMPLE_SCREEN_HEIGHT-1));
-                        line_bk.SetCharBackground(x, y, col, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                        Color col = new Color();
+                        col.Red = (byte)(x* 255 / (SAMPLE_SCREEN_WIDTH-1));
+                        col.Green = (byte)((x+y)* 255 / (SAMPLE_SCREEN_WIDTH-1+SAMPLE_SCREEN_HEIGHT-1));
+                        col.Blue = (byte)(y* 255 / (SAMPLE_SCREEN_HEIGHT-1));
+                        line_bk.SetCharBackground(x, y, col, new Background(BackgroundFlag.Set));
                     }
                 }
                 line_init = true;
             }
             if ( first )
             {
-                TCODSystem.SetFPS(30); // fps limited to 30
-                sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
+                TCODSystem.FPS = 30; // fps limited to 30
+                sampleConsole.ForegroundColor = Color.White;
             }
             
             // blit the background
@@ -232,20 +236,20 @@ namespace TCODDemo
                
             
             // render the gradient
-            int recty = (int)((SAMPLE_SCREEN_HEIGHT - 2) * ((1.0f + Math.Cos(TCODSystem.GetElapsedSeconds())) / 2.0f));
+            int recty = (int)((SAMPLE_SCREEN_HEIGHT - 2) * ((1.0f + Math.Cos(TCODSystem.ElapsedSeconds)) / 2.0f));
             for (int x = 0 ; x < SAMPLE_SCREEN_WIDTH; x++) 
             {
-                TCODColor col = new TCODColor();
-                col.r = (byte)(x*255/SAMPLE_SCREEN_WIDTH);
-                col.g = (byte)(x * 255 / SAMPLE_SCREEN_WIDTH);
-                col.b = (byte)(x * 255 / SAMPLE_SCREEN_WIDTH);
+                Color col = new Color();
+                col.Red = (byte)(x*255/SAMPLE_SCREEN_WIDTH);
+                col.Green = (byte)(x * 255 / SAMPLE_SCREEN_WIDTH);
+                col.Blue = (byte)(x * 255 / SAMPLE_SCREEN_WIDTH);
                 sampleConsole.SetCharBackground(x, recty, col, line_bkFlag);
                 sampleConsole.SetCharBackground(x, recty+1, col, line_bkFlag);
                 sampleConsole.SetCharBackground(x, recty+2, col, line_bkFlag);
             }
 
             // calculate the segment ends
-            float angle = TCODSystem.GetElapsedSeconds()*2.0f;
+            float angle = TCODSystem.ElapsedSeconds*2.0f;
             float cosAngle = (float)Math.Cos(angle);
             float sinAngle = (float)Math.Sin(angle);
             int xo = (int)(SAMPLE_SCREEN_WIDTH/2*(1 + cosAngle));
@@ -260,21 +264,21 @@ namespace TCODDemo
             {
                 if (xx >= 0 && yy >= 0 && xx < SAMPLE_SCREEN_WIDTH && yy < SAMPLE_SCREEN_HEIGHT)
                 {
-                    sampleConsole.SetCharBackground(xx, yy, TCODColor.TCOD_light_blue, line_bkFlag);
+                    sampleConsole.SetCharBackground(xx, yy, Color.BrightBlue, line_bkFlag);
                 }
             }
             while (!TCODLineDrawing.StepLine(ref xx, ref yy));
 
             // print the current flag
-            sampleConsole.PrintLine(line_bkFlag.GetBackgroundFlag().ToString() + " (ENTER to change)", 2, 2, TCODLineAlign.Left);
+            sampleConsole.PrintLine(line_bkFlag.BackgroundFlag.ToString() + " (ENTER to change)", 2, 2, LineAlignment.Left);
         }
 
         enum noiseFunctions { Noise, FBM, Turbulence };
         string [] noise_funcName = 
         {
             "1 : perlin noise",
-		    "2 : fbm         ",
-		    "3 : turbulence  "
+            "2 : fbm         ",
+            "3 : turbulence  "
         };
         noiseFunctions noise_func = noiseFunctions.Noise;
         TCODNoise noise;
@@ -283,11 +287,11 @@ namespace TCODDemo
         float noise_hurst = TCODNoise.NoiseDefaultHurst;
         float noise_lacunarity = TCODNoise.NoiseDefaultLacunarity;
         float noise_zoom = 3.0f;
-        void render_noise(bool first, TCOD_key key)
+        void render_noise(bool first, KeyPress key)
         {
             if ( first ) 
             {
-                TCODSystem.SetFPS(30); /* limited to 30 fps */
+                TCODSystem.FPS = 30; /* limited to 30 fps */
             }
             sampleConsole.Clear();
     
@@ -303,7 +307,7 @@ namespace TCODDemo
                     float [] f = new float[2];
                     float value = 0.0f;
                     byte c;
-                    TCODColor col = new TCODColor();
+                    Color col = new Color();
                     f[0] = noise_zoom * x / SAMPLE_SCREEN_WIDTH + noise_dx;
                     f[1] = noise_zoom * y / SAMPLE_SCREEN_HEIGHT + noise_dy;
         
@@ -322,94 +326,94 @@ namespace TCODDemo
         
                     c = (byte)((value+1.0f)/2.0f*255);
                     /* use a bluish color */
-                    col.r = (byte)(c / 2);
-                    col.g = (byte)(c / 2);
-                    col.b = c;
-                    sampleConsole.SetCharBackground(x, y, col, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                    col.Red = (byte)(c / 2);
+                    col.Green = (byte)(c / 2);
+                    col.Blue = c;
+                    sampleConsole.SetCharBackground(x, y, col, new Background(BackgroundFlag.Set));
                 }
             }
             
             /* draw a transparent rectangle */
-            sampleConsole.SetBackgroundColor(TCODColor.TCOD_grey);
-            sampleConsole.DrawRect(2, 2, (noise_func == noiseFunctions.Noise ? 16 : 24), (noise_func == noiseFunctions.Noise ? 4 : 7), false, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY));
+            sampleConsole.BackgroundColor = Color.Gray;
+            sampleConsole.DrawRect(2, 2, (noise_func == noiseFunctions.Noise ? 16 : 24), (noise_func == noiseFunctions.Noise ? 4 : 7), false, new Background(BackgroundFlag.Multiply));
 
             /* draw the text */
             for (noiseFunctions curfunc = noiseFunctions.Noise; curfunc <= noiseFunctions.Turbulence; curfunc++) 
             {
                 if (curfunc == noise_func) 
                 {
-                    sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
-                    sampleConsole.SetBackgroundColor(TCODColor.TCOD_light_blue);
-                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET), TCODLineAlign.Left);
+                    sampleConsole.ForegroundColor = Color.White;
+                    sampleConsole.BackgroundColor = Color.BrightBlue;
+                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new Background(BackgroundFlag.Set), LineAlignment.Left);
                 }
                 else
                 {
-                    sampleConsole.SetForegroundColor(TCODColor.TCOD_grey);
-                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_NONE), TCODLineAlign.Left);
+                    sampleConsole.ForegroundColor = Color.Gray;
+                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new Background(BackgroundFlag.None), LineAlignment.Left);
                 }
             }
             /* draw parameters */
-            sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
-            sampleConsole.PrintLine("Y/H : zome (" + noise_zoom.ToString("0.0") + ")", 2, 5, TCODLineAlign.Left);
+            sampleConsole.ForegroundColor = Color.White;
+            sampleConsole.PrintLine("Y/H : zome (" + noise_zoom.ToString("0.0") + ")", 2, 5, LineAlignment.Left);
 
             if (noise_func != noiseFunctions.Noise) 
             {
-                sampleConsole.PrintLine("E/D : hurst (" + noise_hurst.ToString("0.0") + ")", 2, 6, TCODLineAlign.Left);
-                sampleConsole.PrintLine("R/F : lacunarity (" + noise_lacunarity.ToString("0.0") + ")", 2, 7, TCODLineAlign.Left);
-                sampleConsole.PrintLine("T/G : octaves (" + noise_octaves.ToString("0.0") + ")", 2, 8, TCODLineAlign.Left);
+                sampleConsole.PrintLine("E/D : hurst (" + noise_hurst.ToString("0.0") + ")", 2, 6, LineAlignment.Left);
+                sampleConsole.PrintLine("R/F : lacunarity (" + noise_lacunarity.ToString("0.0") + ")", 2, 7, LineAlignment.Left);
+                sampleConsole.PrintLine("T/G : octaves (" + noise_octaves.ToString("0.0") + ")", 2, 8, LineAlignment.Left);
             }
 
             /* handle keypress */
-            if (key.vk == TCOD_keycode.TCODK_NONE)
+            if (key.KeyCode == KeyCode.TCODK_NONE)
                 return;
-            if (key.c >= '1' && key.c <= '3')
+            if (key.Character >= '1' && key.Character <= '3')
             {
-                noise_func = (noiseFunctions)(key.c - '1');
+                noise_func = (noiseFunctions)(key.Character - '1');
             }
-            else if ( key.c == 'E' || key.c == 'e' ) 
+            else if ( key.Character == 'E' || key.Character == 'e' ) 
             {
                 /* increase hurst */
                 noise_hurst+=0.1f;
                 noise.Dispose();
                 noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
             }
-            else if ( key.c == 'D' || key.c == 'd' ) 
+            else if ( key.Character == 'D' || key.Character == 'd' ) 
             {
                 /* decrease hurst */
                 noise_hurst-=0.1f;
                 noise.Dispose();
                 noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
             }
-            else if ( key.c == 'R' || key.c == 'r' ) 
+            else if ( key.Character == 'R' || key.Character == 'r' ) 
             {
                 /* increase lacunarity */
                 noise_lacunarity+=0.5f;
                 noise.Dispose();
                 noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
             }
-            else if ( key.c == 'F' || key.c == 'f' ) 
+            else if ( key.Character == 'F' || key.Character == 'f' ) 
             {
                 /* decrease lacunarity */
                 noise_lacunarity -= 0.5f;
                 noise.Dispose();
                 noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
             }
-            else if (key.c == 'T' || key.c == 't')
+            else if (key.Character == 'T' || key.Character == 't')
             {
                 /* increase octaves */
                 noise_octaves += 0.5f;
             }
-            else if ( key.c == 'G' || key.c == 'g' ) 
+            else if ( key.Character == 'G' || key.Character == 'g' ) 
             {
                 /* decrease octaves */
                 noise_octaves -= 0.5f;
             }
-            else if ( key.c == 'Y' || key.c == 'y' ) 
+            else if ( key.Character == 'Y' || key.Character == 'y' ) 
             {
                 /* increase zoom */
                 noise_zoom += 0.2f;
             }
-            else if ( key.c == 'H' || key.c == 'h' ) 
+            else if ( key.Character == 'H' || key.Character == 'h' ) 
             {
                 /* decrease zoom */
                 noise_zoom -= 0.2f;
@@ -419,73 +423,73 @@ namespace TCODDemo
 
         const float TORCH_RADIUS = 10.0f;
         const float SQUARED_TORCH_RADIUS = (TORCH_RADIUS * TORCH_RADIUS);
-	    int px=20,py=10; // player position
-	    bool recomputeFov=true; // the player moved. must recompute fov
-	    bool torch=false; // torch fx on ?
+        int px=20,py=10; // player position
+        bool recomputeFov=true; // the player moved. must recompute fov
+        bool torch=false; // torch fx on ?
         TCODFov map;
-	    TCODColor darkWall = new TCODColor(0,0,100);
-	    TCODColor lightWall = new TCODColor(130,110,50);
-	    TCODColor darkGround = new TCODColor(50,50,150);
-	    TCODColor lightGround = new TCODColor(200,180,50);
-	    TCODNoise map_noise;
-	    float torchx=0.0f; // torch light position in the perlin noise
+        Color darkWall = new Color(0,0,100);
+        Color lightWall = new Color(130,110,50);
+        Color darkGround = new Color(50,50,150);
+        Color lightGround = new Color(200,180,50);
+        TCODNoise map_noise;
+        float torchx=0.0f; // torch light position in the perlin noise
 
         #region Map
-        	string [] smap = {
-		"##############################################",
-		"#######################      #################",
-		"#####################    #     ###############",
-		"######################  ###        ###########",
-		"##################      #####             ####",
-		"################       ########    ###### ####",
-		"###############      #################### ####",
-		"################    ######                  ##",
-		"########   #######  ######   #     #     #  ##",
-		"########   ######      ###                  ##",
-		"########                                    ##",
-		"####       ######      ###   #     #     #  ##",
-		"#### ###   ########## ####                  ##",
-		"#### ###   ##########   ###########=##########",
-		"#### ##################   #####          #####",
-		"#### ###             #### #####          #####",
-		"####           #     ####                #####",
-		"########       #     #### #####          #####",
-		"########       #####      ####################",
-		"##############################################"
+            string [] smap = {
+        "##############################################",
+        "#######################      #################",
+        "#####################    #     ###############",
+        "######################  ###        ###########",
+        "##################      #####             ####",
+        "################       ########    ###### ####",
+        "###############      #################### ####",
+        "################    ######                  ##",
+        "########   #######  ######   #     #     #  ##",
+        "########   ######      ###                  ##",
+        "########                                    ##",
+        "####       ######      ###   #     #     #  ##",
+        "#### ###   ########## ####                  ##",
+        "#### ###   ##########   ###########=##########",
+        "#### ##################   #####          #####",
+        "#### ###             #### #####          #####",
+        "####           #     ####                #####",
+        "########       #     #### #####          #####",
+        "########       #####      ####################",
+        "##############################################"
         };
         #endregion
 
-        void render_fov(bool first, TCOD_key key)
+        void render_fov(bool first, KeyPress key)
         {
             if (map == null) 
             {
-		        // initialize the map for the fov toolkit
+                // initialize the map for the fov toolkit
                 map = new TCODFov(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
-		        for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++ ) 
+                for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++ ) 
                 {
-			        for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++ ) 
+                    for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++ ) 
                     {
-				        if ( smap[y][x] == ' ' )
+                        if ( smap[y][x] == ' ' )
                             map.SetCell(x,y, true, true);// ground
-				        else if ( smap[y][x] == '=' )
+                        else if ( smap[y][x] == '=' )
                             map.SetCell(x, y, true, false); // window
-			        }
-		        }
-		        // 1d noise used for the torch flickering
+                    }
+                }
+                // 1d noise used for the torch flickering
                 map_noise = new TCODNoise(1);
-	        }
+            }
 
             if ( first )
             {
-                TCODSystem.SetFPS(30); // fps limited to 30
+                TCODSystem.FPS = 30; // fps limited to 30
                 // we draw the foreground only the first time.
                 // during the player movement, only the @ is redrawn.
                 // the rest impacts only the background color
                 // draw the help text & player @
                 sampleConsole.Clear();
-                sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
-                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, TCODLineAlign.Left);
-                sampleConsole.SetForegroundColor(TCODColor.TCOD_black);
+                sampleConsole.ForegroundColor = (Color.White);
+                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, LineAlignment.Left);
+                sampleConsole.ForegroundColor = (Color.Black);
                 sampleConsole.PutChar(px, py, '@');
                 // draw windows
                 for (int y=0; y < SAMPLE_SCREEN_HEIGHT; y++ )
@@ -531,19 +535,19 @@ namespace TCODDemo
                     bool wall = (smap[y][x] == '#');
                     if ( !visible ) 
                     {
-                        sampleConsole.SetCharBackground(x, y, (wall ? darkWall : darkGround), new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                        sampleConsole.SetCharBackground(x, y, (wall ? darkWall : darkGround), new Background(BackgroundFlag.Set));
                     }
                     else 
                     {
                         if ( !torch ) 
                         {
-                            sampleConsole.SetCharBackground(x, y, wall ? lightWall : lightGround, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                            sampleConsole.SetCharBackground(x, y, wall ? lightWall : lightGround, new Background(BackgroundFlag.Set));
                         } 
                         else 
                         {
                             // torch flickering fx
-                            TCODColor baseColor = new TCODColor(wall ? darkWall : darkGround);
-                            TCODColor light = new TCODColor(wall ? lightWall : lightGround);
+                            Color baseColor = new Color(wall ? darkWall : darkGround);
+                            Color light = new Color(wall ? lightWall : lightGround);
                             // cell distance to torch (squared)
                             float r = (float)((x-px+dx)*(x-px+dx)+(y-py+dy)*(y-py+dy));
                             if ( r < SQUARED_TORCH_RADIUS ) {
@@ -555,17 +559,17 @@ namespace TCODDemo
                                 else if ( l> 1.0f ) 
                                     l = 1.0f;
                                 // interpolate the color
-                                baseColor.r = (byte)(baseColor.r + (light.r - baseColor.r) * l);
-                                baseColor.g = (byte)(baseColor.g + (light.g - baseColor.g) * l);
-                                baseColor.b = (byte)(baseColor.b + (light.b - baseColor.b) * l);
+                                baseColor.Red = (byte)(baseColor.Red + (light.Red - baseColor.Red) * l);
+                                baseColor.Green = (byte)(baseColor.Green + (light.Green - baseColor.Green) * l);
+                                baseColor.Blue = (byte)(baseColor.Blue + (light.Blue - baseColor.Blue) * l);
                             }
-                            sampleConsole.SetCharBackground(x, y, baseColor, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                            sampleConsole.SetCharBackground(x, y, baseColor, new Background(BackgroundFlag.Set));
                         }
                     }
                 }
             }
 
-            if ( key.c == 'I' || key.c == 'i' )
+            if ( key.Character == 'I' || key.Character == 'i' )
             {
                 // player move north
                 if ( smap[py-1][px] == ' ' )
@@ -576,7 +580,7 @@ namespace TCODDemo
                     recomputeFov = true;
                 }
             }
-            else if ( key.c == 'K' || key.c == 'k' )
+            else if ( key.Character == 'K' || key.Character == 'k' )
             {
                 // player move south
                 if ( smap[py+1][px] == ' ' )
@@ -587,7 +591,7 @@ namespace TCODDemo
                     recomputeFov = true;
                 }
             } 
-            else if ( key.c == 'J' || key.c == 'j' )
+            else if ( key.Character == 'J' || key.Character == 'j' )
             {
                 // player move west
                 if ( smap[py][px-1] == ' ' )
@@ -598,7 +602,7 @@ namespace TCODDemo
                     recomputeFov = true;
                 }
             }
-            else if ( key.c == 'L' || key.c == 'l' )
+            else if ( key.Character == 'L' || key.Character == 'l' )
             {
                 // player move east
                 if ( smap[py][px+1] == ' ' ) 
@@ -609,44 +613,44 @@ namespace TCODDemo
                     recomputeFov=true;
                 }
             }
-            else if ( key.c == 'T' || key.c == 't' )
+            else if ( key.Character == 'T' || key.Character == 't' )
             {
                 // enable/disable the torch fx
                 torch=!torch;
-                sampleConsole.SetForegroundColor(TCODColor.TCOD_white);
-                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, TCODLineAlign.Left);
-                sampleConsole.SetForegroundColor(TCODColor.TCOD_black);
+                sampleConsole.ForegroundColor = (Color.White);
+                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, LineAlignment.Left);
+                sampleConsole.ForegroundColor = (Color.Black);
             }
         }
 
-        TCODImage img;
-        TCODImage circle;
-        TCODColor blue = new TCODColor(0, 0, 255);
-        TCODColor green = new TCODColor(0, 255, 0);
+        Image img;
+        Image circle;
+        Color blue = new Color(0, 0, 255);
+        Color green = new Color(0, 255, 0);
         uint lastSwitch = 0;
         bool swap = false;
-        void render_image(bool first, TCOD_key key)
+        void render_image(bool first, KeyPress key)
         {
             sampleConsole.Clear();
 
             if (img == null)
             {
-                img = new TCODImage("skull.bmp");
-                circle = new TCODImage("circle.bmp");
+                img = new Image("skull.bmp");
+                circle = new Image("circle.bmp");
             }
 
             if (first)
-                TCODSystem.SetFPS(30);  /* limited to 30 fps */
+                TCODSystem.FPS = 30;  /* limited to 30 fps */
 
-            sampleConsole.SetBackgroundColor(TCODColor.TCOD_black);
+            sampleConsole.BackgroundColor = Color.Black;
             sampleConsole.Clear();
 
-            float x = SAMPLE_SCREEN_WIDTH / 2 + (float)Math.Cos(TCODSystem.GetElapsedSeconds()) * 10.0f;
+            float x = SAMPLE_SCREEN_WIDTH / 2 + (float)Math.Cos(TCODSystem.ElapsedSeconds) * 10.0f;
             float y = (float)(SAMPLE_SCREEN_HEIGHT/2);
-            float scalex = 0.2f + 1.8f * (1.0f + (float)Math.Cos(TCODSystem.GetElapsedSeconds() / 2)) / 2.0f;
+            float scalex = 0.2f + 1.8f * (1.0f + (float)Math.Cos(TCODSystem.ElapsedSeconds / 2)) / 2.0f;
             float scaley = scalex;
-            float angle = TCODSystem.GetElapsedSeconds();
-            uint elapsed = TCODSystem.GetElapsedMilli() / 2000;
+            float angle = TCODSystem.ElapsedSeconds;
+            uint elapsed = TCODSystem.ElapsedMilliseconds / 2000;
 
             if (elapsed > lastSwitch)
             {
@@ -658,65 +662,65 @@ namespace TCODDemo
             {  
                 /* split the color channels of circle.bmp */
                 /* the red channel */
-                sampleConsole.SetBackgroundColor(TCODColor.TCOD_red);
-                sampleConsole.DrawRect(0, 3, 15, 15, false, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
-                circle.BlitRect(sampleConsole, 0, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY));
+                sampleConsole.BackgroundColor = (Color.BrightRed);
+                sampleConsole.DrawRect(0, 3, 15, 15, false, new Background(BackgroundFlag.Set));
+                circle.BlitRect(sampleConsole, 0, 3, -1, -1, new Background(BackgroundFlag.Multiply));
                 /* the green channel */
-                sampleConsole.SetBackgroundColor(green);
-                sampleConsole.DrawRect(15, 3, 15, 15, false, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
-                circle.BlitRect(sampleConsole, 15, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY));
+                sampleConsole.BackgroundColor = (green);
+                sampleConsole.DrawRect(15, 3, 15, 15, false, new Background(BackgroundFlag.Set));
+                circle.BlitRect(sampleConsole, 15, 3, -1, -1, new Background(BackgroundFlag.Multiply));
                 /* the blue channel */
-                sampleConsole.SetBackgroundColor(blue);
-                sampleConsole.DrawRect(30, 3, 15, 15, false, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
-                circle.BlitRect(sampleConsole, 30, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY));
+                sampleConsole.BackgroundColor = (blue);
+                sampleConsole.DrawRect(30, 3, 15, 15, false, new Background(BackgroundFlag.Set));
+                circle.BlitRect(sampleConsole, 30, 3, -1, -1, new Background(BackgroundFlag.Multiply));
             }
             else 
             {
                 /* render circle.bmp with normal blitting */
-                circle.BlitRect(sampleConsole, 0, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
-                circle.BlitRect(sampleConsole, 15, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
-                circle.BlitRect(sampleConsole, 30, 3, -1, -1, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+                circle.BlitRect(sampleConsole, 0, 3, -1, -1, new Background(BackgroundFlag.Set));
+                circle.BlitRect(sampleConsole, 15, 3, -1, -1, new Background(BackgroundFlag.Set));
+                circle.BlitRect(sampleConsole, 30, 3, -1, -1, new Background(BackgroundFlag.Set));
             }
-           img.Blit(sampleConsole, x, y, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADDA, .6), scalex, scaley, angle);
+           img.Blit(sampleConsole, x, y, new Background(BackgroundFlag.AddA, .6), scalex, scaley, angle);
         }
 
         bool mouse_lbut = false, mouse_rbut = false, mouse_mbut = false;
-        void render_mouse(bool first, TCOD_key key)
+        void render_mouse(bool first, KeyPress key)
         {
             if (first)
             {
-                sampleConsole.SetBackgroundColor(TCODColor.TCOD_grey);
-                sampleConsole.SetForegroundColor(TCODColor.TCOD_light_yellow);
-                TCODMouse.MoveMouse(320, 200);
-                TCODMouse.ShowCursor(true);
+                sampleConsole.BackgroundColor = (Color.Gray);
+                sampleConsole.ForegroundColor = (Color.BrightYellow);
+                Mouse.MoveMouse(320, 200);
+                Mouse.ShowCursor(true);
             }
 
             sampleConsole.Clear();
-            TCODMouse mouse = TCODMouse.GetStatus();
+            Mouse mouse = Mouse.GetStatus();
 
-            if (mouse.lbutton_pressed)
+            if (mouse.LeftButtonPressed)
                 mouse_lbut = !mouse_lbut;
-            if (mouse.rbutton_pressed)
+            if (mouse.RightButtonPressed)
                 mouse_rbut = !mouse_rbut;
-            if (mouse.mbutton_pressed)
+            if (mouse.MiddleButtonPressed)
                 mouse_mbut = !mouse_mbut;
 
-            string s1 = "Mouse position : " + mouse.x.ToString("000") + " x " + mouse.y.ToString("000") + "\n";
-            string s2 = "Mouse cell     : " + mouse.cx.ToString("000") + " x " + mouse.cy.ToString("000") + "\n";
-            string s3 = "Mouse movement : " + mouse.dx.ToString("000") + " x " + mouse.dy.ToString("000") + "\n";
-            string s4 = "Left button    : " + (mouse.lbutton ? " ON" : "OFF") + " (toggle " + (mouse_lbut ? " ON" : "OFF") + ")\n";
-            string s5 = "Right button   : " + (mouse.rbutton ? " ON" : "OFF") + " (toggle " + (mouse_rbut ? " ON" : "OFF") + ")\n";
-            string s6 = "Middle button  : " + (mouse.mbutton ? " ON" : "OFF") + " (toggle " + (mouse_mbut ? " ON" : "OFF") + ")\n";
+            string s1 = "Mouse position : " + mouse.PixelX.ToString("000") + " x " + mouse.PixelY.ToString("000") + "\n";
+            string s2 = "Mouse cell     : " + mouse.CellX.ToString("000") + " x " + mouse.CellY.ToString("000") + "\n";
+            string s3 = "Mouse movement : " + mouse.PixelVelocityX.ToString("000") + " x " + mouse.PixelVelocityY.ToString("000") + "\n";
+            string s4 = "Left button    : " + (mouse.LeftButton ? " ON" : "OFF") + " (toggle " + (mouse_lbut ? " ON" : "OFF") + ")\n";
+            string s5 = "Right button   : " + (mouse.RightButton ? " ON" : "OFF") + " (toggle " + (mouse_rbut ? " ON" : "OFF") + ")\n";
+            string s6 = "Middle button  : " + (mouse.MiddleButton ? " ON" : "OFF") + " (toggle " + (mouse_mbut ? " ON" : "OFF") + ")\n";
 
             string s = s1 + s2 + s3 + s4 + s5 + s6;
 
-            sampleConsole.PrintLine(s, 1, 1, TCODLineAlign.Left);
+            sampleConsole.PrintLine(s, 1, 1, LineAlignment.Left);
 
-            sampleConsole.PrintLine("1 : Hide cursor\n2 : Show cursor", 1, 10, TCODLineAlign.Left);
-            if (key.c == '1')
-                TCODMouse.ShowCursor(false);
-            else if (key.c == '2')
-                TCODMouse.ShowCursor(true);
+            sampleConsole.PrintLine("1 : Hide cursor\n2 : Show cursor", 1, 10, LineAlignment.Left);
+            if (key.Character == '1')
+                Mouse.ShowCursor(false);
+            else if (key.Character == '2')
+                Mouse.ShowCursor(true);
         }
 
         private sample[] sampleList = new sample[7];
@@ -736,19 +740,19 @@ namespace TCODDemo
         {
             random = new TCODRandom();
 
-            render_cols = new TCODColor[4];
-            render_cols[0] = new TCODColor(50, 40, 150);
-            render_cols[1] = new TCODColor(240, 85, 5);
-            render_cols[2] = new TCODColor(50, 35, 240);
-            render_cols[3] = new TCODColor(10, 200, 130);
+            render_cols = new Color[4];
+            render_cols[0] = new Color(50, 40, 150);
+            render_cols[1] = new Color(240, 85, 5);
+            render_cols[2] = new Color(50, 35, 240);
+            render_cols[3] = new Color(10, 200, 130);
 
             render_dirr = new int[] { 1, -1, 1, 1 };
             render_dirg = new int[] { 1, -1, -1, 1 };
             render_dirb = new int[] { 1, 1, 1, -1 };
 
-            off_secondary = TCODConsoleRoot.GetNewConsole(SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2);
-            off_screenshot = TCODConsoleRoot.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
-            line_bk = TCODConsoleRoot.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+            off_secondary = RootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2);
+            off_screenshot = RootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+            line_bk = RootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
             noise = new TCODNoise(2, noise_hurst, noise_lacunarity);
         }
 
@@ -769,14 +773,14 @@ namespace TCODDemo
                 map.Dispose();
         }
 
-        TCODConsoleRoot rootConsole;
+        RootConsole rootConsole;
         public int Run(string[] args)
         {
             fillSampleList();
 
             int curSample = 0; // index of the current sample
             bool first = true; // first time we render a sample
-            TCOD_key key = new TCOD_key();
+            KeyPress key = new KeyPress();
             string font = "terminal.bmp";
             int charWidth = 8;
             int charHeight = 8;
@@ -786,7 +790,7 @@ namespace TCODDemo
             int fullscreenHeight = 0;
             bool fullscreen = false;
             bool inRow = false;
-            TCODColor keyColor = TCODColor.TCOD_black;
+            Color keyColor = Color.Black;
 
             for (int i = 1; i < args.Length; i++)
             {
@@ -827,11 +831,11 @@ namespace TCODDemo
                 else if (args[i] == "-font-key-color" && ArgsRemaining(args, i, 3))
                 {
                     i++;
-                    keyColor.r = System.Convert.ToByte(args[i]);
+                    keyColor.Red = System.Convert.ToByte(args[i]);
                     i++;
-                    keyColor.g = System.Convert.ToByte(args[i]);
+                    keyColor.Green = System.Convert.ToByte(args[i]);
                     i++;
-                    keyColor.b = System.Convert.ToByte(args[i]);
+                    keyColor.Blue = System.Convert.ToByte(args[i]);
                 }
             }
 
@@ -839,8 +843,13 @@ namespace TCODDemo
             if (fullscreenWidth > 0)
                 TCODSystem.ForceFullscrenResolution(fullscreenWidth, fullscreenHeight);
 
-            rootConsole = new TCODConsoleRoot(80, 50, "tcodlib C# sample", fullscreen, fontReq);
-            sampleConsole = TCODConsoleRoot.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+            RootConsole.Width = 80;
+            RootConsole.Height = 50;
+            RootConsole.WindowTitle = "tcodlib C# sample";
+            RootConsole.Fullscreen = fullscreen;
+            RootConsole.Font = fontReq;
+            rootConsole = RootConsole.GetInstance();
+            sampleConsole = RootConsole.GetNewConsole(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
 
             setupStaticData();
             do
@@ -851,25 +860,25 @@ namespace TCODDemo
                     if (i == curSample)
                     {
                         // set colors for currently selected sample
-                        rootConsole.SetForegroundColor(TCODColor.TCOD_white);
-                        rootConsole.SetBackgroundColor(TCODColor.TCOD_light_blue);
+                        rootConsole.ForegroundColor = (Color.White);
+                        rootConsole.BackgroundColor = (Color.BrightBlue);
                     }
                     else
                     {
                         // set colors for other samples
-                        rootConsole.SetForegroundColor(TCODColor.TCOD_grey);
-                        rootConsole.SetBackgroundColor(TCODColor.TCOD_black);
+                        rootConsole.ForegroundColor = (Color.Gray);
+                        rootConsole.BackgroundColor = Color.Black;
                     }
-                    rootConsole.PrintLine(sampleList[i].name, 2, 47 - (sampleList.Length - i) * 2, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET), TCODLineAlign.Left);
+                    rootConsole.PrintLine(sampleList[i].name, 2, 47 - (sampleList.Length - i) * 2, new Background(BackgroundFlag.Set), LineAlignment.Left);
                 }
-                rootConsole.SetForegroundColor(TCODColor.TCOD_grey);
-                rootConsole.SetBackgroundColor(TCODColor.TCOD_black);
-                rootConsole.PrintLine("last frame : " + ((int)(TCODSystem.GetLastFrameLength() * 1000)).ToString() + " ms ( " + TCODSystem.GetFPS() + "fps)", 79, 46, TCODLineAlign.Right);
-                rootConsole.PrintLine("elapsed : " + TCODSystem.GetElapsedMilli() + "ms " + (TCODSystem.GetElapsedSeconds().ToString("0.00")) + "s", 79, 47, TCODLineAlign.Right);
-                rootConsole.PutChar(2, 47, TCODSpecialChar.TCOD_CHAR_ARROW_N);
-                rootConsole.PutChar(3, 47, TCODSpecialChar.TCOD_CHAR_ARROW_S);
-                rootConsole.PrintLine(" : select a sample", 4, 47, TCODLineAlign.Left);
-                rootConsole.PrintLine("ALT-ENTER : switch to " + (rootConsole.IsFullscreen() ? "windowed mode  " : "fullscreen mode"), 2, 48, TCODLineAlign.Left);
+                rootConsole.ForegroundColor = (Color.Gray);
+                rootConsole.BackgroundColor = Color.Black;
+                rootConsole.PrintLine("last frame : " + ((int)(TCODSystem.LastFrameLength * 1000)).ToString() + " ms ( " + TCODSystem.FPS + "fps)", 79, 46, LineAlignment.Right);
+                rootConsole.PrintLine("elapsed : " + TCODSystem.ElapsedMilliseconds + "ms " + (TCODSystem.ElapsedSeconds.ToString("0.00")) + "s", 79, 47, LineAlignment.Right);
+                rootConsole.PutChar(2, 47, SpecialCharacter.ARROW_N);
+                rootConsole.PutChar(3, 47, SpecialCharacter.ARROW_S);
+                rootConsole.PrintLine(" : select a sample", 4, 47, LineAlignment.Left);
+                rootConsole.PrintLine("ALT-ENTER : switch to " + (RootConsole.Fullscreen ? "windowed mode  " : "fullscreen mode"), 2, 48, LineAlignment.Left);
 
                 sampleList[curSample].render(first, key);
                 first = false;
@@ -877,15 +886,15 @@ namespace TCODDemo
                 sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, rootConsole, SAMPLE_SCREEN_X, SAMPLE_SCREEN_Y, 255);
 
                 rootConsole.Flush();
-                key = TCODKeyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSED);
+                key = Keyboard.CheckForKeypress(KeyPressType.Pressed);
 
-                if (key.vk == TCOD_keycode.TCODK_DOWN)
+                if (key.KeyCode == KeyCode.TCODK_DOWN)
                 {
                     // down arrow : next sample
                     curSample = (curSample + 1) % sampleList.Length;
                     first = true;
                 }
-                else if (key.vk == TCOD_keycode.TCODK_UP)
+                else if (key.KeyCode == KeyCode.TCODK_UP)
                 {
                     // up arrow : previous sample
                     curSample--;
@@ -893,14 +902,16 @@ namespace TCODDemo
                         curSample = sampleList.Length - 1;
                     first = true;
                 }
-                else if (key.vk == TCOD_keycode.TCODK_ENTER && key.lalt)
+                else if (key.KeyCode == KeyCode.TCODK_ENTER && key.Alt)
                 {
                     // ALT-ENTER : switch fullscreen
-                    rootConsole.SetFullscreen(!rootConsole.IsFullscreen());
+                    RootConsole.Fullscreen = !RootConsole.Fullscreen;
                 }
-                else if (key.vk == TCOD_keycode.TCODK_F1)
+                else if (key.KeyCode == KeyCode.TCODK_F1)
                 {
-                    System.Console.Out.WriteLine("key.pressed" + " " + key.lalt + " " + key.lctrl + " " + key.ralt + " " + key.rctrl + " " + key.shift);
+                    System.Console.Out.WriteLine("key.pressed" + " " + 
+                        key.LeftAlt + " " + key.LeftControl + " " + key.RightAlt + 
+                        " " + key.RightControl + " " + key.Shift);
                 }
 
             }

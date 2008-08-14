@@ -13,18 +13,18 @@ namespace libtcodWrapper
         /// Obtain number of milliseconds since the program started
         /// </summary>
         /// <returns>Milliseconds since the program started</returns>
-        public static UInt32 GetElapsedMilli()
+        public static UInt32 ElapsedMilliseconds
         {
-            return TCOD_sys_elapsed_milli();
+            get { return TCOD_sys_elapsed_milli(); }
         }
 
         /// <summary>
         /// Obtain number of seconds since the program started
         /// </summary>
         /// <returns>Seconds since the program started</returns>
-        public static float GetElapsedSeconds()
+        public static float ElapsedSeconds
         {
-            return TCOD_sys_elapsed_seconds();
+            get { return TCOD_sys_elapsed_seconds(); }
         }
 
         /// <summary>
@@ -56,40 +56,35 @@ namespace libtcodWrapper
         }
 
         /// <summary>
-        /// Get Current Screen Resolution
+        /// The current screen resolution.
         /// </summary>
-        /// <param name="w">Current Width</param>
-        /// <param name="h">Current Height</param>
-        public static void GetCurrentResolution(out int w, out int h)
+        public static System.Drawing.Size CurrentResolution
         {
-            TCOD_sys_get_current_resolution(out w, out h);
+            get
+            {
+                int w;
+                int h;
+                TCOD_sys_get_current_resolution(out w, out h);
+                return new System.Drawing.Size(w, h);
+            }
         }
 
         /// <summary>
         /// Return the length in seconds of the last rendered frame.
         /// </summary>
-        /// <returns>Number of seconds</returns>
-        public static float GetLastFrameLength()
+        public static float LastFrameLength
         {
-            return TCOD_sys_get_last_frame_length();
+            get { return TCOD_sys_get_last_frame_length(); }
         }
 
         /// <summary>
-        /// Limit number of frames per seconds rendered to this value.
+        /// Get or set the current value of frames per second that
+        /// the library will attempt to render.
         /// </summary>
-        /// <param name="fps">Frames Per Second</param>
-        public static void SetFPS(int fps)
+        public static int FPS
         {
-            TCOD_sys_set_fps(fps);
-        }
-
-        /// <summary>
-        /// Obtain number of frames rendered in the last second.
-        /// </summary>
-        /// <returns>Number of Seconds</returns>
-        public static int GetFPS()
-        {
-            return TCOD_sys_get_fps();
+            get { return TCOD_sys_get_fps(); }
+            set { TCOD_sys_set_fps(value); }
         }
 
         #region DllImport

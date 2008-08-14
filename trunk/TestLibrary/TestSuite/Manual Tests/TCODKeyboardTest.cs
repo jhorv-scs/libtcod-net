@@ -1,87 +1,94 @@
 ﻿using System;
 using libtcodWrapper;
 
+using Console = libtcodWrapper.Console;
+
 namespace libtcodWrapperTests
 {
     //This is a manual test for the keyboard code.
-    public class TCODKeyboardTest
+    public class KeyboardTest
     {
         private static bool inRealTimeTest = false;
-        public static void TestTCODKeyboard()
+        public static void TestKeyboard()
         {
-            using(TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Keyboard Tester", false))
-            {
-                TCOD_key key = new TCOD_key();
-	            do
-            	{
-	                if (inRealTimeTest)
-                    	RealTimeLoopTest(console);
-	                else
-                    	TurnBasedLoopTest(console, ref key);
-                    System.Console.Out.WriteLine((char)key.c);
-	            }
-            	while (key.c != 'q' && !console.IsWindowClosed());
-			}
-        }
-		
-		private static void PrintStatus(TCODConsole console, string name, bool status, int x, int y)
-		{
-			console.PrintLine("Pressed " + name + " = " + (status  ? "On" : "Off"), x, y, TCODLineAlign.Left);
-		}
+            RootConsole.Width = 80;
+            RootConsole.Height = 50;
+            RootConsole.WindowTitle = "Keyboard Tester";
+            RootConsole.Fullscreen = false;
 
-        private static void TurnBasedLoopTest(TCODConsoleRoot console, ref TCOD_key key)
+            using (RootConsole console = RootConsole.GetInstance())
+            {
+                KeyPress key = new KeyPress();
+                do
+                {
+                    if (inRealTimeTest)
+                        RealTimeLoopTest(console);
+                    else
+                        TurnBasedLoopTest(console, ref key);
+                    System.Console.Out.WriteLine((char)key.Character);
+                }
+                while (key.Character != 'q' && !console.IsWindowClosed());
+            }
+        }
+        
+        private static void PrintStatus(Console console, string name, bool status, int x, int y)
+        {
+            console.PrintLine("Pressed " + name + " = " + (status  ? "On" : "Off"), x, y, LineAlignment.Left);
+        }
+
+        private static void TurnBasedLoopTest(RootConsole console, ref KeyPress key)
         {
             console.Clear();
-            console.PrintLine("Keyboard Test Suite", 40, 5, TCODLineAlign.Center);
-            console.PrintLine("Press 'F10' to enter Real Time Test.", 40, 6, TCODLineAlign.Center);
-            console.PrintLine("Press 'q' to quit.", 40, 7, TCODLineAlign.Center);
+            console.PrintLine("Keyboard Test Suite", 40, 5, LineAlignment.Center);
+            console.PrintLine("Press 'F10' to enter Real Time Test.", 40, 6, LineAlignment.Center);
+            console.PrintLine("Press 'q' to quit.", 40, 7, LineAlignment.Center);
 
-            if (key.vk == TCOD_keycode.TCODK_CHAR)
-                console.PrintLine("Key Hit = \"" + (char)key.c + "\"", 10, 10, TCODLineAlign.Left);
+            if (key.KeyCode == KeyCode.TCODK_CHAR)
+                console.PrintLine("Key Hit = \"" + (char)key.Character + "\"", 10, 10, LineAlignment.Left);
             else
-                console.PrintLine("Special Key Hit = " + key.vk.ToString(), 10, 10, TCODLineAlign.Left);
+                console.PrintLine("Special Key Hit = " + key.KeyCode.ToString(), 10, 10, LineAlignment.Left);
 
-			PrintStatus(console, "Status", key.pressed, 10, 12);
-			PrintStatus(console, "lalt", key.lalt, 10, 13);
-			PrintStatus(console, "lctrl", key.lctrl, 10, 14);
-			PrintStatus(console, "ralt", key.ralt, 10, 15);
-			PrintStatus(console, "rctrl", key.rctrl, 10, 16);
-			PrintStatus(console, "shift", key.shift, 10, 17);
+            PrintStatus(console, "Status", key.Pressed, 10, 12);
+            PrintStatus(console, "lalt", key.LeftAlt, 10, 13);
+            PrintStatus(console, "lctrl", key.LeftControl, 10, 14);
+            PrintStatus(console, "ralt", key.RightAlt, 10, 15);
+            PrintStatus(console, "rctrl", key.RightControl, 10, 16);
+            PrintStatus(console, "shift", key.Shift, 10, 17);
 
 
-            console.PrintLine("F1 Key Pressed = " + (TCODKeyboard.IsKeyPressed(TCOD_keycode.TCODK_F1) ? "Yes" : "No"), 10, 20, TCODLineAlign.Left);
+            console.PrintLine("F1 Key Pressed = " + (Keyboard.IsKeyPressed(KeyCode.TCODK_F1) ? "Yes" : "No"), 10, 20, LineAlignment.Left);
 
             console.Flush();
 
-            key = TCODKeyboard.WaitForKeyPress(false);
+            key = Keyboard.WaitForKeyPress(false);
 
-            if (key.vk == TCOD_keycode.TCODK_F10)
+            if (key.KeyCode == KeyCode.TCODK_F10)
                 inRealTimeTest = true;
         }
 
-        private static void RealTimeLoopTest(TCODConsoleRoot console)
+        private static void RealTimeLoopTest(RootConsole console)
         {
-            TCODSystem.SetFPS(25);
+            TCODSystem.FPS = 25;
 
             console.Clear();
 
-            console.PrintLine("Keyboard Test Suite", 40, 5, TCODLineAlign.Center);
-            console.PrintLine("Press 'F10' to enter Turn Based Test.", 40, 6, TCODLineAlign.Center);
+            console.PrintLine("Keyboard Test Suite", 40, 5, LineAlignment.Center);
+            console.PrintLine("Press 'F10' to enter Turn Based Test.", 40, 6, LineAlignment.Center);
 
-            TCOD_key pressedKey = TCODKeyboard.CheckForKeypress(TCOD_keypressed.TCOD_KEY_PRESSEDANDRELEASED);
+            KeyPress pressedKey = Keyboard.CheckForKeypress(KeyPressType.PressedAndReleased);
 
-            console.PrintLine("F2 Key Pressed = " + ((pressedKey.vk == TCOD_keycode.TCODK_F2 && pressedKey.pressed) ? "Yes" : "No"), 10, 10, TCODLineAlign.Left);
-            console.PrintLine("'d' to disable repeat keys", 10, 11, TCODLineAlign.Left);
-            console.PrintLine("'e' to enable repeat keys", 10, 12, TCODLineAlign.Left);
+            console.PrintLine("F2 Key Pressed = " + ((pressedKey.KeyCode == KeyCode.TCODK_F2 && pressedKey.Pressed) ? "Yes" : "No"), 10, 10, LineAlignment.Left);
+            console.PrintLine("'d' to disable repeat keys", 10, 11, LineAlignment.Left);
+            console.PrintLine("'e' to enable repeat keys", 10, 12, LineAlignment.Left);
 
             console.Flush();
 
-            if (pressedKey.c == 'd')
-                TCODKeyboard.DisableRepeat();
-            if (pressedKey.c == 'e')
-                TCODKeyboard.SetRepeat(0, 10);
+            if (pressedKey.Character == 'd')
+                Keyboard.DisableRepeat();
+            if (pressedKey.Character == 'e')
+                Keyboard.SetRepeat(0, 10);
 
-            if (pressedKey.vk == TCOD_keycode.TCODK_F10 && pressedKey.pressed)
+            if (pressedKey.KeyCode == KeyCode.TCODK_F10 && pressedKey.Pressed)
                 inRealTimeTest = false;
         }
     }

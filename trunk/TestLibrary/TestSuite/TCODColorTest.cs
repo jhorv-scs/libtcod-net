@@ -5,24 +5,24 @@ using libtcodWrapper;
 namespace libtcodWrapperTests
 {
     [TestFixture]
-    public class TCODColorTest
+    public class ColorTest
     {
-        private TCODColor emptyConstructor;
-        private TCODColor copyConstructor;
-        private TCODColor normalConstructor;
-        private TCODColor sameConstructor;
-        private TCODColor diffConstructor;
-        private TCODColor HSVConstructor;
+        private Color emptyConstructor;
+        private Color copyConstructor;
+        private Color normalConstructor;
+        private Color sameConstructor;
+        private Color diffConstructor;
+        private Color HSVConstructor;
 
         [SetUp]
         public void Init()
         {
-            emptyConstructor = new TCODColor();
-            copyConstructor = new TCODColor(TCODColor.TCOD_silver);
-            normalConstructor = new TCODColor(2, 4, 6);
-            sameConstructor = new TCODColor(2, 4, 6);
-            diffConstructor = new TCODColor(4, 8, 12);
-            HSVConstructor = new TCODColor();
+            emptyConstructor = new Color();
+            copyConstructor = new Color(Color.Silver);
+            normalConstructor = new Color(2, 4, 6);
+            sameConstructor = new Color(2, 4, 6);
+            diffConstructor = new Color(4, 8, 12);
+            HSVConstructor = new Color();
             HSVConstructor.SetHSV(1.0f, .5f, .3f);
         }
 
@@ -34,7 +34,7 @@ namespace libtcodWrapperTests
         [Test]
         public void TestCopyConstructor()
         {
-            Assert.IsTrue(copyConstructor.Equals(TCODColor.TCOD_silver));
+            Assert.IsTrue(copyConstructor.Equals(Color.Silver));
         }
 
         [Test]
@@ -55,33 +55,33 @@ namespace libtcodWrapperTests
         [Test]
         public void TestNormalOperators()
         {
-            TCODColor mult = sameConstructor * diffConstructor;
+            Color mult = sameConstructor * diffConstructor;
             mult = mult * 1.5f;
             mult = mult * 1.5;
             Assert.IsTrue((normalConstructor + sameConstructor) == diffConstructor);
 
-            TCODColor.Interpolate(mult, normalConstructor, .4f);
+            Color.Interpolate(mult, normalConstructor, .4f);
         }
 
         [Test]
         public void TestDivide()
         {
-            TCODColor Orig = new TCODColor(200, 100, 50);
-            TCODColor Div = Orig / 10;
-            Assert.AreEqual(Div.r, 20);
-            Assert.AreEqual(Div.g, 10);
-            Assert.AreEqual(Div.b, 5);
+            Color Orig = new Color(200, 100, 50);
+            Color Div = Orig / 10;
+            Assert.AreEqual(Div.Red, 20);
+            Assert.AreEqual(Div.Green, 10);
+            Assert.AreEqual(Div.Blue, 5);
         }
 
         [Test]
         public void TestSubtract()
         {
-            TCODColor Big = new TCODColor(255, 255, 255);
-            TCODColor Tiny = new TCODColor(50, 50, 50);
-            TCODColor Zero = Tiny - Big;
-            TCODColor Middle = Big - Tiny;
-            Assert.IsTrue(Zero == new TCODColor(0, 0, 0));
-            Assert.IsTrue(Middle == new TCODColor(205, 205, 205));
+            Color Big = new Color(255, 255, 255);
+            Color Tiny = new Color(50, 50, 50);
+            Color Zero = Tiny - Big;
+            Color Middle = Big - Tiny;
+            Assert.IsTrue(Zero == new Color(0, 0, 0));
+            Assert.IsTrue(Middle == new Color(205, 205, 205));
         }
 
         [Test]

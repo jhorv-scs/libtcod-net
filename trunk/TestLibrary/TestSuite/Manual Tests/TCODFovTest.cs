@@ -20,49 +20,54 @@ namespace libtcodWrapperTests
             int x = 1;
             int y = 1;
 
-            using(TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "FOV Tester", false))
+            RootConsole.Width = 80;
+            RootConsole.Height = 50;
+            RootConsole.WindowTitle = "FOV Tester";
+            RootConsole.Fullscreen = false;
+
+            using(RootConsole console = RootConsole.GetInstance())
             {
-        	    console.Clear();
+                console.Clear();
 
-	            using (TCODFov fov = new TCODFov(5, 5))
-	            {
-	                for (int i = 0; i < 5; ++i)    //width
-	                    for (int j = 0; j < 5; ++j) //height
-	                        fov.SetCell(i, j, room[j, i] == '.', room[j, i] == '.');
+                using (TCODFov fov = new TCODFov(5, 5))
+                {
+                    for (int i = 0; i < 5; ++i)    //width
+                        for (int j = 0; j < 5; ++j) //height
+                            fov.SetCell(i, j, room[j, i] == '.', room[j, i] == '.');
 
-	                TCOD_key key;
-	                do
-	                {
-	                    PaintFOVTest(console, x, y, fov);
+                    KeyPress key;
+                    do
+                    {
+                        PaintFOVTest(console, x, y, fov);
 
-                        key = TCODKeyboard.WaitForKeyPress(false);
+                        key = Keyboard.WaitForKeyPress(false);
 
-	                    switch (key.vk)
-	                    {
-	                        case TCOD_keycode.TCODK_UP:
-	                            if (room[y - 1, x] == '.')
-	                                y--;
-	                            break;
-	                        case TCOD_keycode.TCODK_DOWN:
-	                            if (room[y + 1, x] == '.')
-	                                y++;
-	                            break;
-	                        case TCOD_keycode.TCODK_LEFT:
-	                            if (room[y, x - 1] == '.')
-	                                x--;
-	                            break;
-	                        case TCOD_keycode.TCODK_RIGHT:
-	                            if (room[y, x + 1] == '.')
-	                                x++;
-	                            break;
-	                    }
-	                }
-	                while (key.c != 'q' && !console.IsWindowClosed());
-            	}
+                        switch (key.KeyCode)
+                        {
+                            case KeyCode.TCODK_UP:
+                                if (room[y - 1, x] == '.')
+                                    y--;
+                                break;
+                            case KeyCode.TCODK_DOWN:
+                                if (room[y + 1, x] == '.')
+                                    y++;
+                                break;
+                            case KeyCode.TCODK_LEFT:
+                                if (room[y, x - 1] == '.')
+                                    x--;
+                                break;
+                            case KeyCode.TCODK_RIGHT:
+                                if (room[y, x + 1] == '.')
+                                    x++;
+                                break;
+                        }
+                    }
+                    while (key.Character != 'q' && !console.IsWindowClosed());
+                }
             }
         }
 
-        private static void PaintFOVTest(TCODConsoleRoot console, int x, int y, TCODFov fov)
+        private static void PaintFOVTest(RootConsole console, int x, int y, TCODFov fov)
         {
             fov.CalculateFOV(x, y, 3);
 

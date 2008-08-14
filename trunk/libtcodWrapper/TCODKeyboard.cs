@@ -4,148 +4,111 @@ using System.Text;
 
 namespace libtcodWrapper
 {
-    #pragma warning disable 1591  //Disable warning about lack of xml comments
-
     /// <summary>
-    /// Types of "special" keycodes"
-    /// </summary>
-    public enum TCOD_keycode
-    {
-        TCODK_NONE,
-	    TCODK_ESCAPE,
-	    TCODK_BACKSPACE,
-	    TCODK_TAB,
-	    TCODK_ENTER,
-	    TCODK_SHIFT,
-	    TCODK_CONTROL,
-	    TCODK_ALT,
-	    TCODK_PAUSE,
-	    TCODK_CAPSLOCK,
-	    TCODK_PAGEUP,
-	    TCODK_PAGEDOWN,
-	    TCODK_END,
-	    TCODK_HOME,
-	    TCODK_UP,
-	    TCODK_LEFT,
-	    TCODK_RIGHT,
-	    TCODK_DOWN,
-	    TCODK_PRINTSCREEN,
-	    TCODK_INSERT,
-	    TCODK_DELETE,
-	    TCODK_LWIN,
-	    TCODK_RWIN,
-	    TCODK_APPS,
-	    TCODK_0,
-	    TCODK_1,
-	    TCODK_2,
-	    TCODK_3,
-	    TCODK_4,
-	    TCODK_5,
-	    TCODK_6,
-	    TCODK_7,
-	    TCODK_8,
-	    TCODK_9,
-	    TCODK_KP0,
-	    TCODK_KP1,
-	    TCODK_KP2,
-	    TCODK_KP3,
-	    TCODK_KP4,
-	    TCODK_KP5,
-	    TCODK_KP6,
-	    TCODK_KP7,
-	    TCODK_KP8,
-	    TCODK_KP9,
-	    TCODK_KPADD,
-	    TCODK_KPSUB,
-	    TCODK_KPDIV,
-	    TCODK_KPMUL,
-	    TCODK_KPDEC,
-	    TCODK_KPENTER,
-	    TCODK_F1,
-	    TCODK_F2,
-	    TCODK_F3,
-	    TCODK_F4,
-	    TCODK_F5,
-	    TCODK_F6,
-	    TCODK_F7,
-	    TCODK_F8,
-	    TCODK_F9,
-	    TCODK_F10,
-	    TCODK_F11,
-	    TCODK_F12,
-	    TCODK_NUMLOCK,
-	    TCODK_SCROLLLOCK,
-	    TCODK_SPACE,
-        TCODK_CHAR
-    }
-    
-    /// <summary>
-    /// Keystroke structure returned from TCODKeyboard methods
+    /// Keystroke structure returned from Keyboard methods.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct TCOD_key
+    public struct KeyPress
     {
-        public TCOD_keycode vk; //  key code
-		public byte c; // character if vk == TCODK_CHAR else 0
-		
-		//This field is set by libtcod when struct is marshalled. Disable the incorrect warning. 
-		#pragma warning disable 0649
+        private KeyCode keyCode;
+        /// <summary>
+        /// Key code for the current button press.
+        /// </summary>
+        public KeyCode KeyCode
+        {
+            get { return keyCode; }
+        }
+        
+        private byte character;
+        /// <summary>
+        /// The textual character of this keypress. Set iff
+        /// KeyCode == KeyCode.TCODK_CHAR, otherwise zero.
+        /// </summary>
+        public byte Character
+        {
+            get { return character; }
+        }
+        
+        //This field is set by libtcod when struct is marshalled. Disable the incorrect warning. 
+        #pragma warning disable 0649
 #if Linux
         private byte modifiers;
 #else
         private int modifiers;
 #endif
-		#pragma warning restore 0649
+        #pragma warning restore 0649
 
-        public bool pressed
+        /// <summary>
+        /// Any key has been pressed.
+        /// </summary>
+        public bool Pressed
         {
             get { return ((modifiers & 0x01) > 0); }
         }
-        public bool lalt
+        /// <summary>
+        /// Modified by the press of either alt key.
+        /// </summary>
+        public bool Alt
+        {
+            get { return LeftAlt || RightAlt; }
+        }
+        /// <summary>
+        /// Modified by the press of either control key.
+        /// </summary>
+        public bool Control
+        {
+            get { return LeftControl || RightControl; }
+        }
+        /// <summary>
+        /// Modified by the press of the left alt key.
+        /// </summary>
+        public bool LeftAlt
         {
             get { return ((modifiers & 0x02) > 0); }
         }
-        public bool lctrl
+        /// <summary>
+        /// Modified by the press of the left control key.
+        /// </summary>
+        public bool LeftControl
         {
             get { return ((modifiers & 0x04) > 0); }
         }
-        public bool ralt
+        /// <summary>
+        /// Modified by the press of the rightt alt key.
+        /// </summary>
+        public bool RightAlt
         {
             get { return ((modifiers & 0x8) > 0); }
         }
-        public bool rctrl
+        /// <summary>
+        /// Modified by the press of the right control key.
+        /// </summary>
+        public bool RightControl
         {
             get { return ((modifiers & 0x10) > 0); }
         }
-        public bool shift
+        /// <summary>
+        /// Modified by the press of either shift key.
+        /// </summary>
+        public bool Shift
         {
             get { return ((modifiers & 0x20) > 0); }
         }
     }
-
-    /// <summary>
-    /// Is event returned when key is pressed, release, or both?
-    /// </summary>
-    public enum TCOD_keypressed
-    {
-        TCOD_KEY_PRESSED =1,
-	    TCOD_KEY_RELEASED=2,
-        TCOD_KEY_PRESSEDANDRELEASED=3,
-    };
 
     #pragma warning restore 1591  //Disable warning about lack of xml comments
 
     /// <summary>
     /// Holds static methods for interacting with keyboard
     /// </summary>
-    public static class TCODKeyboard
+    public static class Keyboard
     {
         /// <summary>
         /// Block until user presses key
         /// </summary>
         /// <param name="flushInputBuffer">Flush all outstanding keystrokes and wait for next stroke</param>
         /// <returns>Keypress</returns>
-        public static TCOD_key WaitForKeyPress(bool flushInputBuffer)
+        public static KeyPress WaitForKeyPress(bool flushInputBuffer)
         {
             return TCOD_console_wait_for_keypress(flushInputBuffer);
         }
@@ -155,7 +118,7 @@ namespace libtcodWrapper
         /// </summary>
         /// <param name="pressFlags">Determines what type of events are returned</param>
         /// <returns>Keypress</returns>
-        public static TCOD_key CheckForKeypress(TCOD_keypressed pressFlags)
+        public static KeyPress CheckForKeypress(KeyPressType pressFlags)
         {
             return TCOD_console_check_for_keypress(pressFlags);
         }
@@ -165,7 +128,7 @@ namespace libtcodWrapper
         /// </summary>
         /// <param name="key">Key in question</param>
         /// <returns>Is Key Pressed?</returns>
-        public static bool IsKeyPressed(TCOD_keycode key)
+        public static bool IsKeyPressed(KeyCode key)
         {
             return TCOD_console_is_key_pressed(key);
         }
@@ -190,13 +153,13 @@ namespace libtcodWrapper
 
         #region DllImport
         [DllImport(DLLName.name)]
-        private extern static TCOD_key TCOD_console_wait_for_keypress(bool flush);
+        private extern static KeyPress TCOD_console_wait_for_keypress(bool flush);
 
         [DllImport(DLLName.name)]
-        private extern static TCOD_key TCOD_console_check_for_keypress(TCOD_keypressed flags);
+        private extern static KeyPress TCOD_console_check_for_keypress(KeyPressType flags);
 
         [DllImport(DLLName.name)]
-        private extern static bool TCOD_console_is_key_pressed(TCOD_keycode key);
+        private extern static bool TCOD_console_is_key_pressed(KeyCode key);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_set_keyboard_repeat(int initial_delay, int interval);

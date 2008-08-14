@@ -7,7 +7,7 @@ namespace libtcodWrapper
     /// <summary>
     /// Represents an image loaded from disk or created in memory
     /// </summary>
-    public class TCODImage : IDisposable
+    public class Image : IDisposable
     {
         private IntPtr m_instance;
 
@@ -16,7 +16,7 @@ namespace libtcodWrapper
         /// </summary>
         /// <param name="width">Width of new image</param>
         /// <param name="height">Height of new image</param>
-        public TCODImage(int width, int height)
+        public Image(int width, int height)
         {
             m_instance = TCOD_image_new(width, height);
         }
@@ -25,7 +25,7 @@ namespace libtcodWrapper
         /// Loads a .bmp image from disk
         /// </summary>
         /// <param name="filename">Filename or path</param>
-        public TCODImage(string filename)
+        public Image(string filename)
         {
             m_instance = TCOD_image_load(new StringBuilder(filename));
         }
@@ -34,7 +34,7 @@ namespace libtcodWrapper
         /// Create image from current console state
         /// </summary>
         /// <param name="console">Console to take image of</param>
-        public TCODImage(TCODConsole console)
+        public Image(Console console)
         {
             m_instance = TCOD_image_from_console(console.m_consolePtr);
         }
@@ -51,7 +51,7 @@ namespace libtcodWrapper
         /// Clear an image to a specific background color
         /// </summary>
         /// <param name="color">Color to clear to</param>
-        public void Clear(TCODColor color)
+        public void Clear(Color color)
         {
             TCOD_image_clear(m_instance, color); 
         }
@@ -81,7 +81,7 @@ namespace libtcodWrapper
         /// <param name="x">Width</param>
         /// <param name="y">Height</param>
         /// <returns></returns>
-        public TCODColor GetPixel(int x, int y)
+        public Color GetPixel(int x, int y)
         {
             return TCOD_image_get_pixel(m_instance, x, y);
         }
@@ -105,7 +105,7 @@ namespace libtcodWrapper
         /// <param name="x1">Lower right corner x coord</param>
         /// <param name="y1">Lower right corner y coord</param>
         /// <returns></returns>
-        public TCODColor AverageColorOfRegion(float x0, float y0, float x1, float y1)
+        public Color AverageColorOfRegion(float x0, float y0, float x1, float y1)
         {
             return TCOD_image_get_mipmap_pixel(m_instance, x0, y0, x1, y1);
         }
@@ -116,7 +116,7 @@ namespace libtcodWrapper
         /// <param name="x">x coord of pixel</param>
         /// <param name="y">y coord of pixel</param>
         /// <param name="col">Color to change pixel to</param>
-        public void PutPixel(int x, int y, TCODColor col)
+        public void PutPixel(int x, int y, Color col)
         {
             TCOD_image_put_pixel(m_instance, x, y, col);
         }
@@ -125,7 +125,7 @@ namespace libtcodWrapper
         /// Set "Key Color", the transparent color of an image
         /// </summary>
         /// <param name="keyColor">Key Color</param>
-        public void SetKeyColor(TCODColor keyColor)
+        public void SetKeyColor(Color keyColor)
         {
             TCOD_image_set_key_color(m_instance, keyColor);
         }
@@ -140,7 +140,7 @@ namespace libtcodWrapper
         /// <param name="scalex">Width scaling factor</param>
         /// <param name="scaley">Height scaling factor</param>
         /// <param name="angle">Rotation angle in radians</param>
-        public void Blit(TCODConsole console, float x, float y, TCODBackground background, double scalex, double scaley, double angle)
+        public void Blit(Console console, float x, float y, Background background, double scalex, double scaley, double angle)
         {
             TCOD_image_blit(m_instance, console.m_consolePtr, x, y, background.m_value, (float)scalex, (float)scaley, (float)angle);
         }
@@ -154,32 +154,32 @@ namespace libtcodWrapper
         /// <param name="w">Width of part of image to blit</param>
         /// <param name="h">Height of part of image to blit</param>
         /// <param name="background">How image affects background color</param>
-        public void BlitRect(TCODConsole console, int x, int y, int w, int h, TCODBackground background)
+        public void BlitRect(Console console, int x, int y, int w, int h, Background background)
         {
             TCOD_image_blit_rect(m_instance, console.m_consolePtr, x, y, w, h, background.m_value);
         }
 
         #region DllImport
         [DllImport(DLLName.name)]
-        private extern static void TCOD_image_blit_rect(IntPtr image, IntPtr console, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int bkgnd_flag);
+        private extern static void TCOD_image_blit_rect(IntPtr image, IntPtr console, int x, int y, int w, int h, /*BackgroundFlag*/ int bkgnd_flag);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_image_blit(IntPtr image, IntPtr console, float x, float y, /*TCOD_bkgnd_flag*/ int bkgnd_flag, float scalex, float scaley, float angle);
+        private extern static void TCOD_image_blit(IntPtr image, IntPtr console, float x, float y, /*BackgroundFlag*/ int bkgnd_flag, float scalex, float scaley, float angle);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_image_set_key_color(IntPtr image, TCODColor key_color); 
+        private extern static void TCOD_image_set_key_color(IntPtr image, Color key_color); 
         
         [DllImport(DLLName.name)]
         private extern static bool TCOD_image_is_pixel_transparent(IntPtr image, int x, int y);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_image_put_pixel(IntPtr image, int x, int y, TCODColor col);
+        private extern static void TCOD_image_put_pixel(IntPtr image, int x, int y, Color col);
 
         [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_image_get_mipmap_pixel(IntPtr image, float x0, float y0, float x1, float y1);
+        private extern static Color TCOD_image_get_mipmap_pixel(IntPtr image, float x0, float y0, float x1, float y1);
 
         [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_image_get_pixel(IntPtr image, int x, int y);
+        private extern static Color TCOD_image_get_pixel(IntPtr image, int x, int y);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_image_get_size(IntPtr image, out int w, out int h);
@@ -188,7 +188,7 @@ namespace libtcodWrapper
         private extern static void TCOD_image_save(IntPtr image, StringBuilder filename);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_image_clear(IntPtr image, TCODColor color);
+        private extern static void TCOD_image_clear(IntPtr image, Color color);
 
         [DllImport(DLLName.name)]
         private extern static IntPtr TCOD_image_from_console(IntPtr console);

@@ -8,24 +8,29 @@ namespace libtcodWrapperTests
 #if ManualTest
     public class ManualTest
     {
-		//This field is used in manual tests, and not a warning 
-		#pragma warning disable 0649
+        //This field is used in manual tests, and not a warning 
+        #pragma warning disable 0649
         static void WaitForDebugger()
         {
-            using (TCODConsoleRoot console = new TCODConsoleRoot(80, 50, "Waiting for Debugger", false))
-			{
-                TCODKeyboard.WaitForKeyPress(false);
-			}
+            RootConsole.Width = 80;
+            RootConsole.Height = 50;
+            RootConsole.WindowTitle = "Waiting for Debugger";
+            RootConsole.Fullscreen = false;
+
+            using(RootConsole console = RootConsole.GetInstance())
+            {
+                Keyboard.WaitForKeyPress(false);
+            }
         }
-		#pragma warning restore 0649
+#pragma warning restore 0649
 
         static int Main()
         {
-			//WaitForDebugger();
+            //WaitForDebugger();
 
-			//TCODMouseTest.TestTCODMouse();
+            //TCODMouseTest.TestTCODMouse();
             //TCODFovTest.TestTCODFovTest();
-            //TCODKeyboardTest.TestTCODKeyboard();
+            //KeyboardTest.TestKeyboard();
             return 0;
         }
     }
