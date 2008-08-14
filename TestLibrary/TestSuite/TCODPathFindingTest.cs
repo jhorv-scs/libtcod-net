@@ -57,7 +57,7 @@ namespace libtcodWrapperTests
 
             pathFindingFOV = new TCODPathFinding(fov, 1.0);
 
-            pathFindingCallback = new TCODPathFinding(5, 5, 1.0, new TCODPathFinding.TCODPathCallback(TCODPathCallback));
+            pathFindingCallback = new TCODPathFinding(5, 5, 1.0, new TCODPathCallback(TCODPathCallback));
         }
 
         [TestFixtureTearDown]
@@ -71,7 +71,7 @@ namespace libtcodWrapperTests
         [Test]
         public void TestHugeMap()
         {
-            TCODPathFinding p = new TCODPathFinding(hugeMapSize, hugeMapSize, 1.0, new TCODPathFinding.TCODPathCallback(TCODPathCallbackHugeMap));
+            TCODPathFinding p = new TCODPathFinding(hugeMapSize, hugeMapSize, 1.0, new TCODPathCallback(TCODPathCallbackHugeMap));
             p.ComputePath(1, 1, hugeMapSize - 3, hugeMapSize - 3);
         }
 

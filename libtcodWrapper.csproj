@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>libtcodWrapper</RootNamespace>
     <AssemblyName>libtcodWrapper</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
@@ -54,9 +54,11 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="libtcodWrapper\Enumerations.cs" />
     <Compile Include="libtcodWrapper\TCODBSP.cs" />
     <Compile Include="libtcodWrapper\TCODColor.cs" />
     <Compile Include="libtcodWrapper\TCODConsole.cs" />
+    <Compile Include="libtcodWrapper\TCODException.cs" />
     <Compile Include="libtcodWrapper\TCODFileParser.cs" />
     <Compile Include="libtcodWrapper\TCODFov.cs" />
     <Compile Include="libtcodWrapper\TCODImage.cs" />
@@ -72,6 +74,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>

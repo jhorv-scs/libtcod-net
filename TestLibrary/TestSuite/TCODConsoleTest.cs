@@ -5,17 +5,17 @@ using libtcodWrapper;
 namespace libtcodWrapperTests
 {
     [TestFixture]
-    public class TCODConsoleTest
+    public class ConsoleTest
     {
         [Test]
         public void TestConsoleBackground()
         {
-            TCODBackground alpha = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_COLOR_DODGE);
-            TCODBackground beta = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADDA, .75f);
-            Assert.IsTrue(alpha.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_COLOR_DODGE);
-            Assert.AreEqual(alpha.GetAlphaValue(), 0);
-            Assert.IsTrue(beta.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ADDA);
-            Assert.AreEqual(beta.GetAlphaValue(), 191);
+            Background alpha = new Background(BackgroundFlag.ColorDodge);
+            Background beta = new Background(BackgroundFlag.AddA, .75f);
+            Assert.IsTrue(alpha.BackgroundFlag == BackgroundFlag.ColorDodge);
+            Assert.AreEqual(alpha.AlphaValue, 0);
+            Assert.IsTrue(beta.BackgroundFlag == BackgroundFlag.AddA);
+            Assert.AreEqual(beta.AlphaValue, 191);
         }
 
         [Test]
@@ -23,7 +23,7 @@ namespace libtcodWrapperTests
         public void TestInvalidBackground1()
         {
             //Not alpha w\ alpha set.
-            TCODBackground alpha = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_BURN, .75f);
+            Background alpha = new Background(BackgroundFlag.Burn, .75f);
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace libtcodWrapperTests
         public void TestInvalidBackground2()
         {
             //Alpha w\o alpha set.
-            TCODBackground alpha = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADDA);
+            Background alpha = new Background(BackgroundFlag.AddA);
         }
 
         [Test]
@@ -39,34 +39,34 @@ namespace libtcodWrapperTests
         public void TestInvalidBackground3()
         {
             //Alpha w\o alpha set.
-            TCODBackground alpha = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ALPH);
+            Background alpha = new Background(BackgroundFlag.Alph);
         }
 
         [Test]
         public void TestIncrement()
         {
-            TCODBackground b = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_MULTIPLY);
+            Background b = new Background(BackgroundFlag.Multiply);
             b++;
-            Assert.IsTrue(b.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_LIGHTEN);
+            Assert.IsTrue(b.BackgroundFlag == BackgroundFlag.Lighten);
             b++;
-            Assert.IsTrue(b.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_DARKEN);
+            Assert.IsTrue(b.BackgroundFlag == BackgroundFlag.Darken);
         }
 
         [Test]
         public void TestDecrement()
         {
-            TCODBackground b = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_BURN);
+            Background b = new Background(BackgroundFlag.Burn);
             b--;
-            Assert.IsTrue(b.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ADDA);
+            Assert.IsTrue(b.BackgroundFlag == BackgroundFlag.AddA);
             b--;
-            Assert.IsTrue(b.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ADD);
+            Assert.IsTrue(b.BackgroundFlag == BackgroundFlag.Add);
         }
 
         [Test]
         [ExpectedException(typeof(Exception))]
         public void TestIncrementOffEdge()
         {
-            TCODBackground b = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_OVERLAY);
+            Background b = new Background(BackgroundFlag.Overlay);
             b++;
             b++;
         }
@@ -75,7 +75,7 @@ namespace libtcodWrapperTests
         [ExpectedException(typeof(Exception))]
         public void TestDecrementOffEdge()
         {
-            TCODBackground b = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_LIGHTEN);
+            Background b = new Background(BackgroundFlag.Lighten);
             b--;
             b--;
             b--;
@@ -85,12 +85,12 @@ namespace libtcodWrapperTests
         [Test]
         public void TestBackgroundCopyConstructor()
         {
-            TCODBackground b = new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_BURN);
-            TCODBackground newB = new TCODBackground(b);
-            Assert.IsTrue(b.GetAlphaValue() == newB.GetAlphaValue());
-            Assert.IsTrue(b.GetBackgroundFlag() == newB.GetBackgroundFlag());
+            Background b = new Background(BackgroundFlag.Burn);
+            Background newB = new Background(b);
+            Assert.IsTrue(b.AlphaValue == newB.AlphaValue);
+            Assert.IsTrue(b.BackgroundFlag == newB.BackgroundFlag);
             b++;
-            Assert.IsFalse(b.GetBackgroundFlag() == newB.GetBackgroundFlag());
+            Assert.IsFalse(b.BackgroundFlag == newB.BackgroundFlag);
         }
     }
 }

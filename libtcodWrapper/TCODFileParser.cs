@@ -11,44 +11,44 @@ namespace libtcodWrapper
     {
         #pragma warning disable 1591  //Disable warning about lack of xml comments
         TCOD_TYPE_NONE,
-	    TCOD_TYPE_BOOL,
-	    TCOD_TYPE_CHAR,
-	    TCOD_TYPE_INT,
-	    TCOD_TYPE_FLOAT,
-	    TCOD_TYPE_STRING,
-	    TCOD_TYPE_COLOR,
-	    TCOD_TYPE_DICE,
-	    TCOD_TYPE_VALUELIST00,
-	    TCOD_TYPE_VALUELIST01,
-	    TCOD_TYPE_VALUELIST02,
-	    TCOD_TYPE_VALUELIST03,
-	    TCOD_TYPE_VALUELIST04,
-	    TCOD_TYPE_VALUELIST05,
-	    TCOD_TYPE_VALUELIST06,
-	    TCOD_TYPE_VALUELIST07,
-	    TCOD_TYPE_VALUELIST08,
-	    TCOD_TYPE_VALUELIST09,
-	    TCOD_TYPE_VALUELIST10,
-	    TCOD_TYPE_VALUELIST11,
-	    TCOD_TYPE_VALUELIST12,
-	    TCOD_TYPE_VALUELIST13,
-	    TCOD_TYPE_VALUELIST14,
-	    TCOD_TYPE_VALUELIST15,
-	    TCOD_TYPE_CUSTOM00,
-	    TCOD_TYPE_CUSTOM01,
-	    TCOD_TYPE_CUSTOM02,
-	    TCOD_TYPE_CUSTOM03,
-	    TCOD_TYPE_CUSTOM04,
-	    TCOD_TYPE_CUSTOM05,
-	    TCOD_TYPE_CUSTOM06,
-	    TCOD_TYPE_CUSTOM07,
-	    TCOD_TYPE_CUSTOM08,
-	    TCOD_TYPE_CUSTOM09,
-	    TCOD_TYPE_CUSTOM10,
-	    TCOD_TYPE_CUSTOM11,
-	    TCOD_TYPE_CUSTOM12,
-	    TCOD_TYPE_CUSTOM13,
-	    TCOD_TYPE_CUSTOM14,
+        TCOD_TYPE_BOOL,
+        TCOD_TYPE_CHAR,
+        TCOD_TYPE_INT,
+        TCOD_TYPE_FLOAT,
+        TCOD_TYPE_STRING,
+        TCOD_TYPE_COLOR,
+        TCOD_TYPE_DICE,
+        TCOD_TYPE_VALUELIST00,
+        TCOD_TYPE_VALUELIST01,
+        TCOD_TYPE_VALUELIST02,
+        TCOD_TYPE_VALUELIST03,
+        TCOD_TYPE_VALUELIST04,
+        TCOD_TYPE_VALUELIST05,
+        TCOD_TYPE_VALUELIST06,
+        TCOD_TYPE_VALUELIST07,
+        TCOD_TYPE_VALUELIST08,
+        TCOD_TYPE_VALUELIST09,
+        TCOD_TYPE_VALUELIST10,
+        TCOD_TYPE_VALUELIST11,
+        TCOD_TYPE_VALUELIST12,
+        TCOD_TYPE_VALUELIST13,
+        TCOD_TYPE_VALUELIST14,
+        TCOD_TYPE_VALUELIST15,
+        TCOD_TYPE_CUSTOM00,
+        TCOD_TYPE_CUSTOM01,
+        TCOD_TYPE_CUSTOM02,
+        TCOD_TYPE_CUSTOM03,
+        TCOD_TYPE_CUSTOM04,
+        TCOD_TYPE_CUSTOM05,
+        TCOD_TYPE_CUSTOM06,
+        TCOD_TYPE_CUSTOM07,
+        TCOD_TYPE_CUSTOM08,
+        TCOD_TYPE_CUSTOM09,
+        TCOD_TYPE_CUSTOM10,
+        TCOD_TYPE_CUSTOM11,
+        TCOD_TYPE_CUSTOM12,
+        TCOD_TYPE_CUSTOM13,
+        TCOD_TYPE_CUSTOM14,
         TCOD_TYPE_CUSTOM15,
         TCOD_TYPE_LIST=1024
         #pragma warning restore 1591  //Disable warning about lack of xml comments
@@ -77,7 +77,7 @@ namespace libtcodWrapper
         public fixed char s[512];        
 
         [FieldOffset(0)]
-        public TCODColor col;
+        public Color col;
         
         [FieldOffset(0)]
         public TCODDice dice;
@@ -209,21 +209,21 @@ namespace libtcodWrapper
             return !lhs.Equals(rhs);
         }
     }
-	
+    
     /// <summary>
     /// Callback from parser when new structure is found
     /// </summary>
     /// <param name="str">New Structure</param>
     /// <param name="name">Structure Name</param>
     /// <returns>Return true if parsing is successful. False causes abort()</returns>
-	public delegate bool NewStructureCallback(TCODParserStructure str, string name);
+    public delegate bool NewStructureCallback(TCODParserStructure str, string name);
 
     /// <summary>
     /// Callback from parser when new flag is found
     /// </summary>
     /// <param name="name">Name of flag</param>
     /// <returns>Return true if parsing is successful. False causes abort()</returns>
-	public delegate bool NewFlagCallback(string name);
+    public delegate bool NewFlagCallback(string name);
 
     /// <summary>
     /// Callback from parser when new property is found
@@ -232,7 +232,7 @@ namespace libtcodWrapper
     /// <param name="type">Type of new property</param>
     /// <param name="v">Value of new property</param>
     /// <returns>Return true if parsing is successful. False causes abort()</returns>
-	public delegate bool NewPropertyCallback(string name, TCODValueType type, TCODValue v);
+    public delegate bool NewPropertyCallback(string name, TCODValueType type, TCODValue v);
 
     /// <summary>
     /// Callback from parser when end of structure is found
@@ -240,27 +240,27 @@ namespace libtcodWrapper
     /// <param name="str">Structure which end is found</param>
     /// <param name="name">Name of structure which end is found</param>
     /// <returns>Return true if parsing is successful. False causes abort()</returns>
-	public delegate bool EndStructureCallback(TCODParserStructure str, string name);
+    public delegate bool EndStructureCallback(TCODParserStructure str, string name);
 
     /// <summary>
     /// Callback from parser when parsing error occurs
     /// </summary>
     /// <param name="msg">Error message from parser</param>
-	public delegate void ErrorCallback(string msg);
-	
+    public delegate void ErrorCallback(string msg);
+    
 
     /// <summary>
     /// Holds onto callbacks the parser uses to communicate.
     /// </summary>
-	public class TCODParserCallbackStruct
-	{
-		private NewStructureCallback ns;
-		private NewFlagCallback nf;
-		private NewPropertyCallback np;
-		private EndStructureCallback es;
-		private ErrorCallback er;
-		internal TCODParserNativeCallback nativeCallback;
-		
+    public class TCODParserCallbackStruct
+    {
+        private NewStructureCallback ns;
+        private NewFlagCallback nf;
+        private NewPropertyCallback np;
+        private EndStructureCallback es;
+        private ErrorCallback er;
+        internal TCODParserNativeCallback nativeCallback;
+        
         /// <summary>
         /// Create CallbackStruct which passes callbacks to parser
         /// </summary>
@@ -269,28 +269,28 @@ namespace libtcodWrapper
         /// <param name="newProp">Callback when new property is found</param>
         /// <param name="endStruct">Callback when new of structure is found</param>
         /// <param name="error">Callback when parser comes across error</param>
-		public TCODParserCallbackStruct(NewStructureCallback newStruct, NewFlagCallback newFlag, NewPropertyCallback newProp,
-		                         EndStructureCallback endStruct, ErrorCallback error)
-		{
-			ns = newStruct;
-			nf = newFlag;
-			np = newProp;
-			es = endStruct;
-			er = error;
-			nativeCallback = new TCODParserNativeCallback();
-			nativeCallback.new_structure = new new_struct_delegate(this.NativeNewStructCallback); 
-			nativeCallback.new_flag = new new_flag_delegate(this.NativeNewFlagCallback);
-			nativeCallback.new_property = new new_property_delegate(this.NativePropertyCallback);
-			nativeCallback.end_structure = new end_struct_delegate(this.NativeEndStructCallback);
-			nativeCallback.error = new error_delegate(this.NativeErrorCallback);
-		}
+        public TCODParserCallbackStruct(NewStructureCallback newStruct, NewFlagCallback newFlag, NewPropertyCallback newProp,
+                                 EndStructureCallback endStruct, ErrorCallback error)
+        {
+            ns = newStruct;
+            nf = newFlag;
+            np = newProp;
+            es = endStruct;
+            er = error;
+            nativeCallback = new TCODParserNativeCallback();
+            nativeCallback.new_structure = new new_struct_delegate(this.NativeNewStructCallback); 
+            nativeCallback.new_flag = new new_flag_delegate(this.NativeNewFlagCallback);
+            nativeCallback.new_property = new new_property_delegate(this.NativePropertyCallback);
+            nativeCallback.end_structure = new end_struct_delegate(this.NativeEndStructCallback);
+            nativeCallback.error = new error_delegate(this.NativeErrorCallback);
+        }
 
         private static string GetStringIfValid(StringBuilder name)
         {
             return (name != null ? name.ToString() : null);
         }
-		
-		private bool NativeNewStructCallback(IntPtr str, StringBuilder name)
+        
+        private bool NativeNewStructCallback(IntPtr str, StringBuilder name)
         {
             TCODParserStructure cur = new TCODParserStructure(str);
             return ns(cur, GetStringIfValid(name));
@@ -302,58 +302,58 @@ namespace libtcodWrapper
         }
 
         private bool NativePropertyCallback(StringBuilder name, TCODValueType type, TCODValue v)
-		{
+        {
             return np(GetStringIfValid(name), type, v);
         }
 
         private bool NativeEndStructCallback(IntPtr str, StringBuilder name)
         {
-			TCODParserStructure cur = new TCODParserStructure(str);
+            TCODParserStructure cur = new TCODParserStructure(str);
             return es(cur, GetStringIfValid(name));
         }
 
         private void NativeErrorCallback(StringBuilder msg)
-		{
+        {
             er(GetStringIfValid(msg));
         }
-		
+        
         /// <summary>
         /// If called in delegate handing parser events, will return string to be outputted along with position and abort the parsing.
         /// </summary>
         /// <param name="error">String explaining error</param>
-		public void ReturnErrorToParser(string error)
+        public void ReturnErrorToParser(string error)
         {
             TCOD_parser_error(new StringBuilder(error));
         }
 
-		[StructLayout(LayoutKind.Sequential) ]
-		internal struct TCODParserNativeCallback
-		{
-			internal new_struct_delegate new_structure;
-			internal new_flag_delegate new_flag;
-			internal new_property_delegate new_property;
-			internal end_struct_delegate end_structure;
-			internal error_delegate error;
-		};
-		
-		[DllImport(DLLName.name)]
+        [StructLayout(LayoutKind.Sequential) ]
+        internal struct TCODParserNativeCallback
+        {
+            internal new_struct_delegate new_structure;
+            internal new_flag_delegate new_flag;
+            internal new_property_delegate new_property;
+            internal end_struct_delegate end_structure;
+            internal error_delegate error;
+        };
+        
+        [DllImport(DLLName.name)]
         private extern static void TCOD_parser_error(StringBuilder msg);
-		
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate bool new_struct_delegate(IntPtr str, StringBuilder name);
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate bool new_struct_delegate(IntPtr str, StringBuilder name);
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate bool new_flag_delegate(StringBuilder name);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate bool new_flag_delegate(StringBuilder name);
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate bool new_property_delegate(StringBuilder name, TCODValueType type, TCODValue v);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate bool new_property_delegate(StringBuilder name, TCODValueType type, TCODValue v);
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    	internal delegate bool end_struct_delegate(IntPtr str, StringBuilder name);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate bool end_struct_delegate(IntPtr str, StringBuilder name);
 
-    	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]	
-    	internal delegate void error_delegate(StringBuilder msg);
-	}
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]    
+        internal delegate void error_delegate(StringBuilder msg);
+    }
 
     /// <summary>
     /// Parses configuration file
@@ -457,7 +457,7 @@ namespace libtcodWrapper
         /// <param name="name">Property Name</param>
         /// /// <remarks>Use only if you use the default parser listener</remarks>
         /// <returns>Color Value of Property</returns>
-        public TCODColor GetColorProperty(string name)
+        public Color GetColorProperty(string name)
         {
             return TCOD_parser_get_color_property(m_fileParser, new StringBuilder(name));
         }
@@ -507,7 +507,7 @@ namespace libtcodWrapper
         }
 
         [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_parser_get_color_property(IntPtr parser, StringBuilder name);
+        private extern static Color TCOD_parser_get_color_property(IntPtr parser, StringBuilder name);
 
         [DllImport(DLLName.name)]
         private extern static TCODDice TCOD_parser_get_dice_property(IntPtr parser, StringBuilder name);
@@ -620,7 +620,7 @@ namespace libtcodWrapper
         
         private static string TCOD_struct_get_name_helper(IntPtr str)
         {
-			return Marshal.PtrToStringAnsi(TCOD_struct_get_name(str));
+            return Marshal.PtrToStringAnsi(TCOD_struct_get_name(str));
         }
 
         [DllImport(DLLName.name)]

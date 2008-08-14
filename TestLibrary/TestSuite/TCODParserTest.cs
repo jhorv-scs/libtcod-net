@@ -134,9 +134,9 @@ namespace libtcodWrapperTests
         [Test]
         public void ImplementedParserTest()
         {
-			TCODParserCallbackStruct callback = new TCODParserCallbackStruct(new NewStructureCallback(NewStructCallbackTest), new NewFlagCallback(NewFlagCallbackTest),			                                                                 
-			                                                                 new NewPropertyCallback(NewPropertyCallbackTest), new EndStructureCallback(EndStructCallbackTest),
-			                                                                 new ErrorCallback(ErrorCallbackTest));
+            TCODParserCallbackStruct callback = new TCODParserCallbackStruct(new NewStructureCallback(NewStructCallbackTest), new NewFlagCallback(NewFlagCallbackTest),                                                                             
+                                                                             new NewPropertyCallback(NewPropertyCallbackTest), new EndStructureCallback(EndStructCallbackTest),
+                                                                             new ErrorCallback(ErrorCallbackTest));
 
             using (TCODFileParser parser = new TCODFileParser())
             {
@@ -160,8 +160,8 @@ namespace libtcodWrapperTests
                 TCODDice testDice = new TCODDice(3, 6, 1, 2);
                 Assert.IsTrue(parser.GetDiceProperty("item_type.damages") == testDice);
 
-                TCODColor color1 = new TCODColor(255, 0, 0);
-                TCODColor color2 = new TCODColor(128, 96, 96);
+                Color color1 = new Color(255, 0, 0);
+                Color color2 = new Color(128, 96, 96);
                 Assert.IsTrue(parser.GetColorProperty("item_type.color") == color1);
                 Assert.IsTrue(parser.GetColorProperty("item_type.damaged_color") == color2);
                 Assert.IsTrue(parser.GetStringProperty("item_type.damage_type") == "slash");

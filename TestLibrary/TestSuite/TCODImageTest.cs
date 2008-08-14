@@ -8,11 +8,16 @@ namespace libtcodWrapperTests
     [TestFixture]
     public class TCODImageTest
     {
-        private TCODConsoleRoot console;
+        private RootConsole console;
         [TestFixtureSetUp]
         public void Init()
         {
-            console = new TCODConsoleRoot(120, 100, "Image Testing", false);
+            RootConsole.Width = 80;
+            RootConsole.Height = 50;
+            RootConsole.WindowTitle = "Image Testing";
+            RootConsole.Fullscreen = false;
+
+            console = RootConsole.GetInstance();
             console.Clear();
         }
 
@@ -25,12 +30,12 @@ namespace libtcodWrapperTests
         [Test]
         public void ImageConstructors()
         {
-            using (TCODImage i = new TCODImage(40, 40))
+            using (Image i = new Image(40, 40))
             {
-                using (TCODImage j = new TCODImage("terminal.bmp"))
+                using (Image j = new Image("terminal.bmp"))
                 {
                     //TODO: Test this once TCOD_image_from_console gets fixed for root console.
-                    //using (TCODImage k = new TCODImage(console))
+                    //using (Image k = new Image(console))
                     {
                     }
                 }
@@ -40,9 +45,9 @@ namespace libtcodWrapperTests
         [Test]
         public void ClearTest()
         {
-            using (TCODImage i = new TCODImage(40, 40))
+            using (Image i = new Image(40, 40))
             {
-                i.Clear(TCODColor.TCOD_black);
+                i.Clear(Color.Black);
             }
         }
 
@@ -50,7 +55,7 @@ namespace libtcodWrapperTests
         public void SaveToDiskTest()
         {
             bool testPasses = true;
-            using (TCODImage j = new TCODImage("terminal.bmp"))
+            using (Image j = new Image("terminal.bmp"))
             {
                 j.SaveImageToDisc("testImage.bmp");
                 FileInfo info = new FileInfo("testImage.bmp");
@@ -65,7 +70,7 @@ namespace libtcodWrapperTests
         [Test]
         public void CheckSize()
         {
-            using (TCODImage i = new TCODImage(40, 80))
+            using (Image i = new Image(40, 80))
             {
                 int w, h;
                 i.GetSize(out w, out h);
@@ -77,37 +82,37 @@ namespace libtcodWrapperTests
         [Test]
         public void CheckPixel()
         {
-            using (TCODImage i = new TCODImage(40, 80))
+            using (Image i = new Image(40, 80))
             {
-                i.Clear(TCODColor.TCOD_dark_red);
-                Assert.IsTrue(i.GetPixel(5, 5) == TCODColor.TCOD_dark_red);
-                i.PutPixel(5, 5, TCODColor.TCOD_gold);
-                Assert.IsTrue(i.GetPixel(5, 5) != TCODColor.TCOD_dark_red);
-                Assert.IsTrue(i.GetPixel(5, 5) == TCODColor.TCOD_gold);
+                i.Clear(Color.DarkRed);
+                Assert.IsTrue(i.GetPixel(5, 5) == Color.DarkRed);
+                i.PutPixel(5, 5, Color.Gold);
+                Assert.IsTrue(i.GetPixel(5, 5) != Color.DarkRed);
+                Assert.IsTrue(i.GetPixel(5, 5) == Color.Gold);
             }
         }
 
         [Test]
         public void CheckMipMap()
         {
-            using (TCODImage i = new TCODImage(40, 80))
+            using (Image i = new Image(40, 80))
             {
-                i.Clear(TCODColor.TCOD_dark_purple);
+                i.Clear(Color.DarkPurple);
                 i.AverageColorOfRegion(2, 4, 10, 20);
-				
+                
             }
         }
 
         [Test]
         public void BlitTest()
         {
-            using (TCODImage i = new TCODImage(40, 80))
+            using (Image i = new Image(40, 80))
             {
                 console.Clear();
-                i.Clear(TCODColor.TCOD_red);
-                i.BlitRect(console, 10, 10, 40, 80, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADD));
-                i.Clear(TCODColor.TCOD_purple);
-                i.Blit(console, 40, 50, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_ADD), 1.0, 1.5, 45);
+                i.Clear(Color.BrightRed);
+                i.BlitRect(console, 10, 10, 40, 80, new Background(BackgroundFlag.Add));
+                i.Clear(Color.Purple);
+                i.Blit(console, 40, 50, new Background(BackgroundFlag.Add), 1.0, 1.5, 45);
                 console.Flush();
             }
         }
@@ -115,13 +120,13 @@ namespace libtcodWrapperTests
         [Test]
         public void TransparencyTest()
         {
-            using (TCODImage i = new TCODImage(40, 80))
+            using (Image i = new Image(40, 80))
             {
-                i.Clear(TCODColor.TCOD_purple);
+                i.Clear(Color.Purple);
                 Assert.IsFalse(i.GetPixelTransparency(2, 2));
-                i.SetKeyColor(TCODColor.TCOD_purple);
+                i.SetKeyColor(Color.Purple);
                 Assert.IsTrue(i.GetPixelTransparency(2, 2));
-                i.PutPixel(2, 2, TCODColor.TCOD_orange);
+                i.PutPixel(2, 2, Color.Orange);
                 Assert.IsFalse(i.GetPixelTransparency(2, 2));
                 Assert.IsTrue(i.GetPixelTransparency(2, 4));
             }

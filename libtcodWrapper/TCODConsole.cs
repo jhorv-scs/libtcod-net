@@ -16,37 +16,37 @@ namespace libtcodWrapper
     /// <summary>
     /// Defines how draw operations affect background of the console.
     /// </summary>
-    public class TCODBackground
+    public class Background
     {
-    	internal int m_value;
-    	
+        internal int m_value;
+        
         /// <summary>
         /// Create background with a given flag that does not take alpha paramater
         /// </summary>
         /// <param name="flag">Background Type</param>
-    	public TCODBackground(TCOD_bkgnd_flag flag)
-    	{
-    		if(flag == TCOD_bkgnd_flag.TCOD_BKGND_ADDA || flag == TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
-    			throw new Exception("Must use TCODBackagroudn constructor which takes value");
-    		m_value = (int)flag;
-		}
-		
+        public Background(BackgroundFlag flag)
+        {
+            if(flag == BackgroundFlag.AddA || flag == BackgroundFlag.Alph)
+                throw new Exception("Must use TCODBackagroudn constructor which takes value");
+            m_value = (int)flag;
+        }
+        
         /// <summary>
         /// Create background with a given flag that does take alpha paramater
         /// </summary>
         /// <param name="flag">Background Type</param>
         /// <param name="val">Alpha Value</param>
-		public TCODBackground(TCOD_bkgnd_flag flag, float val)
-    	{
+        public Background(BackgroundFlag flag, float val)
+        {
             NewBackgroundCore(flag, val);
-		}
+        }
 
         /// <summary>
         /// Create background with a given flag that does take alpha paramater
         /// </summary>
         /// <param name="flag">Background Type</param>
         /// <param name="val">Alpha Value</param>
-        public TCODBackground(TCOD_bkgnd_flag flag, double val)
+        public Background(BackgroundFlag flag, double val)
         {
             NewBackgroundCore(flag, (float)val);
         }
@@ -55,41 +55,41 @@ namespace libtcodWrapper
         /// Create a copy of a background flag 
         /// </summary>
         /// <param name="b">Background to copy</param>
-        public TCODBackground(TCODBackground b)
+        public Background(Background b)
         {
             m_value = b.m_value;
         }
 
-        private void NewBackgroundCore(TCOD_bkgnd_flag flag, float val)
+        private void NewBackgroundCore(BackgroundFlag flag, float val)
         {
-            if (flag != TCOD_bkgnd_flag.TCOD_BKGND_ADDA && flag != TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
+            if (flag != BackgroundFlag.AddA && flag != BackgroundFlag.Alph)
                 throw new Exception("Must not use TCODBackagroudn constructor which takes value");
             m_value = (int)flag | (((byte)(val * 255)) << 8);
         }
 
 
         /// <summary>
-        /// Increment background type to next background in TCOD_bkgnd_flag enum
+        /// Increment background type to next background in BackgroundFlag enum
         /// </summary>
         /// <param name="lhs">Left Hand Side</param>
         /// <returns>New Background</returns>
-        public static TCODBackground operator ++(TCODBackground lhs)
+        public static Background operator ++(Background lhs)
         {
-            if (lhs.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_ALPH)
-                throw new Exception("Can not increment past end of TCOD_bkgnd_flag enum");
+            if (lhs.BackgroundFlag == BackgroundFlag.Alph)
+                throw new Exception("Can not increment past end of BackgroundFlag enum");
             lhs.m_value += 1;
             return lhs;
         }
 
         /// <summary>
-        /// Decrement background type to next background in TCOD_bkgnd_flag enum
+        /// Decrement background type to next background in BackgroundFlag enum
         /// </summary>
         /// <param name="lhs">Left Hand Side</param>
         /// <returns>New Background</returns>
-        public static TCODBackground operator --(TCODBackground lhs)
+        public static Background operator --(Background lhs)
         {
-            if (lhs.GetBackgroundFlag() == TCOD_bkgnd_flag.TCOD_BKGND_NONE)
-                throw new Exception("Can not decrement past end of TCOD_bkgnd_flag enum");
+            if (lhs.BackgroundFlag == BackgroundFlag.None)
+                throw new Exception("Can not decrement past end of BackgroundFlag enum");
             lhs.m_value -= 1;
             return lhs;
         }
@@ -98,89 +98,24 @@ namespace libtcodWrapper
         /// Get Current Background Type
         /// </summary>
         /// <returns>Background Enum</returns>
-        public TCOD_bkgnd_flag GetBackgroundFlag()
+        public BackgroundFlag BackgroundFlag
         {
-            return (TCOD_bkgnd_flag)(m_value & 0xff);
+            get { return (BackgroundFlag)(m_value & 0xff); }
         }
 
         /// <summary>
         /// Get Current Alpha value
         /// </summary>
-        /// <returns>Alpha Value</returns>
-        public byte GetAlphaValue()
+        public byte AlphaValue
         {
-            return (byte)(m_value >> 8);
+            get { return (byte)(m_value >> 8); }
         }
     }
-
-    #pragma warning disable 1591  //Disable warning about lack of xml comments
-    public enum TCOD_bkgnd_flag
-    {
-        TCOD_BKGND_NONE,
-        TCOD_BKGND_SET,
-        TCOD_BKGND_MULTIPLY,
-        TCOD_BKGND_LIGHTEN,
-        TCOD_BKGND_DARKEN,
-        TCOD_BKGND_SCREEN,
-        TCOD_BKGND_COLOR_DODGE,
-        TCOD_BKGND_COLOR_BURN,
-        TCOD_BKGND_ADD,
-        TCOD_BKGND_ADDA,
-        TCOD_BKGND_BURN,
-        TCOD_BKGND_OVERLAY,
-        TCOD_BKGND_ALPH
-    };
-    #pragma warning restore 1591
-
-    /// <summary>
-    /// "Special" ascii characters such as arrows and lines
-    /// </summary>
-    public class TCODSpecialChar
-    {
-        #pragma warning disable 1591  //Disable warning about lack of xml comments
-        public const byte TCOD_CHAR_HLINE = 196;
-        public const byte TCOD_CHAR_VLINE = 179;
-        public const byte TCOD_CHAR_NE = 191;
-        public const byte TCOD_CHAR_NW = 218;
-        public const byte TCOD_CHAR_SE = 217;
-        public const byte TCOD_CHAR_SW = 192;
-        public const byte TCOD_CHAR_DHLINE = 205;
-        public const byte TCOD_CHAR_DVLINE = 186;
-        public const byte TCOD_CHAR_DNE = 187;
-        public const byte TCOD_CHAR_DNW = 201;
-        public const byte TCOD_CHAR_DSE = 188;
-        public const byte TCOD_CHAR_DSW = 200;
-        public const byte TCOD_CHAR_TEEW = 180;
-        public const byte TCOD_CHAR_TEEE = 195;
-        public const byte TCOD_CHAR_TEEN = 193;
-        public const byte TCOD_CHAR_TEES = 194;
-        public const byte TCOD_CHAR_DTEEW = 181;
-        public const byte TCOD_CHAR_DTEEE = 198;
-        public const byte TCOD_CHAR_DTEEN = 208;
-        public const byte TCOD_CHAR_DTEES = 210;
-        public const byte TCOD_CHAR_CHECKER = 178;
-        public const byte TCOD_CHAR_BLOCK = 219;
-        public const byte TCOD_CHAR_BLOCK1 = 178;
-        public const byte TCOD_CHAR_BLOCK2 = 177;
-        public const byte TCOD_CHAR_BLOCK3 = 176;
-        public const byte TCOD_CHAR_BLOCK_B = 220;
-        public const byte TCOD_CHAR_BLOCK_T = 223;
-        public const byte TCOD_CHAR_DS_CROSSH = 216;
-        public const byte TCOD_CHAR_DS_CROSSV = 215;
-        public const byte TCOD_CHAR_CROSS = 197;
-        public const byte TCOD_CHAR_LIGHT = 15;
-        public const byte TCOD_CHAR_TREE = 5;
-        public const byte TCOD_CHAR_ARROW_N = 24;
-        public const byte TCOD_CHAR_ARROW_S = 25;
-        public const byte TCOD_CHAR_ARROW_E = 26;
-        public const byte TCOD_CHAR_ARROW_W = 27;
-        #pragma warning restore 1591  //Disable warning about lack of xml comments
-    };
 
     /// <summary>
     /// Request for console to draw with font other than "terminal.bmp"
     /// </summary>
-    public struct CustomFontRequest
+    public class CustomFontRequest
     {
         /// <summary>
         /// Create new custom font request
@@ -192,7 +127,7 @@ namespace libtcodWrapper
         /// <param name="nb_char_vertic">Number of characters per vertical row</param>
         /// <param name="chars_in_row">Is the first set of ascii characters in a row (not a column)</param>
         /// <param name="key_color">Color in bitmap that represents background</param>
-        public CustomFontRequest(String fontFile, int char_width, int char_height, int nb_char_horiz, int nb_char_vertic, bool chars_in_row, TCODColor key_color)
+        public CustomFontRequest(String fontFile, int char_width, int char_height, int nb_char_horiz, int nb_char_vertic, bool chars_in_row, Color key_color)
         {
             m_fontFile = fontFile;
             m_char_width = char_width;
@@ -209,27 +144,15 @@ namespace libtcodWrapper
         internal int m_nb_char_horiz;
         internal int m_nb_char_vertic;
         internal bool m_chars_in_row;
-        internal TCODColor m_key_color;
-    }
-
-    /// <summary>
-    /// Types of alignment for printing of strings
-    /// </summary>
-    public enum TCODLineAlign
-    {
-        #pragma warning disable 1591  //Disable warning about lack of xml comments
-        Left,
-        Right,
-        Center
-        #pragma warning restore 1591  //Disable warning about lack of xml comments
+        internal Color m_key_color;
     }
 
     /// <summary>
     /// Represents any console, either on screen or off
     /// </summary>
-    public class TCODConsole : IDisposable
+    public class Console : IDisposable
     {
-        internal TCODConsole(IntPtr w, int width, int height)
+        internal Console(IntPtr w, int width, int height)
         {
             m_consolePtr = w;
             m_width = width;
@@ -269,21 +192,21 @@ namespace libtcodWrapper
         }
 
         /// <summary>
-        /// Set the default background color of the console
+        /// Gets/sets the default foreground color of the console.
         /// </summary>
-        /// <param name="background">Background color</param>
-        public void SetBackgroundColor(TCODColor background)
+        public Color ForegroundColor
         {
-            TCOD_console_set_background_color(m_consolePtr, background);
+            get { return TCOD_console_get_foreground_color(m_consolePtr); }
+            set { TCOD_console_set_foreground_color(m_consolePtr, value); }
         }
 
         /// <summary>
-        /// Set the default foreground color of the console
+        /// Gets/sets the default background color of the console.
         /// </summary>
-        /// <param name="foreground">Foreground color</param>
-        public void SetForegroundColor(TCODColor foreground)
+        public Color BackgroundColor
         {
-            TCOD_console_set_foreground_color(m_consolePtr, foreground);
+            get { return TCOD_console_get_background_color(m_consolePtr); }
+            set { TCOD_console_set_background_color(m_consolePtr, value); }
         }
 
         /// <summary>
@@ -301,7 +224,7 @@ namespace libtcodWrapper
         /// <param name="y">y (Height) position</param>
         /// <param name="c">Ascii character</param>
         /// <param name="flag">Background flag</param>
-        public void PutChar(int x, int y, char c, TCODBackground flag)
+        public void PutChar(int x, int y, char c, Background flag)
         {
             TCOD_console_put_char(m_consolePtr, x, y, (int)c, flag.m_value);
         }
@@ -311,9 +234,9 @@ namespace libtcodWrapper
         /// </summary>
         /// <param name="x">x (Width) position</param>
         /// <param name="y">y (Height) position</param>
-        /// <param name="c">TCODSpecialChar or ascii byte</param>
+        /// <param name="c">SpecialCharacter or ascii byte</param>
         /// <param name="flag">Background flag</param>
-        public void PutChar(int x, int y, byte c, TCODBackground flag)
+        public void PutChar(int x, int y, byte c, Background flag)
         {
             TCOD_console_put_char(m_consolePtr, x, y, c, flag.m_value);
         }
@@ -326,7 +249,7 @@ namespace libtcodWrapper
         /// <param name="c">Ascii character</param>
         public void PutChar(int x, int y, char c)
         {
-            TCOD_console_put_char(m_consolePtr, x, y, (int)c, (int)TCOD_bkgnd_flag.TCOD_BKGND_SET);
+            TCOD_console_put_char(m_consolePtr, x, y, (int)c, (int)BackgroundFlag.Set);
         }
 
         /// <summary>
@@ -337,7 +260,7 @@ namespace libtcodWrapper
         /// <param name="c">Ascii character</param>
         public void PutChar(int x, int y, byte c)
         {
-            TCOD_console_put_char(m_consolePtr, x, y, c, (int)TCOD_bkgnd_flag.TCOD_BKGND_SET);
+            TCOD_console_put_char(m_consolePtr, x, y, c, (int)BackgroundFlag.Set);
         }
         
         /// <summary>
@@ -347,7 +270,7 @@ namespace libtcodWrapper
         /// <param name="y">y (Height) position</param>
         /// <param name="col">Background color</param>
         /// <param name="flag">Background flag</param>
-        public void SetCharBackground(int x, int y, TCODColor col, TCODBackground flag)
+        public void SetCharBackground(int x, int y, Color col, Background flag)
         {
             TCOD_console_set_back(m_consolePtr, x, y, col, flag.m_value);
         }
@@ -358,9 +281,9 @@ namespace libtcodWrapper
         /// <param name="x">x (Width) position</param>
         /// <param name="y">y (Height) position</param>
         /// <param name="col">Background color</param>
-        public void SetCharBackground(int x, int y, TCODColor col)
+        public void SetCharBackground(int x, int y, Color col)
         {
-            SetCharBackground(x, y, col, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+            SetCharBackground(x, y, col, new Background(BackgroundFlag.Set));
         }
 
         /// <summary>
@@ -369,27 +292,9 @@ namespace libtcodWrapper
         /// <param name="x">x (Width) position</param>
         /// <param name="y">y (Height) position</param>
         /// <param name="col">Foreground color</param>
-        public void SetCharForeground(int x, int y, TCODColor col)
+        public void SetCharForeground(int x, int y, Color col)
         {
             TCOD_console_set_fore(m_consolePtr, x, y, col);
-        }
-
-        /// <summary>
-        /// Get default background color
-        /// </summary>
-        /// <returns>Background color</returns>
-        public TCODColor GetBackgroudColor()
-        {
-            return TCOD_console_get_background_color(m_consolePtr);
-        }
-
-        /// <summary>
-        /// Get default foreground color
-        /// </summary>
-        /// <returns>Foreground color</returns>
-        public TCODColor GetForegroundColor()
-        {
-            return TCOD_console_get_foreground_color(m_consolePtr);
         }
 
         /// <summary>
@@ -398,7 +303,7 @@ namespace libtcodWrapper
         /// <param name="x">x (Width) position</param>
         /// <param name="y">y (Height) position</param>
         /// <returns>Background color</returns>
-        public TCODColor GetCharBackground(int x, int y)
+        public Color GetCharBackground(int x, int y)
         {
             return TCOD_console_get_back(m_consolePtr, x, y);
         }
@@ -409,7 +314,7 @@ namespace libtcodWrapper
         /// <param name="x">x (Width) position</param>
         /// <param name="y">y (Height) position</param>
         /// <returns>Forground color</returns>
-        public TCODColor GetCharForeground(int x, int y)
+        public Color GetCharForeground(int x, int y)
         {
             return TCOD_console_get_fore(m_consolePtr, x, y);
         }
@@ -432,9 +337,9 @@ namespace libtcodWrapper
         /// <param name="x">x (Width) position of first character</param>
         /// <param name="y">y (Height) position of first character</param>
         /// <param name="align">Alignment of string</param>
-        public void PrintLine(string str, int x, int y, TCODLineAlign align)
+        public void PrintLine(string str, int x, int y, LineAlignment align)
         {
-            PrintLine(str, x, y, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET), align);
+            PrintLine(str, x, y, new Background(BackgroundFlag.Set), align);
         }
 
         /// <summary>
@@ -445,17 +350,17 @@ namespace libtcodWrapper
         /// <param name="y">y (Height) position of first character</param>
         /// <param name="flag">Background flag</param>
         /// <param name="align">Alignment of string</param>
-        public void PrintLine(string str, int x, int y, TCODBackground flag, TCODLineAlign align)
+        public void PrintLine(string str, int x, int y, Background flag, LineAlignment align)
         {
             switch (align)
             {
-                case TCODLineAlign.Left:
+                case LineAlignment.Left:
                     TCOD_console_print_left(m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
                     break;
-                case TCODLineAlign.Center:
+                case LineAlignment.Center:
                     TCOD_console_print_center(m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
                     break;
-                case TCODLineAlign.Right:
+                case LineAlignment.Right:
                     TCOD_console_print_right(m_consolePtr, x, y, flag.m_value, new StringBuilder(str));
                     break;
             }
@@ -471,9 +376,9 @@ namespace libtcodWrapper
         /// <param name="h">Height of rectangle to print in. If 0, string is only truncated if reaches bottom of console.</param>
         /// <param name="align">Alignment of string</param>
         /// <returns>Number of lines printed</returns>
-        public int PrintLineRect(string str, int x, int y, int w, int h, TCODLineAlign align)
+        public int PrintLineRect(string str, int x, int y, int w, int h, LineAlignment align)
         {
-            return PrintLineRect(str, x, y, w, h, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET), align);
+            return PrintLineRect(str, x, y, w, h, new Background(BackgroundFlag.Set), align);
         }
 
         /// <summary>
@@ -487,15 +392,15 @@ namespace libtcodWrapper
         /// <param name="flag">Background flag</param>
         /// <param name="align">Alignment of string</param>
         /// <returns>Number of lines printed</returns>
-        public int PrintLineRect(string str, int x, int y, int w, int h, TCODBackground flag, TCODLineAlign align)
+        public int PrintLineRect(string str, int x, int y, int w, int h, Background flag, LineAlignment align)
         {
             switch (align)
             {
-                case TCODLineAlign.Left:
+                case LineAlignment.Left:
                     return TCOD_console_print_left_rect(m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
-                case TCODLineAlign.Center:
+                case LineAlignment.Center:
                     return TCOD_console_print_center_rect(m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
-                case TCODLineAlign.Right:
+                case LineAlignment.Right:
                     return TCOD_console_print_right_rect(m_consolePtr, x, y, w, h, flag.m_value, new StringBuilder(str));
                 default:
                     throw new Exception("Must Pass Alignment to PrintLineRect");
@@ -512,7 +417,7 @@ namespace libtcodWrapper
         /// <param name="dest">Destination console</param>
         /// <param name="xDst">Upper left corner x coord of area to blit to</param>
         /// <param name="yDst">Upper left corner y coord of area to blit to</param>
-        public void Blit(int xSrc, int ySrc, int wSrc, int hSrc, TCODConsole dest, int xDst, int yDst)
+        public void Blit(int xSrc, int ySrc, int wSrc, int hSrc, Console dest, int xDst, int yDst)
         {
             Blit(xSrc, ySrc, wSrc, hSrc, dest, xDst, yDst, 255);
         }
@@ -528,7 +433,7 @@ namespace libtcodWrapper
         /// <param name="xDst">Upper left corner x coord of area to blit to</param>
         /// <param name="yDst">Upper left corner y coord of area to blit to</param>
         /// <param name="fade">Transparency of blitted console. 255 = fully replace destination. (0-254) simulate real transparency with varying degrees of fading.</param>
-        public void Blit(int xSrc, int ySrc, int wSrc, int hSrc, TCODConsole dest, int xDst, int yDst, int fade)
+        public void Blit(int xSrc, int ySrc, int wSrc, int hSrc, Console dest, int xDst, int yDst, int fade)
         {
             TCOD_console_blit(m_consolePtr, xSrc, ySrc, wSrc, hSrc, dest.m_consolePtr, xDst, yDst, fade);
         }
@@ -542,7 +447,7 @@ namespace libtcodWrapper
         /// <param name="h">Height of rectangle</param>
         /// <param name="clear">Clear cells of any ascii character</param>
         /// <param name="flag">Background flag</param>
-        public void DrawRect(int x, int y, int w, int h, bool clear, TCODBackground flag)
+        public void DrawRect(int x, int y, int w, int h, bool clear, Background flag)
         {
             TCOD_console_rect(m_consolePtr, x, y, w, h, clear, flag.m_value);
         }
@@ -557,7 +462,7 @@ namespace libtcodWrapper
         /// <param name="clear">Clear cells of any ascii character</param>
         public void DrawRect(int x, int y, int w, int h, bool clear)
         {
-            DrawRect(x, y, w, h, clear, new TCODBackground(TCOD_bkgnd_flag.TCOD_BKGND_SET));
+            DrawRect(x, y, w, h, clear, new Background(BackgroundFlag.Set));
         }
 
         /// <summary>
@@ -614,7 +519,7 @@ namespace libtcodWrapper
         /* Printing shapes to console */
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_rect(IntPtr con, int x, int y, int w, int h, bool clear, /*TCOD_bkgnd_flag*/ int flag);
+        private extern static void TCOD_console_rect(IntPtr con, int x, int y, int w, int h, bool clear, /*BackgroundFlag*/ int flag);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_hline(IntPtr con, int x, int y, int l);
@@ -634,33 +539,33 @@ namespace libtcodWrapper
         /* Prints Strings to Screen */
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_left(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+        private extern static void TCOD_console_print_left(IntPtr con, int x, int y, /*BackgroundFlag*/ int flag, StringBuilder str);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_right(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+        private extern static void TCOD_console_print_right(IntPtr con, int x, int y, /*BackgroundFlag*/ int flag, StringBuilder str);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_center(IntPtr con, int x, int y, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+        private extern static void TCOD_console_print_center(IntPtr con, int x, int y, /*BackgroundFlag*/ int flag, StringBuilder str);
 
         //Returns height of the printed string
         [DllImport(DLLName.name)]
-        private extern static int TCOD_console_print_left_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+        private extern static int TCOD_console_print_left_rect(IntPtr con, int x, int y, int w, int h, /*BackgroundFlag*/ int flag, StringBuilder str);
 
         //Returns height of the printed string
         [DllImport(DLLName.name)]
-        private extern static int TCOD_console_print_right_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+        private extern static int TCOD_console_print_right_rect(IntPtr con, int x, int y, int w, int h, /*BackgroundFlag*/ int flag, StringBuilder str);
 
         //Returns height of the printed string
         [DllImport(DLLName.name)]
-        private extern static int TCOD_console_print_center_rect(IntPtr con, int x, int y, int w, int h, /*TCOD_bkgnd_flag*/ int flag, StringBuilder str);
+        private extern static int TCOD_console_print_center_rect(IntPtr con, int x, int y, int w, int h, /*BackgroundFlag*/ int flag, StringBuilder str);
 
 
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_set_background_color(IntPtr con, TCODColor back);
+        private extern static void TCOD_console_set_background_color(IntPtr con, Color back);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_set_foreground_color(IntPtr con, TCODColor back);
+        private extern static void TCOD_console_set_foreground_color(IntPtr con, Color back);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_clear(IntPtr con);
@@ -668,13 +573,13 @@ namespace libtcodWrapper
         /* Single Character Manipulation */
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_put_char(IntPtr con, int x, int y, int c, /*TCOD_bkgnd_flag*/ int flag);
+        private extern static void TCOD_console_put_char(IntPtr con, int x, int y, int c, /*BackgroundFlag*/ int flag);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_set_back(IntPtr con, int x, int y, TCODColor col, /*TCOD_bkgnd_flag*/ int flag);
+        private extern static void TCOD_console_set_back(IntPtr con, int x, int y, Color col, /*BackgroundFlag*/ int flag);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_set_fore(IntPtr con, int x, int y, TCODColor col);
+        private extern static void TCOD_console_set_fore(IntPtr con, int x, int y, Color col);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_set_char(IntPtr con, int x, int y, int c);
@@ -683,16 +588,16 @@ namespace libtcodWrapper
         /* Get things from console */
 
         [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_console_get_background_color(IntPtr con);
+        private extern static Color TCOD_console_get_background_color(IntPtr con);
 
         [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_console_get_foreground_color(IntPtr con);
+        private extern static Color TCOD_console_get_foreground_color(IntPtr con);
 
         [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_console_get_back(IntPtr con, int x, int y);
+        private extern static Color TCOD_console_get_back(IntPtr con, int x, int y);
 
         [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_console_get_fore(IntPtr con, int x, int y);
+        private extern static Color TCOD_console_get_fore(IntPtr con, int x, int y);
 
         [DllImport(DLLName.name)]
         private extern static int TCOD_console_get_char(IntPtr con, int x, int y);
@@ -705,8 +610,7 @@ namespace libtcodWrapper
     /// <summary>
     /// "Root" console, one which blits onto window or fullscreen
     /// </summary>
-    /// <remarks>One should not make more than one of these</remarks>
-    public class TCODConsoleRoot : TCODConsole
+    public class RootConsole : Console
     {
         /// <summary>
         /// Create the root console with the default font
@@ -715,7 +619,7 @@ namespace libtcodWrapper
         /// <param name="h">Height in characters</param>
         /// <param name="title">Title of window</param>
         /// <param name="fullscreen">Fullscreen?</param>
-        public TCODConsoleRoot(int w, int h, String title, bool fullscreen) : base(IntPtr.Zero, w, h)
+        private RootConsole(int w, int h, String title, bool fullscreen) : base(IntPtr.Zero, w, h)
         {
             TCOD_console_init_root(w, h, new StringBuilder(title), fullscreen);
         }
@@ -728,7 +632,7 @@ namespace libtcodWrapper
         /// <param name="title">Title of window</param>
         /// <param name="fullscreen">Fullscreen?</param>
         /// <param name="font">Custom font request</param>
-        public TCODConsoleRoot(int w, int h, String title, bool fullscreen, CustomFontRequest font)  : base(IntPtr.Zero, w, h)
+        private RootConsole(int w, int h, String title, bool fullscreen, CustomFontRequest font)  : base(IntPtr.Zero, w, h)
         {
             TCOD_console_set_custom_font(new StringBuilder(font.m_fontFile), font.m_char_width, 
                 font.m_char_height, font.m_nb_char_horiz, font.m_nb_char_vertic, font.m_chars_in_row, 
@@ -758,7 +662,7 @@ namespace libtcodWrapper
         /// </summary>
         /// <param name="fade">Fading amount (0 {fully faded} - 255 {no fade} )</param>
         /// <param name="fadingColor">Color to fade to</param>
-        public void SetFade(byte fade, TCODColor fadingColor)
+        public void SetFade(byte fade, Color fadingColor)
         {
             TCOD_console_set_fade(fade, fadingColor);
         }
@@ -776,7 +680,7 @@ namespace libtcodWrapper
         /// Get current fade color
         /// </summary>
         /// <returns>Fade Color</returns>
-        public TCODColor GetFadeColor()
+        public Color GetFadeColor()
         {
             return TCOD_console_get_fading_color();
         }
@@ -785,7 +689,7 @@ namespace libtcodWrapper
         /// Set console full screen status
         /// </summary>
         /// <param name="fullScreen">Fullscreen?</param>
-        public void SetFullscreen(bool fullScreen)
+        private void SetFullscreen(bool fullScreen)
         {
             TCOD_console_set_fullscreen(fullScreen);
         }
@@ -794,9 +698,18 @@ namespace libtcodWrapper
         /// Is console currently fullscreen
         /// </summary>
         /// <returns>Fullscreen?</returns>
-        public bool IsFullscreen()
+        private bool IsFullscreen()
         {
             return TCOD_console_is_fullscreen();
+        }
+
+        /// <summary>
+        /// Set title once console is created
+        /// </summary>
+        /// <param name="title">Title</param>
+        private void SetTitle(string title)
+        {
+            TCOD_console_set_window_title(new StringBuilder(title));
         }
 
         /// <summary>
@@ -805,18 +718,170 @@ namespace libtcodWrapper
         /// <param name="w">Width in characters</param>
         /// <param name="h">Height in characters</param>
         /// <returns>New console</returns>
-        public static TCODConsole GetNewConsole(int w, int h)
+        public static Console GetNewConsole(int w, int h)
         {
-            return new TCODConsole(TCOD_console_new(w, h), w, h);
+            return new Console(TCOD_console_new(w, h), w, h);
         }
 
+        #region Singleton Constructor Stuff
+
+        private static RootConsole singletonInstance = null;
+
+        private static Int32? width = null;
+        /// <summary>
+        /// Width, in tiles, of the root console window. Attempting to reset
+        /// this once GetInstance() has been called will result in an exception.
+        /// </summary>
+        public static Int32 Width
+        {
+            get
+            {
+                if (width == null)
+                    throw new TCODException("RootConsole.Width has not been set.");
+                else
+                    return (Int32)width;
+            }
+            set
+            {
+                if (singletonInstance != null)
+                    throw new TCODException("RootConsole behavior members " +
+                            "cannot be changed once GetInstance() has been called.");
+                width = value;
+            }
+        }
+
+        private static Int32? height = null;
+        /// <summary>
+        /// Height, in tiles, of the root console window. Attempting to reset
+        /// this once GetInstance() has been called will result in an exception.
+        /// </summary>
+        public static Int32 Height
+        {
+            get
+            {
+                if (height == null)
+                    throw new TCODException("RootConsole.Height has not been set.");
+                else
+                    return (Int32)height;
+            }
+            set
+            {
+                if (singletonInstance != null)
+                    throw new TCODException("RootConsole behavior members " +
+                            "cannot be changed once GetInstance() has been called.");
+                height = value;
+            }
+        }
+
+        private static String windowTitle = null;
+        /// <summary>
+        /// Title for the root console window. Attempting to reset
+        /// this once GetInstance() has been called will result in an exception.
+        /// </summary>
+        public static String WindowTitle
+        {
+            get
+            {
+                if (windowTitle == null)
+                    throw new TCODException("RootConsole.WindowTitle has not been set.");
+                else
+                    return windowTitle;
+            }
+            set
+            {
+                if (singletonInstance != null)
+                    singletonInstance.SetTitle(value);
+                windowTitle = value;
+            }
+        }
+
+        private static Boolean? isFullscreen = null;
+        /// <summary>
+        /// Whether or not to run the application full-screen. Attempting to reset
+        /// this once GetInstance() has been called will result in an exception.
+        /// </summary>
+        public static Boolean Fullscreen
+        {
+            get
+            {
+                if (isFullscreen == null)
+                    throw new TCODException("RootConsole.Fullscreen has not been set.");
+                else
+                    return (Boolean)isFullscreen;
+            }
+            set
+            {
+                if (singletonInstance != null)
+                    singletonInstance.SetFullscreen(value);
+                isFullscreen = value;
+            }
+        }
+
+        private static CustomFontRequest font = null;
+        /// <summary>
+        /// Font data for a font other than the default "terminal.bmp".
+        /// </summary>
+        public static CustomFontRequest Font
+        {
+            get
+            {
+                return font;
+            }
+            set
+            {
+                if (singletonInstance != null)
+                    throw new TCODException("RootConsole behavior members " +
+                            "cannot be changed once GetInstance() has been called.");
+                font = value;
+            }
+        }
+
+        /// <summary>
+        /// Modified singleton pattern. Creates the root console based on
+        /// the behavior values in RootConsole.Width, RootConsole.Height,
+        /// RootConsole.WindowTitle, RootConsole.Fullscreen, and
+        /// RootConsole.Font, or gets the already-created console if one
+        /// exists.
+        /// </summary>
+        /// <returns>
+        ///    The root console object.
+        /// </returns>
+        public static RootConsole GetInstance()
+        {
+            if (singletonInstance == null)
+            {
+                if (width == null)
+                    throw new TCODException("RootConsole.Width is not set.");
+                if (height == null)
+                    throw new TCODException("RootConsole.Height is not set.");
+                if (windowTitle == null)
+                    throw new TCODException("RootConsole.WindowTitle is not set.");
+                if (isFullscreen == null)
+                    throw new TCODException("RootConsole.Fullscreen is not set.");
+
+                if (font == null)
+                    singletonInstance = new RootConsole((Int32)width, (Int32)height,
+                        windowTitle, (Boolean) isFullscreen);
+                else
+                    singletonInstance = new RootConsole((Int32)width, (Int32)height,
+                        windowTitle, (Boolean)isFullscreen, font);
+            }
+
+            return singletonInstance;
+        }
+
+        #endregion
+
         #region DLLImports
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_set_window_title(StringBuilder title);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_init_root(int w, int h, StringBuilder title, bool fullscreen);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_set_custom_font(StringBuilder fontFile, int char_width, int char_height, int nb_char_horiz, int nb_char_vertic, bool chars_by_row, TCODColor key_color);
+        private extern static void TCOD_console_set_custom_font(StringBuilder fontFile, int char_width, int char_height, int nb_char_horiz, int nb_char_vertic, bool chars_by_row, Color key_color);
 
 
         [DllImport(DLLName.name)]
@@ -829,13 +894,13 @@ namespace libtcodWrapper
         /* Fading */
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_set_fade(byte fade, TCODColor fadingColor);
+        private extern static void TCOD_console_set_fade(byte fade, Color fadingColor);
 
         [DllImport(DLLName.name)]
         private extern static byte TCOD_console_get_fade();
 
         [DllImport(DLLName.name)]
-        private extern static TCODColor TCOD_console_get_fading_color();
+        private extern static Color TCOD_console_get_fading_color();
 
 
         /* Fullscreen */
