@@ -1,6 +1,6 @@
 ﻿<project schemaVersion="1.6.0.7">
     <assemblies>
-        <assembly assemblyPath="..\Documents\Visual Studio 2008\Projects\libtcod-net\bin\Release\libtcodWrapper.dll" xmlCommentsPath="..\Documents\Visual Studio 2008\Projects\libtcod-net\xmlDocs.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\Release\libtcodWrapper.dll" xmlCommentsPath=".\bin\Release\xmlDocs.xml" commentsOnly="False" />
     </assemblies>
     <ProjectSummary>This library is a thin c# wrapper around BSD license libtcod (http://jice.nospam.googlepages.com/thedoryenlibrary).
 It provides a cross platform graphics and roguelike library to those who wish to program in c#. </ProjectSummary>
