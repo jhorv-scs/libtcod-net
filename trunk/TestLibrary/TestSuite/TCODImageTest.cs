@@ -47,7 +47,7 @@ namespace libtcodWrapperTests
         {
             using (Image i = new Image(40, 40))
             {
-                i.Clear(Color.Black);
+                i.Clear(TCODColorPresets.Black);
             }
         }
 
@@ -84,11 +84,11 @@ namespace libtcodWrapperTests
         {
             using (Image i = new Image(40, 80))
             {
-                i.Clear(Color.DarkRed);
-                Assert.IsTrue(i.GetPixel(5, 5) == Color.DarkRed);
-                i.PutPixel(5, 5, Color.Gold);
-                Assert.IsTrue(i.GetPixel(5, 5) != Color.DarkRed);
-                Assert.IsTrue(i.GetPixel(5, 5) == Color.Gold);
+                i.Clear(TCODColorPresets.DarkRed);
+                Assert.IsTrue(i.GetPixel(5, 5) == TCODColorPresets.DarkRed);
+                i.PutPixel(5, 5, TCODColorPresets.Gold);
+                Assert.IsTrue(i.GetPixel(5, 5) != TCODColorPresets.DarkRed);
+                Assert.IsTrue(i.GetPixel(5, 5) == TCODColorPresets.Gold);
             }
         }
 
@@ -97,7 +97,7 @@ namespace libtcodWrapperTests
         {
             using (Image i = new Image(40, 80))
             {
-                i.Clear(Color.DarkPurple);
+                i.Clear(TCODColorPresets.DarkPurple);
                 i.AverageColorOfRegion(2, 4, 10, 20);
                 
             }
@@ -109,9 +109,9 @@ namespace libtcodWrapperTests
             using (Image i = new Image(40, 80))
             {
                 console.Clear();
-                i.Clear(Color.BrightRed);
+                i.Clear(TCODColorPresets.Red);
                 i.BlitRect(console, 10, 10, 40, 80, new Background(BackgroundFlag.Add));
-                i.Clear(Color.Purple);
+                i.Clear(TCODColorPresets.Purple);
                 i.Blit(console, 40, 50, new Background(BackgroundFlag.Add), 1.0, 1.5, 45);
                 console.Flush();
             }
@@ -122,11 +122,11 @@ namespace libtcodWrapperTests
         {
             using (Image i = new Image(40, 80))
             {
-                i.Clear(Color.Purple);
+                i.Clear(TCODColorPresets.Purple);
                 Assert.IsFalse(i.GetPixelTransparency(2, 2));
-                i.SetKeyColor(Color.Purple);
+                i.SetKeyColor(TCODColorPresets.Purple);
                 Assert.IsTrue(i.GetPixelTransparency(2, 2));
-                i.PutPixel(2, 2, Color.Orange);
+                i.PutPixel(2, 2, TCODColorPresets.Orange);
                 Assert.IsFalse(i.GetPixelTransparency(2, 2));
                 Assert.IsTrue(i.GetPixelTransparency(2, 4));
             }
