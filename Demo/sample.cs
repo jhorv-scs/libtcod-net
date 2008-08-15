@@ -65,21 +65,24 @@ namespace TCODDemo
                 switch (component)
                 {
                     case 0:
-                        render_cols[c].Red += (byte)(5 * render_dirr[c]);
+                        render_cols[c] = Color.FromRGB((byte)(render_cols[c].Red + (byte)(5 * render_dirr[c])),
+                                render_cols[c].Green, render_cols[c].Blue);
                         if (render_cols[c].Red == 255)
                             render_dirr[c] = -1;
                         else if (render_cols[c].Red == 0)
                             render_dirr[c] = 1;
                         break;
                     case 1:
-                        render_cols[c].Green += (byte)(5 * render_dirg[c]);
+                        render_cols[c] = Color.FromRGB(render_cols[c].Red,
+                                (byte)(render_cols[c].Green + (byte)(5 * render_dirg[c])), render_cols[c].Blue);
                         if (render_cols[c].Green == 255)
                             render_dirg[c] = -1;
                         else if (render_cols[c].Green == 0)
                             render_dirg[c] = 1;
                         break;
                     case 2:
-                        render_cols[c].Blue += (byte)(5 * render_dirb[c]);
+                        render_cols[c] = Color.FromRGB(render_cols[c].Red,
+                                render_cols[c].Green, (byte)(render_cols[c].Blue + (byte)(5 * render_dirb[c])));
                         if (render_cols[c].Blue == 255)
                             render_dirb[c] = -1;
                         else if (render_cols[c].Blue == 0)
@@ -108,12 +111,11 @@ namespace TCODDemo
             /* get the background color at the text position */
             textColor = sampleConsole.GetCharBackground(SAMPLE_SCREEN_WIDTH / 2, 5);
             /* and invert it */
-            textColor.Red = (byte)(255 - textColor.Red);
-            textColor.Green = (byte)(255 - textColor.Green);
-            textColor.Blue = (byte)(255 - textColor.Blue);
+            textColor = Color.FromRGB((byte)(255 - textColor.Red),
+                (byte)(255 - textColor.Green), (byte)(255 - textColor.Blue));
             sampleConsole.ForegroundColor = textColor;
             /* the background behind the text is slightly darkened using the BKGND_MULTIPLY flag */
-            sampleConsole.BackgroundColor = Color.Gray;
+            sampleConsole.BackgroundColor = ColorPresets.Gray;
             sampleConsole.PrintLineRect("The Doryen library uses 24 bits colors, " + 
                 "for both background and foreground.", 
                 SAMPLE_SCREEN_WIDTH / 2, 5, SAMPLE_SCREEN_WIDTH - 2, 
@@ -126,7 +128,7 @@ namespace TCODDemo
                 for (int y = 12; y < SAMPLE_SCREEN_HEIGHT; y++)
                 {
                     Color col = sampleConsole.GetCharBackground(x, y);
-                    col = Color.Interpolate(col, Color.Black, 0.5f);
+                    col = Color.Interpolate(col, ColorPresets.Black, 0.5f);
                     int c = random.GetRandomInt(System.Convert.ToByte('a'), System.Convert.ToByte('z'));
                     sampleConsole.ForegroundColor = col;
                     sampleConsole.PutChar(x, y, (char)c);
@@ -215,10 +217,10 @@ namespace TCODDemo
                 {
                     for (int y=0; y < SAMPLE_SCREEN_HEIGHT; y++) 
                     {
-                        Color col = new Color();
-                        col.Red = (byte)(x* 255 / (SAMPLE_SCREEN_WIDTH-1));
-                        col.Green = (byte)((x+y)* 255 / (SAMPLE_SCREEN_WIDTH-1+SAMPLE_SCREEN_HEIGHT-1));
-                        col.Blue = (byte)(y* 255 / (SAMPLE_SCREEN_HEIGHT-1));
+                        Color col = Color.FromRGB((byte)(x* 255 / (SAMPLE_SCREEN_WIDTH-1)),
+                                        (byte)((x+y)* 255 / (SAMPLE_SCREEN_WIDTH-1+SAMPLE_SCREEN_HEIGHT-1)),
+                                        (byte)(y* 255 / (SAMPLE_SCREEN_HEIGHT-1)));
+
                         line_bk.SetCharBackground(x, y, col, new Background(BackgroundFlag.Set));
                     }
                 }
@@ -227,7 +229,7 @@ namespace TCODDemo
             if ( first )
             {
                 TCODSystem.FPS = 30; // fps limited to 30
-                sampleConsole.ForegroundColor = Color.White;
+                sampleConsole.ForegroundColor = ColorPresets.White;
             }
             
             // blit the background
@@ -239,10 +241,9 @@ namespace TCODDemo
             int recty = (int)((SAMPLE_SCREEN_HEIGHT - 2) * ((1.0f + Math.Cos(TCODSystem.ElapsedSeconds)) / 2.0f));
             for (int x = 0 ; x < SAMPLE_SCREEN_WIDTH; x++) 
             {
-                Color col = new Color();
-                col.Red = (byte)(x*255/SAMPLE_SCREEN_WIDTH);
-                col.Green = (byte)(x * 255 / SAMPLE_SCREEN_WIDTH);
-                col.Blue = (byte)(x * 255 / SAMPLE_SCREEN_WIDTH);
+                Color col = Color.FromRGB((byte)(x * 255 / SAMPLE_SCREEN_WIDTH),
+                                    (byte)(x * 255 / SAMPLE_SCREEN_WIDTH),
+                                    (byte)(x * 255 / SAMPLE_SCREEN_WIDTH));
                 sampleConsole.SetCharBackground(x, recty, col, line_bkFlag);
                 sampleConsole.SetCharBackground(x, recty+1, col, line_bkFlag);
                 sampleConsole.SetCharBackground(x, recty+2, col, line_bkFlag);
@@ -264,7 +265,7 @@ namespace TCODDemo
             {
                 if (xx >= 0 && yy >= 0 && xx < SAMPLE_SCREEN_WIDTH && yy < SAMPLE_SCREEN_HEIGHT)
                 {
-                    sampleConsole.SetCharBackground(xx, yy, Color.BrightBlue, line_bkFlag);
+                    sampleConsole.SetCharBackground(xx, yy, ColorPresets.Blue, line_bkFlag);
                 }
             }
             while (!TCODLineDrawing.StepLine(ref xx, ref yy));
@@ -326,15 +327,13 @@ namespace TCODDemo
         
                     c = (byte)((value+1.0f)/2.0f*255);
                     /* use a bluish color */
-                    col.Red = (byte)(c / 2);
-                    col.Green = (byte)(c / 2);
-                    col.Blue = c;
+                    col = Color.FromRGB((byte)(c / 2), (byte)(c / 2), c);
                     sampleConsole.SetCharBackground(x, y, col, new Background(BackgroundFlag.Set));
                 }
             }
             
             /* draw a transparent rectangle */
-            sampleConsole.BackgroundColor = Color.Gray;
+            sampleConsole.BackgroundColor = ColorPresets.Gray;
             sampleConsole.DrawRect(2, 2, (noise_func == noiseFunctions.Noise ? 16 : 24), (noise_func == noiseFunctions.Noise ? 4 : 7), false, new Background(BackgroundFlag.Multiply));
 
             /* draw the text */
@@ -342,18 +341,18 @@ namespace TCODDemo
             {
                 if (curfunc == noise_func) 
                 {
-                    sampleConsole.ForegroundColor = Color.White;
-                    sampleConsole.BackgroundColor = Color.BrightBlue;
+                    sampleConsole.ForegroundColor = ColorPresets.White;
+                    sampleConsole.BackgroundColor = ColorPresets.Blue;
                     sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new Background(BackgroundFlag.Set), LineAlignment.Left);
                 }
                 else
                 {
-                    sampleConsole.ForegroundColor = Color.Gray;
+                    sampleConsole.ForegroundColor = ColorPresets.Gray;
                     sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new Background(BackgroundFlag.None), LineAlignment.Left);
                 }
             }
             /* draw parameters */
-            sampleConsole.ForegroundColor = Color.White;
+            sampleConsole.ForegroundColor = ColorPresets.White;
             sampleConsole.PrintLine("Y/H : zome (" + noise_zoom.ToString("0.0") + ")", 2, 5, LineAlignment.Left);
 
             if (noise_func != noiseFunctions.Noise) 
@@ -427,10 +426,10 @@ namespace TCODDemo
         bool recomputeFov=true; // the player moved. must recompute fov
         bool torch=false; // torch fx on ?
         TCODFov map;
-        Color darkWall = new Color(0,0,100);
-        Color lightWall = new Color(130,110,50);
-        Color darkGround = new Color(50,50,150);
-        Color lightGround = new Color(200,180,50);
+        Color darkWall = Color.FromRGB(0, 0, 100);
+        Color lightWall = Color.FromRGB(130, 110, 50);
+        Color darkGround = Color.FromRGB(50, 50, 150);
+        Color lightGround = Color.FromRGB(200, 180, 50);
         TCODNoise map_noise;
         float torchx=0.0f; // torch light position in the perlin noise
 
@@ -487,9 +486,9 @@ namespace TCODDemo
                 // the rest impacts only the background color
                 // draw the help text & player @
                 sampleConsole.Clear();
-                sampleConsole.ForegroundColor = (Color.White);
+                sampleConsole.ForegroundColor = (ColorPresets.White);
                 sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, LineAlignment.Left);
-                sampleConsole.ForegroundColor = (Color.Black);
+                sampleConsole.ForegroundColor = (ColorPresets.Black);
                 sampleConsole.PutChar(px, py, '@');
                 // draw windows
                 for (int y=0; y < SAMPLE_SCREEN_HEIGHT; y++ )
@@ -546,8 +545,8 @@ namespace TCODDemo
                         else 
                         {
                             // torch flickering fx
-                            Color baseColor = new Color(wall ? darkWall : darkGround);
-                            Color light = new Color(wall ? lightWall : lightGround);
+                            Color baseColor = wall ? darkWall : darkGround;
+                            Color light = wall ? lightWall : lightGround;
                             // cell distance to torch (squared)
                             float r = (float)((x-px+dx)*(x-px+dx)+(y-py+dy)*(y-py+dy));
                             if ( r < SQUARED_TORCH_RADIUS ) {
@@ -559,9 +558,9 @@ namespace TCODDemo
                                 else if ( l> 1.0f ) 
                                     l = 1.0f;
                                 // interpolate the color
-                                baseColor.Red = (byte)(baseColor.Red + (light.Red - baseColor.Red) * l);
-                                baseColor.Green = (byte)(baseColor.Green + (light.Green - baseColor.Green) * l);
-                                baseColor.Blue = (byte)(baseColor.Blue + (light.Blue - baseColor.Blue) * l);
+                                baseColor = Color.FromRGB((byte)(baseColor.Red + (light.Red - baseColor.Red) * l),
+                                                    (byte)(baseColor.Green + (light.Green - baseColor.Green) * l),
+                                                    (byte)(baseColor.Blue + (light.Blue - baseColor.Blue) * l));
                             }
                             sampleConsole.SetCharBackground(x, y, baseColor, new Background(BackgroundFlag.Set));
                         }
@@ -617,16 +616,16 @@ namespace TCODDemo
             {
                 // enable/disable the torch fx
                 torch=!torch;
-                sampleConsole.ForegroundColor = (Color.White);
+                sampleConsole.ForegroundColor = (ColorPresets.White);
                 sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, LineAlignment.Left);
-                sampleConsole.ForegroundColor = (Color.Black);
+                sampleConsole.ForegroundColor = (ColorPresets.Black);
             }
         }
 
         Image img;
         Image circle;
-        Color blue = new Color(0, 0, 255);
-        Color green = new Color(0, 255, 0);
+        Color blue = Color.FromRGB(0, 0, 255);
+        Color green = Color.FromRGB(0, 255, 0);
         uint lastSwitch = 0;
         bool swap = false;
         void render_image(bool first, KeyPress key)
@@ -642,7 +641,7 @@ namespace TCODDemo
             if (first)
                 TCODSystem.FPS = 30;  /* limited to 30 fps */
 
-            sampleConsole.BackgroundColor = Color.Black;
+            sampleConsole.BackgroundColor = ColorPresets.Black;
             sampleConsole.Clear();
 
             float x = SAMPLE_SCREEN_WIDTH / 2 + (float)Math.Cos(TCODSystem.ElapsedSeconds) * 10.0f;
@@ -662,7 +661,7 @@ namespace TCODDemo
             {  
                 /* split the color channels of circle.bmp */
                 /* the red channel */
-                sampleConsole.BackgroundColor = (Color.BrightRed);
+                sampleConsole.BackgroundColor = (ColorPresets.Red);
                 sampleConsole.DrawRect(0, 3, 15, 15, false, new Background(BackgroundFlag.Set));
                 circle.BlitRect(sampleConsole, 0, 3, -1, -1, new Background(BackgroundFlag.Multiply));
                 /* the green channel */
@@ -689,8 +688,8 @@ namespace TCODDemo
         {
             if (first)
             {
-                sampleConsole.BackgroundColor = (Color.Gray);
-                sampleConsole.ForegroundColor = (Color.BrightYellow);
+                sampleConsole.BackgroundColor = (ColorPresets.Gray);
+                sampleConsole.ForegroundColor = (ColorPresets.Yellow);
                 Mouse.MoveMouse(320, 200);
                 Mouse.ShowCursor(true);
             }
@@ -741,10 +740,10 @@ namespace TCODDemo
             random = new TCODRandom();
 
             render_cols = new Color[4];
-            render_cols[0] = new Color(50, 40, 150);
-            render_cols[1] = new Color(240, 85, 5);
-            render_cols[2] = new Color(50, 35, 240);
-            render_cols[3] = new Color(10, 200, 130);
+            render_cols[0] = Color.FromRGB(50, 40, 150);
+            render_cols[1] = Color.FromRGB(240, 85, 5);
+            render_cols[2] = Color.FromRGB(50, 35, 240);
+            render_cols[3] = Color.FromRGB(10, 200, 130);
 
             render_dirr = new int[] { 1, -1, 1, 1 };
             render_dirg = new int[] { 1, -1, -1, 1 };
@@ -790,7 +789,7 @@ namespace TCODDemo
             int fullscreenHeight = 0;
             bool fullscreen = false;
             bool inRow = false;
-            Color keyColor = Color.Black;
+            Color keyColor = ColorPresets.Black;
 
             for (int i = 1; i < args.Length; i++)
             {
@@ -830,12 +829,15 @@ namespace TCODDemo
                 }
                 else if (args[i] == "-font-key-color" && ArgsRemaining(args, i, 3))
                 {
+                    byte r, g, b;
                     i++;
-                    keyColor.Red = System.Convert.ToByte(args[i]);
+                    r = System.Convert.ToByte(args[i]);
                     i++;
-                    keyColor.Green = System.Convert.ToByte(args[i]);
+                    g = System.Convert.ToByte(args[i]);
                     i++;
-                    keyColor.Blue = System.Convert.ToByte(args[i]);
+                    b = System.Convert.ToByte(args[i]);
+
+                    keyColor = Color.FromRGB(r, g, b);
                 }
             }
 
@@ -860,19 +862,19 @@ namespace TCODDemo
                     if (i == curSample)
                     {
                         // set colors for currently selected sample
-                        rootConsole.ForegroundColor = (Color.White);
-                        rootConsole.BackgroundColor = (Color.BrightBlue);
+                        rootConsole.ForegroundColor = (ColorPresets.White);
+                        rootConsole.BackgroundColor = (ColorPresets.Blue);
                     }
                     else
                     {
                         // set colors for other samples
-                        rootConsole.ForegroundColor = (Color.Gray);
-                        rootConsole.BackgroundColor = Color.Black;
+                        rootConsole.ForegroundColor = (ColorPresets.Gray);
+                        rootConsole.BackgroundColor = ColorPresets.Black;
                     }
                     rootConsole.PrintLine(sampleList[i].name, 2, 47 - (sampleList.Length - i) * 2, new Background(BackgroundFlag.Set), LineAlignment.Left);
                 }
-                rootConsole.ForegroundColor = (Color.Gray);
-                rootConsole.BackgroundColor = Color.Black;
+                rootConsole.ForegroundColor = (ColorPresets.Gray);
+                rootConsole.BackgroundColor = ColorPresets.Black;
                 rootConsole.PrintLine("last frame : " + ((int)(TCODSystem.LastFrameLength * 1000)).ToString() + " ms ( " + TCODSystem.FPS + "fps)", 79, 46, LineAlignment.Right);
                 rootConsole.PrintLine("elapsed : " + TCODSystem.ElapsedMilliseconds + "ms " + (TCODSystem.ElapsedSeconds.ToString("0.00")) + "s", 79, 47, LineAlignment.Right);
                 rootConsole.PutChar(2, 47, SpecialCharacter.ARROW_N);

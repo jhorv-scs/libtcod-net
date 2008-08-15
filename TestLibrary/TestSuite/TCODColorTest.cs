@@ -7,8 +7,6 @@ namespace libtcodWrapperTests
     [TestFixture]
     public class ColorTest
     {
-        private Color emptyConstructor;
-        private Color copyConstructor;
         private Color normalConstructor;
         private Color sameConstructor;
         private Color diffConstructor;
@@ -17,24 +15,15 @@ namespace libtcodWrapperTests
         [SetUp]
         public void Init()
         {
-            emptyConstructor = new Color();
-            copyConstructor = new Color(Color.Silver);
-            normalConstructor = new Color(2, 4, 6);
-            sameConstructor = new Color(2, 4, 6);
-            diffConstructor = new Color(4, 8, 12);
-            HSVConstructor = new Color();
-            HSVConstructor.SetHSV(1.0f, .5f, .3f);
+            normalConstructor = Color.FromRGB(2, 4, 6);
+            sameConstructor = Color.FromRGB(2, 4, 6);
+            diffConstructor = Color.FromRGB(4, 8, 12);
+            HSVConstructor = Color.FromHSV(1.0f, .5f, .3f);
         }
 
         [TearDown]
         public void Cleanup()
         {
-        }
-
-        [Test]
-        public void TestCopyConstructor()
-        {
-            Assert.IsTrue(copyConstructor.Equals(Color.Silver));
         }
 
         [Test]
@@ -48,7 +37,7 @@ namespace libtcodWrapperTests
         [Test]
         public void TestHashCode()
         {
-            emptyConstructor.GetHashCode();
+            normalConstructor.GetHashCode();
             Assert.IsTrue(normalConstructor.GetHashCode() == sameConstructor.GetHashCode());
         }
 
@@ -66,7 +55,7 @@ namespace libtcodWrapperTests
         [Test]
         public void TestDivide()
         {
-            Color Orig = new Color(200, 100, 50);
+            Color Orig = Color.FromRGB(200, 100, 50);
             Color Div = Orig / 10;
             Assert.AreEqual(Div.Red, 20);
             Assert.AreEqual(Div.Green, 10);
@@ -76,12 +65,12 @@ namespace libtcodWrapperTests
         [Test]
         public void TestSubtract()
         {
-            Color Big = new Color(255, 255, 255);
-            Color Tiny = new Color(50, 50, 50);
+            Color Big = Color.FromRGB(255, 255, 255);
+            Color Tiny = Color.FromRGB(50, 50, 50);
             Color Zero = Tiny - Big;
             Color Middle = Big - Tiny;
-            Assert.IsTrue(Zero == new Color(0, 0, 0));
-            Assert.IsTrue(Middle == new Color(205, 205, 205));
+            Assert.IsTrue(Zero == Color.FromRGB(0, 0, 0));
+            Assert.IsTrue(Middle == Color.FromRGB(205, 205, 205));
         }
 
         [Test]

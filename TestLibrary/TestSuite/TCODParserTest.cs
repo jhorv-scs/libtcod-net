@@ -160,8 +160,8 @@ namespace libtcodWrapperTests
                 TCODDice testDice = new TCODDice(3, 6, 1, 2);
                 Assert.IsTrue(parser.GetDiceProperty("item_type.damages") == testDice);
 
-                Color color1 = new Color(255, 0, 0);
-                Color color2 = new Color(128, 96, 96);
+                Color color1 = Color.FromRGB(255, 0, 0);
+                Color color2 = Color.FromRGB(128, 96, 96);
                 Assert.IsTrue(parser.GetColorProperty("item_type.color") == color1);
                 Assert.IsTrue(parser.GetColorProperty("item_type.damaged_color") == color2);
                 Assert.IsTrue(parser.GetStringProperty("item_type.damage_type") == "slash");
