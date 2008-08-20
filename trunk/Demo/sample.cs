@@ -573,9 +573,9 @@ namespace TCODDemo
                 // player move north
                 if ( smap[py-1][px] == ' ' )
                 {
-                    sampleConsole.PutChar(px, py, ' ');
+                    sampleConsole.PutChar(px, py, ' ', new Background(BackgroundFlag.None));
                     py--;
-                    sampleConsole.PutChar(px, py, '@');
+                    sampleConsole.PutChar(px, py, '@', new Background(BackgroundFlag.None));
                     recomputeFov = true;
                 }
             }
@@ -584,9 +584,9 @@ namespace TCODDemo
                 // player move south
                 if ( smap[py+1][px] == ' ' )
                 {
-                    sampleConsole.PutChar(px,py,' ');
+                    sampleConsole.PutChar(px, py, ' ', new Background(BackgroundFlag.None));
                     py++;
-                    sampleConsole.PutChar(px,py,'@');
+                    sampleConsole.PutChar(px, py, '@', new Background(BackgroundFlag.None));
                     recomputeFov = true;
                 }
             } 
@@ -595,9 +595,9 @@ namespace TCODDemo
                 // player move west
                 if ( smap[py][px-1] == ' ' )
                 {
-                    sampleConsole.PutChar(px,py,' ');
+                    sampleConsole.PutChar(px, py, ' ', new Background(BackgroundFlag.None));
                     px--;
-                    sampleConsole.PutChar(px,py,'@');
+                    sampleConsole.PutChar(px, py, '@', new Background(BackgroundFlag.None));
                     recomputeFov = true;
                 }
             }
@@ -606,9 +606,9 @@ namespace TCODDemo
                 // player move east
                 if ( smap[py][px+1] == ' ' ) 
                 {
-                    sampleConsole.PutChar(px,py,' ');
+                    sampleConsole.PutChar(px, py, ' ', new Background(BackgroundFlag.None));
                     px++;
-                    sampleConsole.PutChar(px,py,'@');
+                    sampleConsole.PutChar(px, py, '@', new Background(BackgroundFlag.None));
                     recomputeFov=true;
                 }
             }
