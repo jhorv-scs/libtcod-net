@@ -218,6 +218,28 @@ namespace libtcodWrapper
         }
 
         /// <summary>
+        /// Divide each component of a color by a give constant
+        /// </summary>
+        /// <param name="lhs">Left Hand Side Color</param>
+        /// <param name="rhs">Right Hand Side Constant</param>
+        /// <returns>New Color</returns>
+        public static Color operator /(Color lhs, float rhs)
+        {
+            return new Color((byte)((float)lhs.r / rhs), (byte)((float)lhs.g / rhs), (byte)((float)lhs.b / rhs));
+        }
+
+        /// <summary>
+        /// Divide each component of a color by a give constant
+        /// </summary>
+        /// <param name="lhs">Left Hand Side Color</param>
+        /// <param name="rhs">Right Hand Side Constant</param>
+        /// <returns>New Color</returns>
+        public static Color operator /(Color lhs, double rhs)
+        {
+            return new Color((byte)((double)lhs.r / rhs), (byte)((double)lhs.g / rhs), (byte)((double)lhs.b / rhs));
+        }
+
+        /// <summary>
         /// Subtract each component of a color from another, flooring to zero.
         /// </summary>
         /// <param name="lhs">Left Hand Side</param>
