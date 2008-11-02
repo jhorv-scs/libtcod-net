@@ -55,14 +55,14 @@ namespace libtcodWrapperTests
         public void SaveToDiskTest()
         {
             bool testPasses = true;
-            using (Image j = new Image("terminal.bmp"))
+            using (Image j = new Image("terminal.png"))
             {
-                j.SaveImageToDisc("testImage.bmp");
-                FileInfo info = new FileInfo("testImage.bmp");
+                j.SaveImageToDisc("testImage.png");
+                FileInfo info = new FileInfo("testImage.png");
                 if (!info.Exists)
                     testPasses = false;
                 else
-                    File.Delete("testImage.bmp");
+                    File.Delete("testImage.png");
                 Assert.IsTrue(testPasses);
             }
         }

@@ -5,7 +5,7 @@ using System.Text;
 namespace libtcodWrapper
 {
     /// <summary>
-    /// Generates various types of "noise"
+    /// Generates various types of "noise" using libtcod perlin.
     /// </summary>
     public class TCODNoise : IDisposable
     {
@@ -63,7 +63,7 @@ namespace libtcodWrapper
         public float GetPerlinNoise(float[] f)
         {
             CheckDimension(f.Length);
-            return TCOD_noise_get(m_instance, f);
+            return TCOD_noise_perlin(m_instance, f);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace libtcodWrapper
         public float GetBrownianMotion(float[] f, float octaves)
         {
             CheckDimension(f.Length);
-            return TCOD_noise_fbm(m_instance, f, octaves);
+            return TCOD_noise_fbm_perlin(m_instance, f, octaves);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace libtcodWrapper
         public float GetTurbulence(float[] f, float octaves)
         {
             CheckDimension(f.Length);
-            return TCOD_noise_turbulence(m_instance, f, octaves);
+            return TCOD_noise_turbulence_perlin(m_instance, f, octaves);
         }
       
         /// <summary>
@@ -117,15 +117,15 @@ namespace libtcodWrapper
         
         // basic perlin noise
         [DllImport(DLLName.name)]
-        private extern static float TCOD_noise_get(IntPtr noise, float [] f);
+        private extern static float TCOD_noise_perlin(IntPtr noise, float[] f);
 
         // fractional brownian motion
         [DllImport(DLLName.name)]
-        private extern static float TCOD_noise_fbm(IntPtr noise, float [] f, float octaves);
+        private extern static float TCOD_noise_fbm_perlin(IntPtr noise, float[] f, float octaves);
 
         // turbulence
         [DllImport(DLLName.name)]
-        private extern static float TCOD_noise_turbulence(IntPtr noise, float [] f, float octaves);
+        private extern static float TCOD_noise_turbulence_perlin(IntPtr noise, float[] f, float octaves);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_noise_delete(IntPtr noise);
