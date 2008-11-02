@@ -74,7 +74,8 @@
     <Content Include="skull.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="terminal.bmp">
+    <Content Include="terminal.png" />
+    <Content Include="zlib1.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
