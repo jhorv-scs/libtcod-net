@@ -780,7 +780,7 @@ namespace TCODDemo
             int curSample = 0; // index of the current sample
             bool first = true; // first time we render a sample
             KeyPress key = new KeyPress();
-            string font = "terminal.bmp";
+            string font = "terminal.png";
             int charWidth = 8;
             int charHeight = 8;
             int nbCharH = 16;
@@ -841,7 +841,7 @@ namespace TCODDemo
                 }
             }
 
-            CustomFontRequest fontReq = new CustomFontRequest(font, charWidth, charHeight, nbCharH, nbCharV, inRow, keyColor);
+            CustomFontRequest fontReq = new CustomFontRequest(font, charWidth, charHeight, CustomFontRequestFontTypes.TCOD_FONT_LAYOUT_ASCII_INCOL | CustomFontRequestFontTypes.TCOD_FONT_TYPE_GRAYSCALE);
             if (fullscreenWidth > 0)
                 TCODSystem.ForceFullscrenResolution(fullscreenWidth, fullscreenHeight);
 
