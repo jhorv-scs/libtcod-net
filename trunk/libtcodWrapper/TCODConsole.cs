@@ -112,6 +112,9 @@ namespace libtcodWrapper
         }
     }
 
+	public enum CustomFontRequestFontTypes {TCOD_FONT_LAYOUT_ASCII_INCOL=0, TCOD_FONT_LAYOUT_ASCII_INROW=1,
+		TCOD_FONT_LAYOUT_TCOD=4, TCOD_FONT_TYPE_GREYSCALE=2, TCOD_FONT_TYPE_GRAYSCALE=2};
+	
     /// <summary>
     /// Request for console to draw with font other than "terminal.bmp"
     /// </summary>
@@ -127,24 +130,18 @@ namespace libtcodWrapper
         /// <param name="nb_char_vertic">Number of characters per vertical row</param>
         /// <param name="chars_in_row">Is the first set of ascii characters in a row (not a column)</param>
         /// <param name="key_color">Color in bitmap that represents background</param>
-        public CustomFontRequest(String fontFile, int char_width, int char_height, int nb_char_horiz, int nb_char_vertic, bool chars_in_row, Color key_color)
+        public CustomFontRequest(String fontFile, int char_width, int char_height, CustomFontRequestFontTypes type)
         {
             m_fontFile = fontFile;
             m_char_width = char_width;
             m_char_height = char_height;
-            m_nb_char_horiz = nb_char_horiz;
-            m_nb_char_vertic = nb_char_vertic;
-            m_chars_in_row = chars_in_row;
-            m_key_color = key_color;
-        }
+            m_type = type;
+		}
 
         internal String m_fontFile;
         internal int m_char_width;
-        internal int m_char_height;
-        internal int m_nb_char_horiz;
-        internal int m_nb_char_vertic;
-        internal bool m_chars_in_row;
-        internal Color m_key_color;
+		internal int m_char_height;
+		internal CustomFontRequestFontTypes m_type;
     }
 
     /// <summary>
@@ -635,8 +632,7 @@ namespace libtcodWrapper
         private RootConsole(int w, int h, String title, bool fullscreen, CustomFontRequest font)  : base(IntPtr.Zero, w, h)
         {
             TCOD_console_set_custom_font(new StringBuilder(font.m_fontFile), font.m_char_width, 
-                font.m_char_height, font.m_nb_char_horiz, font.m_nb_char_vertic, font.m_chars_in_row, 
-                font.m_key_color);
+                font.m_char_height, (int)font.m_type);
             TCOD_console_init_root(w, h, new StringBuilder(title), fullscreen);
         }
 
@@ -881,7 +877,7 @@ namespace libtcodWrapper
         private extern static void TCOD_console_init_root(int w, int h, StringBuilder title, bool fullscreen);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_set_custom_font(StringBuilder fontFile, int char_width, int char_height, int nb_char_horiz, int nb_char_vertic, bool chars_by_row, Color key_color);
+        private extern static void TCOD_console_set_custom_font(StringBuilder fontFile, int char_width, int char_height, int flags);
 
 
         [DllImport(DLLName.name)]
