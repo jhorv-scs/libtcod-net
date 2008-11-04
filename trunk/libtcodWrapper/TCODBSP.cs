@@ -20,6 +20,10 @@ namespace libtcodWrapper
             {
                 return m_data->x;
             }
+			set
+			{
+				m_data->x = value;
+			}
         }
         public int y
         {
@@ -27,6 +31,10 @@ namespace libtcodWrapper
             {
                 return m_data->y;
             }
+			set
+			{
+				m_data->y = value;
+			}
         }
         public int w
         {
@@ -34,6 +42,10 @@ namespace libtcodWrapper
             {
                 return m_data->w;
             }
+			set
+			{
+				m_data->w = value;
+			}
         }
         public int h
         {
@@ -41,6 +53,10 @@ namespace libtcodWrapper
             {
                 return m_data->h;
             }
+			set
+			{
+				m_data->h = value;
+			}
         }
         public int position
         {
