@@ -9,7 +9,7 @@ namespace libtcodWrapper
     /// </summary>
     public enum BackgroundFlag
     {
-        #pragma warning disable 1591  //Disable warning about lack of xml comments
+#pragma warning disable 1591  //Disable warning about lack of xml comments
         None,
         Set,
         Multiply,
@@ -23,7 +23,7 @@ namespace libtcodWrapper
         Burn,
         Overlay,
         Alph
-        #pragma warning restore 1591
+#pragma warning restore 1591
     };
 
     /// <summary>
@@ -31,7 +31,7 @@ namespace libtcodWrapper
     /// </summary>
     public enum KeyCode
     {
-        #pragma warning disable 1591    //Disable warning about lack of xml comments
+#pragma warning disable 1591  //Disable warning about lack of xml comments
         TCODK_NONE,
         TCODK_ESCAPE,
         TCODK_BACKSPACE,
@@ -98,7 +98,7 @@ namespace libtcodWrapper
         TCODK_SCROLLLOCK,
         TCODK_SPACE,
         TCODK_CHAR
-        #pragma warning restore 1591  //Disable warning about lack of xml comments
+#pragma warning restore 1591  //Disable warning about lack of xml comments
     }
 
     /// <summary>
@@ -106,11 +106,11 @@ namespace libtcodWrapper
     /// </summary>
     public enum KeyPressType
     {
-        #pragma warning disable 1591    //Disable warning about lack of xml comments
+#pragma warning disable 1591    //Disable warning about lack of xml comments
         Pressed = 1,
         Released = 2,
         PressedAndReleased = 3
-        #pragma warning restore 1591  //Disable warning about lack of xml comments
+#pragma warning restore 1591  //Disable warning about lack of xml comments
     };
 
     /// <summary>
@@ -118,11 +118,11 @@ namespace libtcodWrapper
     /// </summary>
     public enum LineAlignment
     {
-        #pragma warning disable 1591  //Disable warning about lack of xml comments
+#pragma warning disable 1591  //Disable warning about lack of xml comments
         Left,
         Right,
         Center
-        #pragma warning restore 1591  //Disable warning about lack of xml comments
+#pragma warning restore 1591  //Disable warning about lack of xml comments
     }
 
     /// <summary>
@@ -130,43 +130,75 @@ namespace libtcodWrapper
     /// </summary>
     public static class SpecialCharacter
     {
-        #pragma warning disable 1591  //Disable warning about lack of xml comments
+#pragma warning disable 1591  //Disable warning about lack of xml comments
+        // single walls
         public const byte HLINE = 196;
         public const byte VLINE = 179;
         public const byte NE = 191;
         public const byte NW = 218;
         public const byte SE = 217;
         public const byte SW = 192;
+        public const byte TEEW = 180;
+        public const byte TEEE = 195;
+        public const byte TEEN = 193;
+        public const byte TEES = 194;
+        public const byte CROSS = 197;
+        // double walls 
         public const byte DHLINE = 205;
         public const byte DVLINE = 186;
         public const byte DNE = 187;
         public const byte DNW = 201;
         public const byte DSE = 188;
         public const byte DSW = 200;
-        public const byte TEEW = 180;
-        public const byte TEEE = 195;
-        public const byte TEEN = 193;
-        public const byte TEES = 194;
         public const byte DTEEW = 181;
         public const byte DTEEE = 198;
         public const byte DTEEN = 208;
         public const byte DTEES = 210;
-        public const byte CHECKER = 178;
-        public const byte BLOCK = 219;
-        public const byte BLOCK1 = 178;
+        public const byte DCROSS = 213;
+        // blocks       
+        public const byte BLOCK1 = 176;
         public const byte BLOCK2 = 177;
-        public const byte BLOCK3 = 176;
-        public const byte BLOCK_B = 220;
-        public const byte BLOCK_T = 223;
-        public const byte DS_CROSSH = 216;
-        public const byte DS_CROSSV = 215;
-        public const byte CROSS = 197;
-        public const byte LIGHT = 15;
-        public const byte TREE = 5;
+        public const byte BLOCK3 = 178;
+        // arrows 
         public const byte ARROW_N = 24;
         public const byte ARROW_S = 25;
         public const byte ARROW_E = 26;
         public const byte ARROW_W = 27;
-        #pragma warning restore 1591  //Disable warning about lack of xml comments
+        // arrows without tail
+        public const byte ARROW2_N = 30;
+        public const byte ARROW2_S = 31;
+        public const byte ARROW2_E = 16;
+        public const byte ARROW2_W = 17;
+        // double arrows
+        public const byte DARROW_H = 29;
+        public const byte DARROW_V = 18;
+        // GUI stuff
+        public const byte CHECKBOX_UNSET = 224;
+        public const byte CHECKBOX_SET = 225;
+        public const byte RADIO_UNSET = 9;
+        public const byte RADIO_SET = 10;
+        // sub-pixel resolution kit
+        public const byte SUBP_NW = 226;
+        public const byte SUBP_NE = 227;
+        public const byte SUBP_N = 228;
+        public const byte SUBP_SE = 229;
+        public const byte SUBP_DIAG = 230;
+        public const byte SUBP_E = 231;
+        public const byte SUBP_SW = 232;
+#pragma warning restore 1591  //Disable warning about lack of xml comments
     };
+
+    /// <summary>
+    /// Flags using for CustomFontRequest
+    /// </summary>
+    public enum CustomFontRequestFontTypes : int
+    {
+#pragma warning disable 1591
+        LayoutAsciiInColumn = 0,
+        LayoutAsciiInRow = 1,
+        Greyscale = 2,
+        Grayscale = 2,
+        LayoutTCOD = 4,
+#pragma warning restore 1591
+    }
 }

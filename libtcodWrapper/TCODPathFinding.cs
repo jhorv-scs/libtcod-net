@@ -67,6 +67,7 @@ namespace libtcodWrapper
             return TCOD_path_compute(m_instance, origX, origY, destX, destY);
         }
 
+
         /// <summary>
         /// Walk along a path. Fill x and y with previous step's coord to get next point.
         /// </summary>
@@ -78,6 +79,7 @@ namespace libtcodWrapper
         {
             return TCOD_path_walk(m_instance, ref x, ref y, recalculateWhenNeeded);
         }
+
 
         /// <summary>
         /// Query individual point on path
@@ -106,6 +108,25 @@ namespace libtcodWrapper
         public int GetPathSize()
         {
             return TCOD_path_size(m_instance);
+        }
+        /// <summary>
+        /// Get the origin of the path
+        /// </summary>
+        /// <param name="x">x coord of origin</param>
+        /// <param name="y">y coord of origin</param>
+        public void GetPathOrigin(out int x, out int y)
+        {
+            TCOD_path_get_origin(m_instance, out x, out y);
+        }
+
+        /// <summary>
+        /// Get the destination of the path
+        /// </summary>
+        /// <param name="x">x coord of destination</param>
+        /// <param name="y">y coord of destination</param>
+        public void GetPathDestination(out int x, out int y)
+        {
+            TCOD_path_get_destination(m_instance, out x, out y);
         }
 
         /// <summary>
@@ -137,7 +158,13 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_path_get(IntPtr path, int index, out int x, out int y);
-        
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_path_get_origin(IntPtr path, out int x, out int y);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_path_get_destination(IntPtr path, out int x, out int y);
+
         [DllImport(DLLName.name)]
         private extern static void TCOD_path_delete(IntPtr path);
         #endregion

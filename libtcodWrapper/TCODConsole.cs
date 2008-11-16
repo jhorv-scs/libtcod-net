@@ -4,7 +4,7 @@ using System.Text;
 
 namespace libtcodWrapper
 {
-    
+
     internal class DLLName
     {
         /// <summary>
@@ -12,25 +12,30 @@ namespace libtcodWrapper
         /// </summary>
         internal const string name = @"libtcod";
     }
-    
+
     /// <summary>
     /// Defines how draw operations affect background of the console.
     /// </summary>
     public class Background
     {
         internal int m_value;
-        
+
+        /// <summary>
+        /// Background constant for no background change.
+        /// </summary>
+        public static readonly Background None = new Background(libtcodWrapper.BackgroundFlag.None);
+
         /// <summary>
         /// Create background with a given flag that does not take alpha paramater
         /// </summary>
         /// <param name="flag">Background Type</param>
         public Background(BackgroundFlag flag)
         {
-            if(flag == BackgroundFlag.AddA || flag == BackgroundFlag.Alph)
+            if (flag == BackgroundFlag.AddA || flag == BackgroundFlag.Alph)
                 throw new Exception("Must use TCODBackagroudn constructor which takes value");
             m_value = (int)flag;
         }
-        
+
         /// <summary>
         /// Create background with a given flag that does take alpha paramater
         /// </summary>
@@ -112,9 +117,6 @@ namespace libtcodWrapper
         }
     }
 
-	public enum CustomFontRequestFontTypes {TCOD_FONT_LAYOUT_ASCII_INCOL=0, TCOD_FONT_LAYOUT_ASCII_INROW=1,
-		TCOD_FONT_LAYOUT_TCOD=4, TCOD_FONT_TYPE_GREYSCALE=2, TCOD_FONT_TYPE_GRAYSCALE=2};
-	
     /// <summary>
     /// Request for console to draw with font other than "terminal.bmp"
     /// </summary>
@@ -126,22 +128,20 @@ namespace libtcodWrapper
         /// <param name="fontFile">File name to load font from</param>
         /// <param name="char_width">Pixels each character is wide</param>
         /// <param name="char_height">Pixels each character is high</param>
-        /// <param name="nb_char_horiz">Number of characters per horizontal row</param>
-        /// <param name="nb_char_vertic">Number of characters per vertical row</param>
-        /// <param name="chars_in_row">Is the first set of ascii characters in a row (not a column)</param>
-        /// <param name="key_color">Color in bitmap that represents background</param>
+        /// <param name="type">Determines for custom font</param>
         public CustomFontRequest(String fontFile, int char_width, int char_height, CustomFontRequestFontTypes type)
         {
             m_fontFile = fontFile;
             m_char_width = char_width;
             m_char_height = char_height;
             m_type = type;
-		}
+        }
 
         internal String m_fontFile;
         internal int m_char_width;
-		internal int m_char_height;
-		internal CustomFontRequestFontTypes m_type;
+        internal int m_char_height;
+        internal CustomFontRequestFontTypes m_type;
+
     }
 
     /// <summary>
@@ -155,7 +155,7 @@ namespace libtcodWrapper
             m_width = width;
             m_height = height;
         }
-        
+
         /// <summary>
         /// Destory unmanaged console resources
         /// </summary>
@@ -259,7 +259,7 @@ namespace libtcodWrapper
         {
             TCOD_console_put_char(m_consolePtr, x, y, c, (int)BackgroundFlag.Set);
         }
-        
+
         /// <summary>
         /// Set background color of single cell
         /// </summary>
@@ -483,7 +483,7 @@ namespace libtcodWrapper
         {
             TCOD_console_vline(m_consolePtr, x, y, l);
         }
-        
+
         /// <summary>
         /// Draw "Frame" with title onto console
         /// </summary>
@@ -510,6 +510,27 @@ namespace libtcodWrapper
         {
             TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, IntPtr.Zero);
         }
+
+        /// <summary>
+        /// Print a "Powered by libtcod x.y.z" screen. Skippable by pressing any key.
+        /// </summary>
+        public void ConsoleCredits()
+        {
+            TCOD_console_credits();
+        }
+
+        /// <summary>
+        /// Render a frame of "Powered by libtcod x.y.z" onto screen.
+        /// </summary>
+        /// <param name="x">X Position of credits</param>
+        /// <param name="y">Y Position of credits</param>
+        /// <param name="alpha">If true, credits are transparently added on top of the existing screen. For this to work, this function must be placed between your screen rendering code and the console flush.</param>
+        /// <returns>true when the credits screen is finished, indicating that you no longer need to call it.</returns>
+        public bool ConsoleCreditsRender(int x, int y, bool alpha)
+        {
+            return TCOD_console_credits_render(x, y, alpha);
+        }
+
 
         #region DLLImports
 
@@ -601,6 +622,14 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_delete(IntPtr console);
+
+        /* Credits */
+
+        [DllImport(DLLName.name)]
+        private static extern void TCOD_console_credits();
+
+        [DllImport(DLLName.name)]
+        private static extern bool TCOD_console_credits_render(int x, int y, bool alpha);
         #endregion
     }
 
@@ -616,7 +645,8 @@ namespace libtcodWrapper
         /// <param name="h">Height in characters</param>
         /// <param name="title">Title of window</param>
         /// <param name="fullscreen">Fullscreen?</param>
-        private RootConsole(int w, int h, String title, bool fullscreen) : base(IntPtr.Zero, w, h)
+        private RootConsole(int w, int h, String title, bool fullscreen)
+            : base(IntPtr.Zero, w, h)
         {
             TCOD_console_init_root(w, h, new StringBuilder(title), fullscreen);
         }
@@ -629,9 +659,10 @@ namespace libtcodWrapper
         /// <param name="title">Title of window</param>
         /// <param name="fullscreen">Fullscreen?</param>
         /// <param name="font">Custom font request</param>
-        private RootConsole(int w, int h, String title, bool fullscreen, CustomFontRequest font)  : base(IntPtr.Zero, w, h)
+        private RootConsole(int w, int h, String title, bool fullscreen, CustomFontRequest font)
+            : base(IntPtr.Zero, w, h)
         {
-            TCOD_console_set_custom_font(new StringBuilder(font.m_fontFile), font.m_char_width, 
+            TCOD_console_set_custom_font(new StringBuilder(font.m_fontFile), font.m_char_width,
                 font.m_char_height, (int)font.m_type);
             TCOD_console_init_root(w, h, new StringBuilder(title), fullscreen);
         }
@@ -857,7 +888,7 @@ namespace libtcodWrapper
 
                 if (font == null)
                     singletonInstance = new RootConsole((Int32)width, (Int32)height,
-                        windowTitle, (Boolean) isFullscreen);
+                        windowTitle, (Boolean)isFullscreen);
                 else
                     singletonInstance = new RootConsole((Int32)width, (Int32)height,
                         windowTitle, (Boolean)isFullscreen, font);
@@ -878,7 +909,6 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_set_custom_font(StringBuilder fontFile, int char_width, int char_height, int flags);
-
 
         [DllImport(DLLName.name)]
         private extern static bool TCOD_console_is_window_closed();
@@ -911,6 +941,8 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static IntPtr TCOD_console_new(int w, int h);
+
+
 
         #endregion
     }

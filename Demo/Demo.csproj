@@ -62,7 +62,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="circle.bmp">
+    <Content Include="celtic_garamond_10x10_gs_tc.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="circle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="libtcod.dll">
@@ -71,7 +74,7 @@
     <Content Include="SDL.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="skull.bmp">
+    <Content Include="skull.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="terminal.png" />
