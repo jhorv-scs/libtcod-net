@@ -63,7 +63,7 @@ namespace libtcodWrapperTests
             perlin1d.GetPerlinNoise(f);
             Assert.IsTrue(f.Length == 1);
         }
-        
+
         [Test]
         public void GetPerlinTest2d()
         {
@@ -102,7 +102,7 @@ namespace libtcodWrapperTests
         {
             float[] f = new float[1];
             f[0] = .3f;
-            perlin1d.GetBrownianMotion(f, 32.0f);
+            perlin1d.GetPerlinBrownianMotion(f, 32.0f);
             Assert.IsTrue(f.Length == 1);
         }
 
@@ -112,7 +112,7 @@ namespace libtcodWrapperTests
             float[] f = new float[2];
             f[0] = .1f;
             f[1] = .2f;
-            perlin2d.GetBrownianMotion(f, 32.0f);
+            perlin2d.GetPerlinBrownianMotion(f, 32.0f);
             Assert.IsTrue(f.Length == 2);
         }
 
@@ -123,7 +123,7 @@ namespace libtcodWrapperTests
             f[0] = .1f;
             f[1] = .2f;
             f[2] = .3f;
-            perlin3d.GetBrownianMotion(f, 32.0f);
+            perlin3d.GetPerlinBrownianMotion(f, 32.0f);
             Assert.IsTrue(f.Length == 3);
         }
 
@@ -135,7 +135,7 @@ namespace libtcodWrapperTests
             f[1] = .2f;
             f[2] = .3f;
             f[3] = .6f;
-            perlin4d.GetBrownianMotion(f, 32.0f);
+            perlin4d.GetPerlinBrownianMotion(f, 32.0f);
             Assert.IsTrue(f.Length == 4);
         }
 
@@ -144,7 +144,7 @@ namespace libtcodWrapperTests
         {
             float[] f = new float[1];
             f[0] = .3f;
-            perlin1d.GetTurbulence(f, 32.0f);
+            perlin1d.GetPerlinTurbulence(f, 32.0f);
             Assert.IsTrue(f.Length == 1);
         }
 
@@ -154,7 +154,7 @@ namespace libtcodWrapperTests
             float[] f = new float[2];
             f[0] = .1f;
             f[1] = .2f;
-            perlin2d.GetTurbulence(f, 32.0f);
+            perlin2d.GetPerlinTurbulence(f, 32.0f);
             Assert.IsTrue(f.Length == 2);
         }
 
@@ -165,7 +165,7 @@ namespace libtcodWrapperTests
             f[0] = .1f;
             f[1] = .2f;
             f[2] = .3f;
-            perlin3d.GetTurbulence(f, 32.0f);
+            perlin3d.GetPerlinTurbulence(f, 32.0f);
             Assert.IsTrue(f.Length == 3);
         }
 
@@ -177,7 +177,7 @@ namespace libtcodWrapperTests
             f[1] = .2f;
             f[2] = .3f;
             f[3] = .6f;
-            perlin4d.GetTurbulence(f, 32.0f);
+            perlin4d.GetPerlinTurbulence(f, 32.0f);
             Assert.IsTrue(f.Length == 4);
         }
 
@@ -186,22 +186,22 @@ namespace libtcodWrapperTests
         [ExpectedException(typeof(Exception))]
         public void GetDimMismatchPerlin()
         {
-            float [] d = new float[2];
+            float[] d = new float[2];
             perlin1d.GetPerlinNoise(d);
         }
 
         [Test]
         public void ConstructorTest()
         {
-            using(TCODRandom rand = new TCODRandom())
+            using (TCODRandom rand = new TCODRandom())
             {
-                using(TCODNoise a = new TCODNoise(1, rand))
+                using (TCODNoise a = new TCODNoise(1, rand))
                 {
-                    using(TCODNoise b = new TCODNoise(2, .5, 2.0))
+                    using (TCODNoise b = new TCODNoise(2, .5, 2.0))
                     {
-                        using(TCODNoise c = new TCODNoise(3, .2, .3, rand))
+                        using (TCODNoise c = new TCODNoise(3, .2, .3, rand))
                         {
-                            
+
                         }
                     }
                 }
