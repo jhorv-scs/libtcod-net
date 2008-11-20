@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using libtcodWrapper;
 
 using Console = libtcodWrapper.Console;
@@ -66,6 +66,8 @@ namespace libtcodWrapperTests
                 inRealTimeTest = true;
         }
 
+		
+		private static bool ctrlUpHit = false;
         private static void RealTimeLoopTest(RootConsole console)
         {
             TCODSystem.FPS = 25;
@@ -81,6 +83,11 @@ namespace libtcodWrapperTests
             console.PrintLine("'d' to disable repeat keys", 10, 11, LineAlignment.Left);
             console.PrintLine("'e' to enable repeat keys", 10, 12, LineAlignment.Left);
             console.PrintLine(string.Format("Ctrl: {0}", pressedKey.LeftControl), 10, 13, LineAlignment.Left);
+			console.PrintLine(string.Format("Ctrl Up: {0}", ctrlUpHit), 10, 13, LineAlignment.Left);
+			if(pressedKey.KeyCode == KeyCode.TCODK_UP && pressedKey.Control)
+			{
+				ctrlUpHit = true;
+			}
 
             console.Flush();
 
