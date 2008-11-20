@@ -80,6 +80,7 @@ namespace libtcodWrapperTests
             console.PrintLine("F2 Key Pressed = " + ((pressedKey.KeyCode == KeyCode.TCODK_F2 && pressedKey.Pressed) ? "Yes" : "No"), 10, 10, LineAlignment.Left);
             console.PrintLine("'d' to disable repeat keys", 10, 11, LineAlignment.Left);
             console.PrintLine("'e' to enable repeat keys", 10, 12, LineAlignment.Left);
+            console.PrintLine(string.Format("Ctrl: {0}", pressedKey.LeftControl), 10, 13, LineAlignment.Left);
 
             console.Flush();
 
