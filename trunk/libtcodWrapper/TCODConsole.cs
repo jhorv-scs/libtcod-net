@@ -126,20 +126,20 @@ namespace libtcodWrapper
         /// Create new custom font request
         /// </summary>
         /// <param name="fontFile">File name to load font from</param>
-        /// <param name="char_width">Pixels each character is wide</param>
-        /// <param name="char_height">Pixels each character is high</param>
         /// <param name="type">Determines for custom font</param>
-        public CustomFontRequest(String fontFile, int char_width, int char_height, CustomFontRequestFontTypes type)
+        /// <param name="numberCharHoriz">Number Of Characters in Horizontal Row</param>
+        /// <param name="numberCharVert">Number of Characters in Vertical Row</param>
+        public CustomFontRequest(String fontFile, CustomFontRequestFontTypes type, int numberCharHoriz, int numberCharVert)
         {
             m_fontFile = fontFile;
-            m_char_width = char_width;
-            m_char_height = char_height;
+            m_numberCharHoriz = numberCharHoriz;
+            m_numberCharVert = numberCharVert;
             m_type = type;
         }
 
         internal String m_fontFile;
-        internal int m_char_width;
-        internal int m_char_height;
+        internal int m_numberCharHoriz;
+        internal int m_numberCharVert;
         internal CustomFontRequestFontTypes m_type;
 
     }
@@ -662,8 +662,8 @@ namespace libtcodWrapper
         private RootConsole(int w, int h, String title, bool fullscreen, CustomFontRequest font)
             : base(IntPtr.Zero, w, h)
         {
-            TCOD_console_set_custom_font(new StringBuilder(font.m_fontFile), font.m_char_width,
-                font.m_char_height, (int)font.m_type);
+            TCOD_console_set_custom_font(new StringBuilder(font.m_fontFile), (int)font.m_type, font.m_numberCharHoriz,
+                font.m_numberCharVert);
             TCOD_console_init_root(w, h, new StringBuilder(title), fullscreen);
         }
 
@@ -908,7 +908,7 @@ namespace libtcodWrapper
         private extern static void TCOD_console_init_root(int w, int h, StringBuilder title, bool fullscreen);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_set_custom_font(StringBuilder fontFile, int char_width, int char_height, int flags);
+        private extern static void TCOD_console_set_custom_font(StringBuilder fontFile, int flags, int numberCharsHoriz, int numberCharsVert);
 
         [DllImport(DLLName.name)]
         private extern static bool TCOD_console_is_window_closed();
