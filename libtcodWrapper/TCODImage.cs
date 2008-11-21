@@ -159,6 +159,33 @@ namespace libtcodWrapper
             TCOD_image_blit_rect(m_instance, console.m_consolePtr, x, y, w, h, background.m_value);
         }
 
+        /// <summary>
+        /// Blit entire image onto root console
+        /// </summary>
+        /// <param name="x">x coord of center of image on console</param>
+        /// <param name="y">y coord of center of image on console</param>
+        /// <param name="background">How image affects background color</param>
+        /// <param name="scalex">Width scaling factor</param>
+        /// <param name="scaley">Height scaling factor</param>
+        /// <param name="angle">Rotation angle in radians</param>
+        public void Blit(float x, float y, Background background, double scalex, double scaley, double angle)
+        {
+            TCOD_image_blit(m_instance, IntPtr.Zero, x, y, background.m_value, (float)scalex, (float)scaley, (float)angle);
+        }
+
+        /// <summary>
+        /// Blit part of a image to the root console
+        /// </summary>
+        /// <param name="x">x coord of upper left of image on console</param>
+        /// <param name="y">y coord of upper right of image on console</param>
+        /// <param name="w">Width of part of image to blit</param>
+        /// <param name="h">Height of part of image to blit</param>
+        /// <param name="background">How image affects background color</param>
+        public void BlitRect(int x, int y, int w, int h, Background background)
+        {
+            TCOD_image_blit_rect(m_instance, IntPtr.Zero, x, y, w, h, background.m_value);
+        }
+
         #region DllImport
         [DllImport(DLLName.name)]
         private extern static void TCOD_image_blit_rect(IntPtr image, IntPtr console, int x, int y, int w, int h, /*BackgroundFlag*/ int bkgnd_flag);
