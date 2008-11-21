@@ -810,8 +810,8 @@ namespace TCODDemo
             bool first = true; // first time we render a sample
             KeyPress key = new KeyPress();
             string font = "celtic_garamond_10x10_gs_tc.png";
-            int charWidth = 10;
-            int charHeight = 10;
+            int numberCharsHorz = 32;
+            int numberCharsVert = 8;
             int fullscreenWidth = 0;
             int fullscreenHeight = 0;
             bool fullscreen = false;
@@ -826,12 +826,12 @@ namespace TCODDemo
                     i++;
                     font = args[i];
                 }
-                else if (args[i] == "-font-char-size" && ArgsRemaining(args, i, 2))
+                else if (args[i] == "-font-char-numberRows" && ArgsRemaining(args, i, 2))
                 {
                     i++;
-                    charWidth = System.Convert.ToInt32(args[i]);
+                    numberCharsHorz = System.Convert.ToInt32(args[i]);
                     i++;
-                    charHeight = System.Convert.ToInt32(args[i]);
+                    numberCharsVert = System.Convert.ToInt32(args[i]);
                 }
                 else if (args[i] == "-fullscreen-resolution" && ArgsRemaining(args, i, 2))
                 {
@@ -874,7 +874,7 @@ namespace TCODDemo
             }
             if (flags == 0)
                 flags = newFlags;
-            CustomFontRequest fontReq = new CustomFontRequest(font, charWidth, charHeight, flags);
+            CustomFontRequest fontReq = new CustomFontRequest(font, flags, numberCharsHorz, numberCharsVert);
             if (fullscreenWidth > 0)
                 TCODSystem.ForceFullscrenResolution(fullscreenWidth, fullscreenHeight);
 

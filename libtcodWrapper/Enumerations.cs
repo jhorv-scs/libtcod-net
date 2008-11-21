@@ -194,11 +194,11 @@ namespace libtcodWrapper
     public enum CustomFontRequestFontTypes : int
     {
 #pragma warning disable 1591
-        LayoutAsciiInColumn = 0,
-        LayoutAsciiInRow = 1,
-        Greyscale = 2,
-        Grayscale = 2,
-        LayoutTCOD = 4,
+        LayoutAsciiInColumn = 1,
+        LayoutAsciiInRow = 2,
+        Greyscale = 4,
+        Grayscale = 4,
+        LayoutTCOD = 8,
 #pragma warning restore 1591
     }
 }
