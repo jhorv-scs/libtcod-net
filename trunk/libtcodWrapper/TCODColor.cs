@@ -8,7 +8,7 @@ namespace libtcodWrapper
     /// Represents a 32-bit color to the TCOD API.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct Color
+    public struct Color : IEquatable<Color>
     {
         private byte r;
         /// <summary>
@@ -84,6 +84,19 @@ namespace libtcodWrapper
         }
 
         /// <summary>
+        /// Sometimes due to performance reasons, you don't want to allocate a new color for every color change. This changes a color to a new one.
+        /// </summary>
+        /// <param name="red">New Red</param>
+        /// <param name="green">New Green</param>
+        /// <param name="blue">New Blue</param>
+        public void ConvertToNewColor(byte red, byte green, byte blue)
+        {
+            r = red;
+            g = green;
+            b = blue;
+        }
+
+        /// <summary>
         /// Form a Color from RGB components.
         /// </summary>
         /// <param name="red">Red Component (0 - 255)</param>
@@ -128,7 +141,21 @@ namespace libtcodWrapper
             if (obj == null || GetType() != obj.GetType())
                 return false;
 
-            return TCOD_color_equals(this, (Color)obj);
+            Color rhs = (Color)obj;
+
+            return this == rhs;
+        }
+
+        /// <summary>
+        /// Determine if two Colors are equal.
+        /// </summary>
+        /// <param name="other">Other Color</param>
+        /// <returns>Are Equal?</returns>
+        public bool Equals(Color other)
+        {
+            if ((object)other == null)
+                return false;
+            return this == other;
         }
 
         /// <summary>
@@ -137,7 +164,7 @@ namespace libtcodWrapper
         /// <returns>Hash Value</returns>
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return r.GetHashCode() ^ b.GetHashCode() ^ g.GetHashCode();
         }
 
         /// <summary>
@@ -148,7 +175,14 @@ namespace libtcodWrapper
         /// <returns>Are Equal?</returns>
         public static bool operator ==(Color lhs, Color rhs)
         {
-            return TCOD_color_equals(lhs, rhs);
+            if (((object)lhs == null) && ((object)rhs == null))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((object)lhs == null) || ((object)rhs == null))
+                return false;
+
+            return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b;
         }
 
         /// <summary>
@@ -159,7 +193,7 @@ namespace libtcodWrapper
         /// <returns>Are Not Equal?</returns>
         public static bool operator !=(Color lhs, Color rhs)
         {
-            return !TCOD_color_equals(lhs, rhs);
+            return !(lhs == rhs);
         }
 
         /// <summary>

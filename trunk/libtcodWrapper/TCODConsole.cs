@@ -405,6 +405,31 @@ namespace libtcodWrapper
         }
 
         /// <summary>
+        /// Returns height that a call to PrintLineRect would use/return without actually printing
+        /// </summary>
+        /// <param name="str">String to print</param>
+        /// <param name="x">x (Width) position of first character</param>
+        /// <param name="y">y (Height) position of first character</param>
+        /// <param name="w">Width of rectangle to print in</param>
+        /// <param name="h">Height of rectangle to print in. If 0, string is only truncated if reaches bottom of console.</param>
+        /// <param name="align">Alignment of string</param>
+        /// <returns>Number of lines printed</returns>
+        public int GetHeightPrintLineRectWouldUse(string str, int x, int y, int w, int h, LineAlignment align)
+        {
+            switch (align)
+            {
+                case LineAlignment.Left:
+                    return TCOD_console_height_left_rect(m_consolePtr, x, y, w, h, new StringBuilder(str));
+                case LineAlignment.Center:
+                    return TCOD_console_height_right_rect(m_consolePtr, x, y, w, h, new StringBuilder(str));
+                case LineAlignment.Right:
+                    return TCOD_console_height_center_rect(m_consolePtr, x, y, w, h, new StringBuilder(str));
+                default:
+                    throw new Exception("Must Pass Alignment to PrintLineRect");
+            }
+        }
+
+        /// <summary>
         /// Blit console onto another console
         /// </summary>
         /// <param name="xSrc">Upper left corner x coord of area to blit from</param>
@@ -577,6 +602,17 @@ namespace libtcodWrapper
         [DllImport(DLLName.name)]
         private extern static int TCOD_console_print_center_rect(IntPtr con, int x, int y, int w, int h, /*BackgroundFlag*/ int flag, StringBuilder str);
 
+        //Returns height of the printed string
+        [DllImport(DLLName.name)]
+        private extern static int TCOD_console_height_left_rect(IntPtr con, int x, int y, int w, int h, StringBuilder str);
+
+        //Returns height of the printed string
+        [DllImport(DLLName.name)]
+        private extern static int TCOD_console_height_right_rect(IntPtr con, int x, int y, int w, int h, StringBuilder str);
+
+        //Returns height of the printed string
+        [DllImport(DLLName.name)]
+        private extern static int TCOD_console_height_center_rect(IntPtr con, int x, int y, int w, int h, StringBuilder str);
 
 
         [DllImport(DLLName.name)]
