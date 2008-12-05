@@ -26,6 +26,11 @@ namespace libtcodWrapper
         public static readonly Background None = new Background(libtcodWrapper.BackgroundFlag.None);
 
         /// <summary>
+        /// Background constant for set background change.
+        /// </summary>
+        public static readonly Background Set = new Background(libtcodWrapper.BackgroundFlag.Set);
+
+        /// <summary>
         /// Create background with a given flag that does not take alpha paramater
         /// </summary>
         /// <param name="flag">Background Type</param>
@@ -280,7 +285,7 @@ namespace libtcodWrapper
         /// <param name="col">Background color</param>
         public void SetCharBackground(int x, int y, Color col)
         {
-            SetCharBackground(x, y, col, new Background(BackgroundFlag.Set));
+            SetCharBackground(x, y, col, Background.Set);
         }
 
         /// <summary>
@@ -336,7 +341,7 @@ namespace libtcodWrapper
         /// <param name="align">Alignment of string</param>
         public void PrintLine(string str, int x, int y, LineAlignment align)
         {
-            PrintLine(str, x, y, new Background(BackgroundFlag.Set), align);
+            PrintLine(str, x, y, Background.Set, align);
         }
 
         /// <summary>
@@ -375,7 +380,7 @@ namespace libtcodWrapper
         /// <returns>Number of lines printed</returns>
         public int PrintLineRect(string str, int x, int y, int w, int h, LineAlignment align)
         {
-            return PrintLineRect(str, x, y, w, h, new Background(BackgroundFlag.Set), align);
+            return PrintLineRect(str, x, y, w, h, Background.Set, align);
         }
 
         /// <summary>
@@ -484,7 +489,7 @@ namespace libtcodWrapper
         /// <param name="clear">Clear cells of any ascii character</param>
         public void DrawRect(int x, int y, int w, int h, bool clear)
         {
-            DrawRect(x, y, w, h, clear, new Background(BackgroundFlag.Set));
+            DrawRect(x, y, w, h, clear, Background.Set);
         }
 
         /// <summary>

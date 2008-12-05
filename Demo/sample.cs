@@ -103,7 +103,7 @@ namespace TCODDemo
                     float ycoef = (float)(y) / (SAMPLE_SCREEN_HEIGHT - 1);
                     /* get the current cell color */
                     Color curColor = Color.Interpolate(top, bottom, ycoef);
-                    sampleConsole.SetCharBackground(x, y, curColor, new Background(BackgroundFlag.Set));
+                    sampleConsole.SetCharBackground(x, y, curColor, Background.Set);
                 }
             }
 
@@ -187,7 +187,7 @@ namespace TCODDemo
         }
 
         static Console line_bk;
-        static Background line_bkFlag = new Background(BackgroundFlag.Set);
+        static Background line_bkFlag = Background.Set;
         static bool line_init = false;
         void render_lines(bool first, KeyPress key)
         {
@@ -196,7 +196,7 @@ namespace TCODDemo
             {
                 // switch to the next blending mode
                 if (line_bkFlag.BackgroundFlag == BackgroundFlag.Alph)
-                    line_bkFlag = new Background(BackgroundFlag.None);
+                    line_bkFlag = Background.None;
                 else
                     line_bkFlag++;
             }
@@ -224,7 +224,7 @@ namespace TCODDemo
                                         (byte)((x + y) * 255 / (SAMPLE_SCREEN_WIDTH - 1 + SAMPLE_SCREEN_HEIGHT - 1)),
                                         (byte)(y * 255 / (SAMPLE_SCREEN_HEIGHT - 1)));
 
-                        line_bk.SetCharBackground(x, y, col, new Background(BackgroundFlag.Set));
+                        line_bk.SetCharBackground(x, y, col, Background.Set);
                     }
                 }
                 line_init = true;
@@ -356,7 +356,7 @@ namespace TCODDemo
                     c = (byte)((value + 1.0f) / 2.0f * 255);
                     /* use a bluish color */
                     col = Color.FromRGB((byte)(c / 2), (byte)(c / 2), c);
-                    sampleConsole.SetCharBackground(x, y, col, new Background(BackgroundFlag.Set));
+                    sampleConsole.SetCharBackground(x, y, col, Background.Set);
                 }
             }
 
@@ -371,12 +371,12 @@ namespace TCODDemo
                 {
                     sampleConsole.ForegroundColor = ColorPresets.White;
                     sampleConsole.BackgroundColor = ColorPresets.Blue;
-                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new Background(BackgroundFlag.Set), LineAlignment.Left);
+                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), Background.Set, LineAlignment.Left);
                 }
                 else
                 {
                     sampleConsole.ForegroundColor = ColorPresets.Gray;
-                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), new Background(BackgroundFlag.None), LineAlignment.Left);
+                    sampleConsole.PrintLine(noise_funcName[(int)curfunc], 2, 2 + (int)(curfunc), Background.None, LineAlignment.Left);
                 }
             }
             /* draw parameters */
@@ -562,13 +562,13 @@ namespace TCODDemo
                     bool wall = (smap[y][x] == '#');
                     if (!visible)
                     {
-                        sampleConsole.SetCharBackground(x, y, (wall ? darkWall : darkGround), new Background(BackgroundFlag.Set));
+                        sampleConsole.SetCharBackground(x, y, (wall ? darkWall : darkGround), Background.Set);
                     }
                     else
                     {
                         if (!torch)
                         {
-                            sampleConsole.SetCharBackground(x, y, wall ? lightWall : lightGround, new Background(BackgroundFlag.Set));
+                            sampleConsole.SetCharBackground(x, y, wall ? lightWall : lightGround, Background.Set);
                         }
                         else
                         {
@@ -591,7 +591,7 @@ namespace TCODDemo
                                                     (byte)(baseColor.Green + (light.Green - baseColor.Green) * l),
                                                     (byte)(baseColor.Blue + (light.Blue - baseColor.Blue) * l));
                             }
-                            sampleConsole.SetCharBackground(x, y, baseColor, new Background(BackgroundFlag.Set));
+                            sampleConsole.SetCharBackground(x, y, baseColor, Background.Set);
                         }
                     }
                 }
@@ -602,9 +602,9 @@ namespace TCODDemo
                 // player move north
                 if (smap[py - 1][px] == ' ')
                 {
-                    sampleConsole.PutChar(px, py, ' ', new Background(BackgroundFlag.None));
+                    sampleConsole.PutChar(px, py, ' ', Background.None);
                     py--;
-                    sampleConsole.PutChar(px, py, '@', new Background(BackgroundFlag.None));
+                    sampleConsole.PutChar(px, py, '@', Background.None);
                     recomputeFov = true;
                 }
             }
@@ -613,9 +613,9 @@ namespace TCODDemo
                 // player move south
                 if (smap[py + 1][px] == ' ')
                 {
-                    sampleConsole.PutChar(px, py, ' ', new Background(BackgroundFlag.None));
+                    sampleConsole.PutChar(px, py, ' ', Background.None);
                     py++;
-                    sampleConsole.PutChar(px, py, '@', new Background(BackgroundFlag.None));
+                    sampleConsole.PutChar(px, py, '@', Background.None);
                     recomputeFov = true;
                 }
             }
@@ -624,9 +624,9 @@ namespace TCODDemo
                 // player move west
                 if (smap[py][px - 1] == ' ')
                 {
-                    sampleConsole.PutChar(px, py, ' ', new Background(BackgroundFlag.None));
+                    sampleConsole.PutChar(px, py, ' ', Background.None);
                     px--;
-                    sampleConsole.PutChar(px, py, '@', new Background(BackgroundFlag.None));
+                    sampleConsole.PutChar(px, py, '@', Background.None);
                     recomputeFov = true;
                 }
             }
@@ -635,9 +635,9 @@ namespace TCODDemo
                 // player move east
                 if (smap[py][px + 1] == ' ')
                 {
-                    sampleConsole.PutChar(px, py, ' ', new Background(BackgroundFlag.None));
+                    sampleConsole.PutChar(px, py, ' ', Background.None);
                     px++;
-                    sampleConsole.PutChar(px, py, '@', new Background(BackgroundFlag.None));
+                    sampleConsole.PutChar(px, py, '@', Background.None);
                     recomputeFov = true;
                 }
             }
@@ -691,23 +691,23 @@ namespace TCODDemo
                 /* split the color channels of circle.png */
                 /* the red channel */
                 sampleConsole.BackgroundColor = (ColorPresets.Red);
-                sampleConsole.DrawRect(0, 3, 15, 15, false, new Background(BackgroundFlag.Set));
+                sampleConsole.DrawRect(0, 3, 15, 15, false, Background.Set);
                 circle.BlitRect(sampleConsole, 0, 3, -1, -1, new Background(BackgroundFlag.Multiply));
                 /* the green channel */
                 sampleConsole.BackgroundColor = (green);
-                sampleConsole.DrawRect(15, 3, 15, 15, false, new Background(BackgroundFlag.Set));
+                sampleConsole.DrawRect(15, 3, 15, 15, false, Background.Set);
                 circle.BlitRect(sampleConsole, 15, 3, -1, -1, new Background(BackgroundFlag.Multiply));
                 /* the blue channel */
                 sampleConsole.BackgroundColor = (blue);
-                sampleConsole.DrawRect(30, 3, 15, 15, false, new Background(BackgroundFlag.Set));
+                sampleConsole.DrawRect(30, 3, 15, 15, false, Background.Set);
                 circle.BlitRect(sampleConsole, 30, 3, -1, -1, new Background(BackgroundFlag.Multiply));
             }
             else
             {
                 /* render circle.png with normal blitting */
-                circle.BlitRect(sampleConsole, 0, 3, -1, -1, new Background(BackgroundFlag.Set));
-                circle.BlitRect(sampleConsole, 15, 3, -1, -1, new Background(BackgroundFlag.Set));
-                circle.BlitRect(sampleConsole, 30, 3, -1, -1, new Background(BackgroundFlag.Set));
+                circle.BlitRect(sampleConsole, 0, 3, -1, -1, Background.Set);
+                circle.BlitRect(sampleConsole, 15, 3, -1, -1, Background.Set);
+                circle.BlitRect(sampleConsole, 30, 3, -1, -1, Background.Set);
             }
             img.Blit(sampleConsole, x, y, new Background(BackgroundFlag.AddA, .6), scalex, scaley, angle);
         }
@@ -906,7 +906,7 @@ namespace TCODDemo
                         rootConsole.ForegroundColor = (ColorPresets.Gray);
                         rootConsole.BackgroundColor = ColorPresets.Black;
                     }
-                    rootConsole.PrintLine(sampleList[i].name, 2, 46 - sampleList.Length + i, new Background(BackgroundFlag.Set), LineAlignment.Left);
+                    rootConsole.PrintLine(sampleList[i].name, 2, 46 - sampleList.Length + i, Background.Set, LineAlignment.Left);
                 }
                 rootConsole.ForegroundColor = (ColorPresets.Gray);
                 rootConsole.BackgroundColor = ColorPresets.Black;
