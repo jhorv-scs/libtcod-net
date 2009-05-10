@@ -22,15 +22,17 @@ namespace libtcodWrapperTests
                 Keyboard.WaitForKeyPress(false);
             }
         }
-#pragma warning restore 0649
+        #pragma warning restore 0649
 
         static int Main()
         {
-            //WaitForDebugger();
+            WaitForDebugger();
 
             //TCODMouseTest.TestTCODMouse();
             //TCODFovTest.TestTCODFovTest();
-            KeyboardTest.TestKeyboard();
+            //KeyboardTest.TestKeyboard();
+            TCODFileParserTest t = new TCODFileParserTest();
+            t.ImplementedParserTest();
             return 0;
         }
     }

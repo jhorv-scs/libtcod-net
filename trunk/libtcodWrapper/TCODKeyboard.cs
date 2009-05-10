@@ -159,6 +159,7 @@ namespace libtcodWrapper
         private extern static KeyPress TCOD_console_check_for_keypress(KeyPressType flags);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_console_is_key_pressed(KeyCode key);
 
         [DllImport(DLLName.name)]

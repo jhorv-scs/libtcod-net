@@ -952,6 +952,7 @@ namespace libtcodWrapper
         private extern static void TCOD_console_set_custom_font(StringBuilder fontFile, int flags, int numberCharsHoriz, int numberCharsVert);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_console_is_window_closed();
 
         [DllImport(DLLName.name)]
@@ -973,6 +974,7 @@ namespace libtcodWrapper
         /* Fullscreen */
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_console_is_fullscreen();
 
         [DllImport(DLLName.name)]
@@ -982,8 +984,6 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private extern static IntPtr TCOD_console_new(int w, int h);
-
-
 
         #endregion
     }

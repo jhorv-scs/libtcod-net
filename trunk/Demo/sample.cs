@@ -453,6 +453,7 @@ namespace TCODDemo
         int px = 20, py = 10; // player position
         bool recomputeFov = true; // the player moved. must recompute fov
         bool torch = false; // torch fx on ?
+        bool light_walls = true;
         TCODFov map;
         Color darkWall = Color.FromRGB(0, 0, 100);
         Color lightWall = Color.FromRGB(130, 110, 50);
@@ -460,6 +461,11 @@ namespace TCODDemo
         Color lightGround = Color.FromRGB(200, 180, 50);
         TCODNoise map_noise;
         float torchx = 0.0f; // torch light position in the perlin noise
+
+        int algonum = 0;
+        string[] algo_names = { "BASIC      ", "DIAMOND    ", "SHADOW     ", 
+		                        "PERMISSIVE0","PERMISSIVE1","PERMISSIVE2","PERMISSIVE3","PERMISSIVE4",
+		                        "PERMISSIVE5","PERMISSIVE6","PERMISSIVE7","PERMISSIVE8" };
 
         #region Map
         string[] smap = {
@@ -515,7 +521,7 @@ namespace TCODDemo
                 // draw the help text & player @
                 sampleConsole.Clear();
                 sampleConsole.ForegroundColor = (ColorPresets.White);
-                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, LineAlignment.Left);
+                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on ") + " : light walls " + (light_walls ? "off" : "on ") + "\n+-: algo " + algo_names[algonum], 1, 1, LineAlignment.Left);
                 sampleConsole.ForegroundColor = (ColorPresets.Black);
                 sampleConsole.PutChar(px, py, '@');
                 // draw windows
@@ -535,7 +541,7 @@ namespace TCODDemo
             {
                 // calculate the field of view from the player position
                 recomputeFov = false;
-                map.CalculateFOV(px, py, torch ? (int)TORCH_RADIUS : 0);
+                map.CalculateFOV(px, py, torch ? (int)TORCH_RADIUS : 0, light_walls, (FovAlgorithm)algonum);
             }
             // torch position & intensity variation
             float dx = 0.0f, dy = 0.0f, di = 0.0f;
@@ -646,8 +652,30 @@ namespace TCODDemo
                 // enable/disable the torch fx
                 torch = !torch;
                 sampleConsole.ForegroundColor = (ColorPresets.White);
-                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on "), 1, 1, LineAlignment.Left);
+                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on ") + " : light walls " + (light_walls ? "off" : "on ") + "\n+-: algo " + algo_names[algonum], 1, 1, LineAlignment.Left);
                 sampleConsole.ForegroundColor = (ColorPresets.Black);
+            }
+            else if (key.Character == 'W' || key.Character == 'W')
+            {
+                light_walls = !light_walls;
+                sampleConsole.ForegroundColor = (ColorPresets.White);
+                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on ") + " : light walls " + (light_walls ? "off" : "on ") + "\n+-: algo " + algo_names[algonum], 1, 1, LineAlignment.Left);
+                sampleConsole.ForegroundColor = (ColorPresets.Black);
+                recomputeFov = true;
+            }
+            else if (key.Character == '+' || key.Character == '-')
+            {
+                algonum += key.Character == '+' ? 1 : -1;
+
+                if (algonum >= (int)FovAlgorithm.NB_Fov_Algorithms)
+                    algonum = (int)FovAlgorithm.Permissive_8;
+                else if (algonum < 0)
+                    algonum = 0;
+
+                sampleConsole.ForegroundColor = (ColorPresets.White);
+                sampleConsole.PrintLine("IJKL : move around\nT : torch fx " + (torch ? "off" : "on ") + " : light walls " + (light_walls ? "off" : "on ") + "\n+-: algo " + algo_names[algonum], 1, 1, LineAlignment.Left);
+                sampleConsole.ForegroundColor = (ColorPresets.Black);
+                recomputeFov = true;
             }
         }
 
@@ -751,7 +779,451 @@ namespace TCODDemo
                 Mouse.ShowCursor(true);
         }
 
-        private sample[] sampleList = new sample[7];
+        // int px = 20, py = 10; // player position
+        int dx = 24, dy = 1; // destination
+        TCODPathFinding path = null;
+        bool recalculatePath = false;
+        float busy = 0.0f;
+        char oldChar = ' ';
+
+        void render_path(bool first, KeyPress key)
+        {
+            Mouse mouse;
+            int mx, my, x, y, i;
+
+            if (map == null)
+            {
+                // initialize the map
+                map = new TCODFov(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+                for (y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+                {
+                    for (x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                    {
+                        if (smap[y][x] == ' ')
+                            map.SetCell(x, y, true, true);// ground
+                        else if (smap[y][x] == '=')
+                            map.SetCell(x, y, true, false); // window
+                    }
+                }
+                // path = new TCODPathFinding(map, 1.41);
+            }
+
+            if (first)
+            {
+                TCODSystem.FPS = 30; // fps limited to 30
+                // we draw the foreground only the first time.
+                // during the player movement, only the @ is redrawn.
+                // the rest impacts only the background color
+                // draw the help text & player @
+                sampleConsole.Clear();
+                sampleConsole.ForegroundColor = (ColorPresets.White);
+                sampleConsole.PrintLine("IJKL : move around\nT : mouse : move destination", 1, 1, LineAlignment.Left);
+                sampleConsole.ForegroundColor = (ColorPresets.Black);
+                sampleConsole.PutChar(px, py, '@');
+                // draw windows
+                for (y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+                {
+                    for (x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                    {
+                        if (smap[y][x] == '=')
+                        {
+                            sampleConsole.PutChar(x, y, '=');
+                        }
+                    }
+                }
+                recalculatePath = true;
+            }
+            
+            if (recalculatePath)
+            {
+                path = new TCODPathFinding(map, 1.41);
+                path.ComputePath(px, py, dx, dy);
+                recalculatePath = false;
+                busy = 1.0f;
+            }
+
+            // draw the dungeon
+            for (y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+            {
+                for (x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                {
+                    bool wall = smap[y][x] == '#';
+                    sampleConsole.SetCharBackground(x, y, (wall ? darkWall : darkGround), Background.Set);
+                }
+            }
+
+            // draw the path
+            for (i = 0; i < path.GetPathSize(); i++)
+            {
+                // int x, y;
+                path.GetPointOnPath(i, out x, out y);
+                sampleConsole.SetCharBackground(x, y, lightGround, Background.Set);
+            }
+
+            // move the creature
+            busy -= TCODSystem.LastFrameLength;
+            if (busy <= 0.0f)
+            {
+                busy += 0.2f;
+                if (!path.IsPathEmpty())
+                {
+                    sampleConsole.PutChar(px, py, ' ', Background.None);
+                    path.WalkPath(ref px, ref py, true);
+                    sampleConsole.PutChar(px, py, '@', Background.None);
+                }
+            }
+
+            if ((key.Character == 'I' || key.Character == 'i') && dy > 0)
+            {
+                // destination move north
+                sampleConsole.PutChar(dx, dy, oldChar, Background.None);
+                dy--;
+                oldChar = sampleConsole.GetChar(dx, dy);
+                sampleConsole.PutChar(dx, dy, '+', Background.None);
+                if (smap[dy][dx] == ' ')
+                {
+                    recalculatePath = true;
+                }
+            }
+            else if ((key.Character == 'K' || key.Character == 'k') && dy < SAMPLE_SCREEN_HEIGHT - 1)
+            {
+                // destination move south
+                sampleConsole.PutChar(dx, dy, oldChar, Background.None);
+                dy++;
+                oldChar = sampleConsole.GetChar(dx, dy);
+                sampleConsole.PutChar(dx, dy, '+', Background.None);
+                if (smap[dy][dx] == ' ')
+                {
+                    recalculatePath = true;
+                }
+            }
+            else if ((key.Character == 'J' || key.Character == 'j') && dx > 0)
+            {
+                // destination move west
+                sampleConsole.PutChar(dx, dy, oldChar, Background.None);
+                dx--;
+                oldChar = sampleConsole.GetChar(dx, dy);
+                sampleConsole.PutChar(dx, dy, '+', Background.None);
+                if (smap[dy][dx] == ' ')
+                {
+                    recalculatePath = true;
+                }
+            }
+            else if ((key.Character == 'L' || key.Character == 'l') && dx < SAMPLE_SCREEN_WIDTH - 1)
+            {
+                // destination move east
+                sampleConsole.PutChar(dx, dy, oldChar, Background.None);
+                dx++;
+                oldChar = sampleConsole.GetChar(dx, dy);
+                sampleConsole.PutChar(dx, dy, '+', Background.None);
+                if (smap[dy][dx] == ' ')
+                {
+                    recalculatePath = true;
+                }
+            }
+
+            mouse = Mouse.GetStatus();
+            mx = mouse.CellX - SAMPLE_SCREEN_X;
+            my = mouse.CellY - SAMPLE_SCREEN_Y;
+
+            if (mx >= 0 && mx < SAMPLE_SCREEN_WIDTH && my >= 0 && my < SAMPLE_SCREEN_HEIGHT && (dx != mx || dy != my))
+            {
+                sampleConsole.PutChar(dx, dy, oldChar, Background.None);
+                dx = mx; dy = my;
+                oldChar = sampleConsole.GetChar(dx, dy);
+                sampleConsole.PutChar(dx, dy, '+', Background.None);
+                if (smap[dy][dx] == ' ')
+                {
+                    recalculatePath = true;
+                }
+            }
+        }
+
+
+        // ***************************
+        // bsp sample
+        // ***************************
+        #region "BSP Helpers"
+        int bspDepth = 8;
+        int minRoomSize = 4;
+        bool randomRoom = false; // a room fills a random part of the node or the maximum available space ?
+        bool roomWalls = true; // if true, there is always a wall on north & west side of a room
+
+        // draw a vertical line
+        void vline(char[,] map, int x, int y1, int y2)
+        {
+            int y = y1;
+            int dy = (y1 > y2 ? -1 : 1);
+            map[x,y] = ' ';
+            if (y1 == y2) return;
+            do
+            {
+                y += dy;
+                map[x,y] = ' ';
+            } while (y != y2);
+        }
+
+        // draw a vertical line up until we reach an empty space
+        void vline_up(char[,] map, int x, int y)
+        {
+            while (y >= 0 && map[x,y] != ' ')
+            {
+                map[x,y] = ' ';
+                y--;
+            }
+        }
+
+        // draw a vertical line down until we reach an empty space
+        void vline_down(char[,] map, int x, int y)
+        {
+            while (y < SAMPLE_SCREEN_HEIGHT && map[x,y] != ' ')
+            {
+                map[x,y] = ' ';
+                y++;
+            }
+        }
+
+        // draw a horizontal line
+        void hline(char[,] map, int x1, int y, int x2)
+        {
+            int x = x1;
+            int dx = (x1 > x2 ? -1 : 1);
+            map[x,y] = ' ';
+            if (x1 == x2) return;
+            do
+            {
+                x += dx;
+                map[x,y] = ' ';
+            } while (x != x2);
+        }
+
+        // draw a horizontal line left until we reach an empty space
+        void hline_left(char[,] map, int x, int y)
+        {
+            while (x >= 0 && map[x,y] != ' ')
+            {
+                map[x,y] = ' ';
+                x--;
+            }
+        }
+
+        // draw a horizontal line right until we reach an empty space
+        void hline_right(char[,] map, int x, int y)
+        {
+            while (x < SAMPLE_SCREEN_WIDTH && map[x,y] != ' ')
+            {
+                map[x,y] = ' ';
+                x++;
+            }
+        }
+        
+        // the class building the dungeon from the bsp nodes
+        bool traverse_node(TCODBSP node)
+        {           
+            TCODRandom rnd = new TCODRandom();
+
+            if (node.IsLeaf())
+            {
+                // calculate the room size
+                int minx = node.x + 1;
+                int maxx = node.x + node.w - 1;
+                int miny = node.y + 1;
+                int maxy = node.y + node.h - 1;
+                int x, y;
+                if (!roomWalls)
+                {
+                    if (minx > 1) minx--;
+                    if (miny > 1) miny--;
+                }
+                if (maxx == SAMPLE_SCREEN_WIDTH - 1) maxx--;
+                if (maxy == SAMPLE_SCREEN_HEIGHT - 1) maxy--;
+                if (randomRoom)
+                {
+                    minx = rnd.GetRandomInt(minx, maxx - minRoomSize + 1);
+                    miny = rnd.GetRandomInt(miny, maxy - minRoomSize + 1);
+                    maxx = rnd.GetRandomInt(minx + minRoomSize - 1, maxx);
+                    maxy = rnd.GetRandomInt(miny + minRoomSize - 1, maxy);
+                }
+                // resize the node to fit the room
+                //	printf("node %dx%d %dx%d => room %dx%d %dx%d\n",node->x,node->y,node->w,node->h,minx,miny,maxx-minx+1,maxy-miny+1);
+                node.x = minx;
+                node.y = miny;
+                node.w = maxx - minx + 1;
+                node.h = maxy - miny + 1;
+                // dig the room
+                for (x = minx; x <= maxx; x++)
+                {
+                    for (y = miny; y <= maxy; y++)
+                    {
+                        bsp_map[x,y] = ' ';
+                    }
+                }
+            }
+            else
+            {
+                //	printf("lvl %d %dx%d %dx%d\n",node->level, node->x,node->y,node->w,node->h);
+                // resize the node to fit its sons
+                TCODBSP left = node.GetLeft();
+                TCODBSP right = node.GetRight();
+
+                node.x = System.Math.Min(left.x, right.x);
+                node.y = System.Math.Min(left.y, right.y);
+                node.w = System.Math.Max(left.x + left.w, right.x + right.w) - node.x;
+                node.h = System.Math.Max(left.y + left.h, right.y + right.h) - node.y;
+                // create a corridor between the two lower nodes
+                if (node.horizontal)
+                {
+                    // vertical corridor
+                    if (left.x + left.w - 1 < right.x || right.x + right.w - 1 < left.x)
+                    {
+                        // no overlapping zone. we need a Z shaped corridor
+                        int x1 = rnd.GetRandomInt(left.x, left.x + left.w - 1);
+                        int x2 = rnd.GetRandomInt(right.x, right.x + right.w - 1);
+                        int y = rnd.GetRandomInt(left.y + left.h, right.y);
+                        vline_up(bsp_map, x1, y - 1);
+                        hline(bsp_map, x1, y, x2);
+                        vline_down(bsp_map, x2, y + 1);
+                    }
+                    else
+                    {
+                        // straight vertical corridor
+                        int minx = System.Math.Max(left.x, right.x);
+                        int maxx = System.Math.Min(left.x + left.w - 1, right.x + right.w - 1);
+                        int x = rnd.GetRandomInt(minx, maxx);
+                        vline_down(bsp_map, x, right.y);
+                        vline_up(bsp_map, x, right.y - 1);
+                    }
+                }
+                else
+                {
+                    // horizontal corridor
+                    if (left.y + left.h - 1 < right.y || right.y + right.h - 1 < left.y)
+                    {
+                        // no overlapping zone. we need a Z shaped corridor
+                        int y1 = rnd.GetRandomInt(left.y, left.y + left.h - 1);
+                        int y2 = rnd.GetRandomInt(right.y, right.y + right.h - 1);
+                        int x = rnd.GetRandomInt(left.x + left.w, right.x);
+                        hline_left(bsp_map, x - 1, y1);
+                        vline(bsp_map, x, y1, y2);
+                        hline_right(bsp_map, x + 1, y2);
+                    }
+                    else
+                    {
+                        // straight horizontal corridor
+                        int miny = System.Math.Max(left.y, right.y);
+                        int maxy = System.Math.Min(left.y + left.h - 1, right.y + right.h - 1);
+                        int y = rnd.GetRandomInt(miny, maxy);
+                        hline_left(bsp_map, right.x - 1, y);
+                        hline_right(bsp_map, right.x, y);
+                    }
+                }
+            }
+            return true;
+        }
+        #endregion
+
+        char[,] bsp_map = new char[SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT];
+
+        TCODBSP bsp = null;
+        bool generate = true;
+        bool refresh = false;
+
+        void render_bsp(bool first, KeyPress key)
+        {
+            int x, y;
+
+            if (generate || refresh)
+            {
+                // dungeon generation
+                if (bsp == null)
+                {
+                    // create the bsp
+                    bsp = new TCODBSP(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+                }
+                else
+                {
+                    // restore the nodes size
+                    bsp.Resize(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
+                }
+
+                
+                for (int x1 = 0; x1 < SAMPLE_SCREEN_WIDTH; x1++)
+                    for (int y1 = 0; y1 < SAMPLE_SCREEN_HEIGHT; y1++)
+                        bsp_map[x1, y1] = '#';
+                
+                  
+                if (generate)
+                {
+                    // build a new random bsp tree
+                    bsp.RemoveSons();
+                    bsp.SplitRecursive(null, bspDepth, minRoomSize + (roomWalls ? 1 : 0), minRoomSize + (roomWalls ? 1 : 0), 1.5f, 1.5f);
+                }
+                // create the dungeon from the bsp
+                bsp.TraverseInvertedOrder(new TCODBSPTraversalDelegate(traverse_node));
+                generate = false;
+                refresh = false;
+            }
+
+            sampleConsole.Clear();
+            sampleConsole.ForegroundColor = (ColorPresets.White);
+            sampleConsole.PrintLine("ENTER : rebuild bsp\nSPACE : rebuild dungeon\n+-: bsp depth " + bspDepth + "\n*/: room size " + minRoomSize + "\n1 : random room size " + (randomRoom ? "ON" : "OFF"), 1, 1, Background.None, LineAlignment.Left);
+
+            if (randomRoom)
+                sampleConsole.PrintLine("2 : room walls " + (roomWalls ? "ON" : "OFF"), 1, 6, Background.None, LineAlignment.Left);
+
+            // render the level
+            for (y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+            {
+                for (x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                {
+                    bool wall = (bsp_map[x,y] == '#');
+                    sampleConsole.SetCharBackground(x, y, (wall ? darkWall : darkGround), Background.Set);
+                }
+            }
+
+            if (key.KeyCode == KeyCode.TCODK_ENTER || key.KeyCode == KeyCode.TCODK_KPENTER)
+            {
+                generate = true;
+            }
+            else if (key.Character == ' ')
+            {
+                refresh = true;
+            }
+            else if (key.Character == '+')
+            {
+                bspDepth++;
+                generate = true;
+            }
+            else if (key.Character == '-' && bspDepth > 1)
+            {
+                bspDepth--;
+                generate = true;
+            }
+            else if (key.Character == '*')
+            {
+                minRoomSize++;
+                generate = true;
+            }
+            else if (key.Character == '/' && minRoomSize > 2)
+            {
+                minRoomSize--;
+                generate = true;
+            }
+            else if (key.Character == '1' || key.KeyCode == KeyCode.TCODK_1 || key.KeyCode == KeyCode.TCODK_KP1)
+            {
+                randomRoom = !randomRoom;
+                if (!randomRoom) roomWalls = true;
+                refresh = true;
+            }
+            else if (key.Character == '2' || key.KeyCode == KeyCode.TCODK_2 || key.KeyCode == KeyCode.TCODK_KP2)
+            {
+                roomWalls = !roomWalls;
+                refresh = true;
+            }
+
+        }
+        
+        private sample[] sampleList = new sample[9];
 
         private void fillSampleList()
         {
@@ -760,9 +1232,14 @@ namespace TCODDemo
             sampleList[2] = new sample("  Line drawing       ", render_lines);
             sampleList[3] = new sample("  Noise              ", render_noise);
             sampleList[4] = new sample("  Field of view      ", render_fov);
-            sampleList[5] = new sample("  Image toolkit      ", render_image);
-            sampleList[6] = new sample("  Mouse support      ", render_mouse);
+
+            sampleList[5] = new sample("  Path finding       ", render_path);
+            sampleList[6] = new sample("  Bsp toolkit        ", render_bsp);
+
+            sampleList[7] = new sample("  Image toolkit      ", render_image);
+            sampleList[8] = new sample("  Mouse support      ", render_mouse);
         }
+
 
         private void setupStaticData()
         {

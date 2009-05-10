@@ -113,6 +113,14 @@ namespace libtcodWrapper
 
         public static bool operator ==(TCODBSP lhs, TCODBSP rhs)
         {
+            // if both are null, then they are equal
+            if (ReferenceEquals(lhs, null) && ReferenceEquals(rhs, null))
+                return true;
+
+            // if only one side is null then they are not equal
+            if (ReferenceEquals(lhs, null) || ReferenceEquals(rhs, null))
+                return false;
+
             return ((*lhs.m_data) == *(rhs.m_data));
         }
 
@@ -199,7 +207,10 @@ namespace libtcodWrapper
 
         public void SplitRecursive(TCODRandom randomizer, int nb, int minHSize, int minVSize, float maxHRatio, float maxVRatio)
         {
-            TCOD_bsp_split_recursive(new IntPtr(m_data), randomizer.m_instance, nb, minHSize, minVSize, maxHRatio, maxVRatio);
+            if (randomizer == null)
+                TCOD_bsp_split_recursive(new IntPtr(m_data), IntPtr.Zero, nb, minHSize, minVSize, maxHRatio, maxVRatio);
+            else
+                TCOD_bsp_split_recursive(new IntPtr(m_data), randomizer.m_instance, nb, minHSize, minVSize, maxHRatio, maxVRatio);
         }
 
         public bool IsMapCellInsideNode(int x, int y)
@@ -264,6 +275,7 @@ namespace libtcodWrapper
         private extern static void TCOD_bsp_split_once(IntPtr node, bool horizontal, int position);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_bsp_is_leaf(IntPtr node);
         
         [DllImport(DLLName.name)]
@@ -276,21 +288,27 @@ namespace libtcodWrapper
         private extern static void TCOD_bsp_split_recursive(IntPtr node, IntPtr randomizer, int nb, int minHSize, int minVSize, float maxHRatio, float maxVRatio);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_bsp_traverse_pre_order(IntPtr node, TCODBSPTraversalDelegatePrivate listener, IntPtr userData);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_bsp_traverse_in_order(IntPtr node, TCODBSPTraversalDelegatePrivate listener, IntPtr userData);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_bsp_traverse_post_order(IntPtr node, TCODBSPTraversalDelegatePrivate listener, IntPtr userData);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_bsp_traverse_level_order(IntPtr node, TCODBSPTraversalDelegatePrivate listener, IntPtr userData);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_bsp_traverse_inverted_level_order(IntPtr node, TCODBSPTraversalDelegatePrivate listener, IntPtr userData);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_bsp_contains(IntPtr node, int x, int y);
 
         #endregion

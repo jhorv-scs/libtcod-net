@@ -145,12 +145,15 @@ namespace libtcodWrapper
         private extern static IntPtr TCOD_path_new_using_map(IntPtr map, float diagonalCost);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_path_compute(IntPtr path, int origX, int origY, int destX, int destY);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_path_walk(IntPtr path, ref int x, ref int y, bool recalculate_when_needed);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_path_is_empty(IntPtr path);
 
         [DllImport(DLLName.name)]

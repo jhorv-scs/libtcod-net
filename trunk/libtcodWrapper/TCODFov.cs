@@ -69,9 +69,11 @@ namespace libtcodWrapper
         /// <param name="playerX">Player x coord</param>
         /// <param name="playerY">Player y coor</param>
         /// <param name="radius">Radius of sight. 0 means unlimited sight radius</param>
-        public void CalculateFOV(int playerX, int playerY, int radius)
+        /// <param name="lightwalls">Include walls in result?</param>
+        /// <param name="algo">Algorithm to use when calculating FOV</param>
+        public void CalculateFOV(int playerX, int playerY, int radius, bool lightwalls, FovAlgorithm algo)
         {
-            TCOD_map_compute_fov(m_mapPtr, playerX, playerY, radius);
+            TCOD_map_compute_fov(m_mapPtr, playerX, playerY, radius, lightwalls, algo);
         }
 
         /// <summary>
@@ -103,17 +105,20 @@ namespace libtcodWrapper
 
         // calculate the field of view (potentially visible cells from player_x,player_y)
         [DllImport(DLLName.name)]
-        private extern static void TCOD_map_compute_fov(IntPtr map, int player_x, int player_y, int max_radius);
-
+        private extern static void TCOD_map_compute_fov(IntPtr map, int player_x, int player_y, int max_radius, bool light_walls, FovAlgorithm algo);
+       
         // check if a cell is in the last computed field of view
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_map_is_in_fov(IntPtr map, int x, int y);
 
         // retrieve properties from the map
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_map_is_transparent(IntPtr map, int x, int y);
         
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_map_is_walkable(IntPtr map, int x, int y);
 
         #endregion

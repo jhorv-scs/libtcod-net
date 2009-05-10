@@ -201,4 +201,25 @@ namespace libtcodWrapper
         LayoutTCOD = 8,
 #pragma warning restore 1591
     }
+
+
+#pragma warning disable 1591  //Disable warning about lack of xml comments
+    public enum FovAlgorithm
+    {
+        Basic = 0,
+        Diamond,
+        Shadow,
+        Permissive_0,
+        Permissive_1,
+        Permissive_2,
+        Permissive_3,
+        Permissive_4,
+        Permissive_5,
+        Permissive_6,
+        Permissive_7,
+        Permissive_8,
+        NB_Fov_Algorithms
+    };
+#pragma warning restore 1591
+
 }

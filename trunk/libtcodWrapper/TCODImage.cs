@@ -197,6 +197,7 @@ namespace libtcodWrapper
         private extern static void TCOD_image_set_key_color(IntPtr image, Color key_color); 
         
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_image_is_pixel_transparent(IntPtr image, int x, int y);
 
         [DllImport(DLLName.name)]

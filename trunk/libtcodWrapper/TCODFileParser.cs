@@ -490,6 +490,7 @@ namespace libtcodWrapper
         private extern static IntPtr TCOD_parser_new_struct(IntPtr parser, StringBuilder name);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_parser_get_bool_property(IntPtr parser, StringBuilder name);
         
         [DllImport(DLLName.name)]
@@ -624,6 +625,7 @@ namespace libtcodWrapper
         }
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_struct_is_mandatory(IntPtr str, StringBuilder name);
 
         [DllImport(DLLName.name)]
