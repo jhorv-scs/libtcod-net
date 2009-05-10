@@ -69,7 +69,7 @@ namespace libtcodWrapperTests
 
         private static void PaintFOVTest(RootConsole console, int x, int y, TCODFov fov)
         {
-            fov.CalculateFOV(x, y, 3);
+            fov.CalculateFOV(x, y, 3, false, FovAlgorithm.Basic);
 
             for (int i = 0; i < 5; ++i)    //width
             {

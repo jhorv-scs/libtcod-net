@@ -331,6 +331,7 @@ namespace libtcodWrapper
         private extern static Color TCOD_color_multiply(Color c1, Color c2);
 
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_color_equals(Color c1, Color c2);
 
         [DllImport(DLLName.name)]

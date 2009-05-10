@@ -41,6 +41,7 @@ namespace libtcodWrapper
 
         //returns true when reached line endpoint
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_line_step(ref int xCur, ref int yCur);
         #endregion
     }

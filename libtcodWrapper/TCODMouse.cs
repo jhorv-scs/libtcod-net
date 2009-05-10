@@ -174,6 +174,7 @@ namespace libtcodWrapper
         private extern static void TCOD_mouse_show_cursor(bool visible);
         
         [DllImport(DLLName.name)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private extern static bool TCOD_mouse_is_cursor_visible();
         
         [DllImport(DLLName.name)]
