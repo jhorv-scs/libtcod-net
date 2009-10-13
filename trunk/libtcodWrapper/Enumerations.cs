@@ -218,6 +218,7 @@ namespace libtcodWrapper
         Permissive_6,
         Permissive_7,
         Permissive_8,
+        Restrictive,
         NB_Fov_Algorithms
     };
 #pragma warning restore 1591

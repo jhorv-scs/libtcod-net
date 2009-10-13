@@ -142,7 +142,6 @@ namespace TCODDemo
 
         Console off_secondary;
         Console off_screenshot;
-        byte off_alpha = 0; // alpha value for the blit operation
         bool off_init = false; // draw the secondary screen only the first time
         int off_counter = 0;
         int off_x = 0, off_y = 0; // secondary screen position
@@ -154,12 +153,15 @@ namespace TCODDemo
                 off_init = true;
                 off_secondary.DrawFrame(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, false, "Offscreen console");
                 off_secondary.PrintLineRect("You can render to an offscreen console and blit in on another one, simulating alpha transparency.", SAMPLE_SCREEN_WIDTH / 4, 2, SAMPLE_SCREEN_WIDTH / 2 - 2, SAMPLE_SCREEN_HEIGHT / 2, LineAlignment.Center);
+
             }
             if (first)
             {
+                off_x = 0;
+                off_y = 0;
                 TCODSystem.FPS = 30; // fps limited to 30
                 // get a "screenshot" of the current sample screen
-                sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, off_screenshot, 0, 0, 255);
+                sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, off_screenshot, 0, 0);
 
             }
             off_counter++;
@@ -177,13 +179,12 @@ namespace TCODDemo
                 else if (off_y == 0)
                     off_ydir = 1;
             }
-            off_alpha = (byte)(255 * (1.0f + Math.Cos(TCODSystem.ElapsedSeconds * 2.0f)) / 2.0f);
 
             // restore the initial screen
-            off_screenshot.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0, 255);
+            off_screenshot.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0);
 
             // blit the overlapping screen
-            off_secondary.Blit(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, sampleConsole, off_x, off_y, off_alpha);
+            off_secondary.Blit(0, 0, SAMPLE_SCREEN_WIDTH / 2, SAMPLE_SCREEN_HEIGHT / 2, sampleConsole, off_x, off_y, 1.0f ,.75f);
         }
 
         static Console line_bk;
@@ -236,7 +237,7 @@ namespace TCODDemo
             }
 
             // blit the background
-            line_bk.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0, 255);
+            line_bk.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, sampleConsole, 0, 0);
 
 
 
@@ -1397,7 +1398,7 @@ namespace TCODDemo
                 sampleList[curSample].render(first, key);
                 first = false;
 
-                sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, rootConsole, SAMPLE_SCREEN_X, SAMPLE_SCREEN_Y, 255);
+                sampleConsole.Blit(0, 0, SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT, rootConsole, SAMPLE_SCREEN_X, SAMPLE_SCREEN_Y);
 
                 rootConsole.Flush();
                 key = Keyboard.CheckForKeypress(KeyPressType.Pressed);

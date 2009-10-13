@@ -446,7 +446,7 @@ namespace libtcodWrapper
         /// <param name="yDst">Upper left corner y coord of area to blit to</param>
         public void Blit(int xSrc, int ySrc, int wSrc, int hSrc, Console dest, int xDst, int yDst)
         {
-            Blit(xSrc, ySrc, wSrc, hSrc, dest, xDst, yDst, 255);
+            Blit(xSrc, ySrc, wSrc, hSrc, dest, xDst, yDst, 1.0f, 1.0f);
         }
 
         /// <summary>
@@ -459,10 +459,11 @@ namespace libtcodWrapper
         /// <param name="dest">Destination console</param>
         /// <param name="xDst">Upper left corner x coord of area to blit to</param>
         /// <param name="yDst">Upper left corner y coord of area to blit to</param>
-        /// <param name="fade">Transparency of blitted console. 255 = fully replace destination. (0-254) simulate real transparency with varying degrees of fading.</param>
-        public void Blit(int xSrc, int ySrc, int wSrc, int hSrc, Console dest, int xDst, int yDst, int fade)
+        /// <param name="foregroundAlpha">Foreground Alpha Value, defaults to 1.0</param>
+        /// <param name="backgroundAlpha">Background Alpha Value, defaults to 1.0</param>
+        public void Blit(int xSrc, int ySrc, int wSrc, int hSrc, Console dest, int xDst, int yDst, float foregroundAlpha, float backgroundAlpha)
         {
-            TCOD_console_blit(m_consolePtr, xSrc, ySrc, wSrc, hSrc, dest.m_consolePtr, xDst, yDst, fade);
+            TCOD_console_blit(m_consolePtr, xSrc, ySrc, wSrc, hSrc, dest.m_consolePtr, xDst, yDst, foregroundAlpha, backgroundAlpha);
         }
 
         /// <summary>
@@ -582,7 +583,7 @@ namespace libtcodWrapper
         private extern static void TCOD_console_print_frame(IntPtr con, int x, int y, int w, int h, bool clear, IntPtr nullStr);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_blit(IntPtr src, int xSrc, int ySrc, int wSrc, int hSrc, IntPtr dst, int xDst, int yDst, int fade);
+        private extern static void TCOD_console_blit(IntPtr src, int xSrc, int ySrc, int wSrc, int hSrc, IntPtr dst, int xDst, int yDst, float foregroundAlpha, float backgroundAlpha);
 
         /* Prints Strings to Screen */
 
