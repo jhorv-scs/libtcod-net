@@ -466,7 +466,7 @@ namespace TCODDemo
         int algonum = 0;
         string[] algo_names = { "BASIC      ", "DIAMOND    ", "SHADOW     ", 
 		                        "PERMISSIVE0","PERMISSIVE1","PERMISSIVE2","PERMISSIVE3","PERMISSIVE4",
-		                        "PERMISSIVE5","PERMISSIVE6","PERMISSIVE7","PERMISSIVE8" };
+		                        "PERMISSIVE5","PERMISSIVE6","PERMISSIVE7","PERMISSIVE8", "RESTRICTIVE"};
 
         #region Map
         string[] smap = {
@@ -669,7 +669,7 @@ namespace TCODDemo
                 algonum += key.Character == '+' ? 1 : -1;
 
                 if (algonum >= (int)FovAlgorithm.NB_Fov_Algorithms)
-                    algonum = (int)FovAlgorithm.Permissive_8;
+                    algonum = (int)FovAlgorithm.Restrictive;
                 else if (algonum < 0)
                     algonum = 0;
 
