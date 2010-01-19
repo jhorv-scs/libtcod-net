@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libtcodWrapper", "libtcodWrapper.csproj", "{85E2DED9-AA04-4A3B-8587-562D577A8EAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCODTestLib", "TestLibrary\TCODTestLib.csproj", "{8C7FE811-72A7-4EAB-AAA2-C39B3000A69B}"

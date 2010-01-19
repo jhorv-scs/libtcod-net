@@ -526,7 +526,22 @@ namespace libtcodWrapper
         /// <param name="str">Title of frame</param>
         public void DrawFrame(int x, int y, int w, int h, bool clear, String str)
         {
-            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, new StringBuilder(str));
+            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, Background.None.m_value, new StringBuilder(str));
+        }
+
+        /// <summary>
+        /// Draw "Frame" with title onto console
+        /// </summary>
+        /// <param name="x">Upper left corner x coord</param>
+        /// <param name="y">Upper left corner y coord</param>
+        /// <param name="w">Width</param>
+        /// <param name="h">Height</param>
+        /// <param name="clear">Clear area</param>
+        /// <param name="flag">How to interact with background</param>
+        /// <param name="str">Title of frame</param>
+        public void DrawFrame(int x, int y, int w, int h, bool clear, Background flag, String str)
+        {
+            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, flag.m_value, new StringBuilder(str));
         }
 
         /// <summary>
@@ -539,7 +554,21 @@ namespace libtcodWrapper
         /// <param name="clear">Clear area</param>
         public void DrawFrame(int x, int y, int w, int h, bool clear)
         {
-            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, IntPtr.Zero);
+            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, Background.None.m_value, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Draw "Frame" with title onto console
+        /// </summary>
+        /// <param name="x">Upper left corner x coord</param>
+        /// <param name="y">Upper left corner y coord</param>
+        /// <param name="w">Width</param>
+        /// <param name="h">Height</param>
+        /// <param name="clear">Clear area</param>
+        /// <param name="flag">How to interact with background</param>
+        public void DrawFrame(int x, int y, int w, int h, bool clear, Background flag)
+        {
+            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, flag.m_value, IntPtr.Zero);
         }
 
         /// <summary>
@@ -577,10 +606,10 @@ namespace libtcodWrapper
         private extern static void TCOD_console_vline(IntPtr con, int x, int y, int l);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_frame(IntPtr con, int x, int y, int w, int h, bool clear, StringBuilder str);
+        private extern static void TCOD_console_print_frame(IntPtr con, int x, int y, int w, int h, bool clear, /*BackgroundFlag*/ int flag, StringBuilder str);
 
         [DllImport(DLLName.name)]
-        private extern static void TCOD_console_print_frame(IntPtr con, int x, int y, int w, int h, bool clear, IntPtr nullStr);
+        private extern static void TCOD_console_print_frame(IntPtr con, int x, int y, int w, int h, bool clear, /*BackgroundFlag*/ int flag, IntPtr nullStr);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_blit(IntPtr src, int xSrc, int ySrc, int wSrc, int hSrc, IntPtr dst, int xDst, int yDst, float foregroundAlpha, float backgroundAlpha);
