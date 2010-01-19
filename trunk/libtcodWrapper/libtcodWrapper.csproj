@@ -60,22 +60,21 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="libtcodWrapper\Enumerations.cs" />
-    <Compile Include="libtcodWrapper\TCODBSP.cs" />
-    <Compile Include="libtcodWrapper\TCODColor.cs" />
-    <Compile Include="libtcodWrapper\TCODConsole.cs" />
-    <Compile Include="libtcodWrapper\TCODException.cs" />
-    <Compile Include="libtcodWrapper\TCODFileParser.cs" />
-    <Compile Include="libtcodWrapper\TCODFov.cs" />
-    <Compile Include="libtcodWrapper\TCODImage.cs" />
-    <Compile Include="libtcodWrapper\TCODKeyboard.cs" />
-    <Compile Include="libtcodWrapper\TCODLineDrawing.cs" />
-    <Compile Include="libtcodWrapper\TCODNoise.cs" />
-    <Compile Include="libtcodWrapper\TCODPathFinding.cs" />
-    <Compile Include="libtcodWrapper\TCODRandom.cs" />
-    <Compile Include="libtcodWrapper\TCODSystem.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="libtcodWrapper\TCODMouse.cs" />
+    <Compile Include="Enumerations.cs" />
+    <Compile Include="TCODBSP.cs" />
+    <Compile Include="TCODColor.cs" />
+    <Compile Include="TCODConsole.cs" />
+    <Compile Include="TCODException.cs" />
+    <Compile Include="TCODFileParser.cs" />
+    <Compile Include="TCODFov.cs" />
+    <Compile Include="TCODImage.cs" />
+    <Compile Include="TCODKeyboard.cs" />
+    <Compile Include="TCODLineDrawing.cs" />
+    <Compile Include="TCODMouse.cs" />
+    <Compile Include="TCODNoise.cs" />
+    <Compile Include="TCODPathFinding.cs" />
+    <Compile Include="TCODRandom.cs" />
+    <Compile Include="TCODSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -83,5 +82,8 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

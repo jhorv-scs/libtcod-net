@@ -526,7 +526,7 @@ namespace libtcodWrapper
         /// <param name="str">Title of frame</param>
         public void DrawFrame(int x, int y, int w, int h, bool clear, String str)
         {
-            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, Background.None.m_value, new StringBuilder(str));
+            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, Background.Set.m_value, new StringBuilder(str));
         }
 
         /// <summary>
@@ -554,7 +554,7 @@ namespace libtcodWrapper
         /// <param name="clear">Clear area</param>
         public void DrawFrame(int x, int y, int w, int h, bool clear)
         {
-            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, Background.None.m_value, IntPtr.Zero);
+            TCOD_console_print_frame(m_consolePtr, x, y, w, h, clear, Background.Set.m_value, IntPtr.Zero);
         }
 
         /// <summary>
@@ -588,7 +588,7 @@ namespace libtcodWrapper
         /// <returns>true when the credits screen is finished, indicating that you no longer need to call it.</returns>
         public bool ConsoleCreditsRender(int x, int y, bool alpha)
         {
-            return TCOD_console_credits_render(x, y, alpha);
+            return TCOD_console_credits_render(x, y, alpha) == 1;
         }
 
 
@@ -700,7 +700,7 @@ namespace libtcodWrapper
         private static extern void TCOD_console_credits();
 
         [DllImport(DLLName.name)]
-        private static extern bool TCOD_console_credits_render(int x, int y, bool alpha);
+        private static extern byte TCOD_console_credits_render(int x, int y, bool alpha);
         #endregion
     }
 
