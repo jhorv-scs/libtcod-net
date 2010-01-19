@@ -28,23 +28,62 @@ namespace libtcodWrapper
         {
             get { return character; }
         }
-        
-        //This field is set by libtcod when struct is marshalled. Disable the incorrect warning. 
-        #pragma warning disable 0649
-#if Linux
-        private byte modifiers;
-#else
-        private int modifiers;
-#endif
-        #pragma warning restore 0649
 
+
+        private byte pressed;
         /// <summary>
         /// Any key has been pressed.
         /// </summary>
         public bool Pressed
         {
-            get { return ((modifiers & 0x01) > 0); }
+            get { return pressed == 1; }
         }
+
+        private byte lalt;
+        /// <summary>
+        /// Modified by the press of the left alt key.
+        /// </summary>
+        public bool LeftAlt
+        {
+            get { return lalt == 1; }
+        }
+
+        private byte lctrl;
+        /// <summary>
+        /// Modified by the press of the left control key.
+        /// </summary>
+        public bool LeftControl
+        {
+            get { return lctrl == 1; }
+        }
+
+        private byte ralt;
+        /// <summary>
+        /// Modified by the press of the right alt key.
+        /// </summary>
+        public bool RightAlt
+        {
+            get { return ralt == 1; }
+        }
+
+        private byte rctrl;
+        /// <summary>
+        /// Modified by the press of the right control key.
+        /// </summary>
+        public bool RightControl
+        {
+            get { return rctrl == 1; }
+        }
+
+        private byte shift;
+        /// <summary>
+        /// Modified by the press of either shift key.
+        /// </summary>
+        public bool Shift
+        {
+            get { return shift == 1; }
+        }
+
         /// <summary>
         /// Modified by the press of either alt key.
         /// </summary>
@@ -52,47 +91,13 @@ namespace libtcodWrapper
         {
             get { return LeftAlt || RightAlt; }
         }
+
         /// <summary>
         /// Modified by the press of either control key.
         /// </summary>
         public bool Control
         {
             get { return LeftControl || RightControl; }
-        }
-        /// <summary>
-        /// Modified by the press of the left alt key.
-        /// </summary>
-        public bool LeftAlt
-        {
-            get { return ((modifiers & 0x02) > 0); }
-        }
-        /// <summary>
-        /// Modified by the press of the left control key.
-        /// </summary>
-        public bool LeftControl
-        {
-            get { return ((modifiers & 0x04) > 0); }
-        }
-        /// <summary>
-        /// Modified by the press of the rightt alt key.
-        /// </summary>
-        public bool RightAlt
-        {
-            get { return ((modifiers & 0x8) > 0); }
-        }
-        /// <summary>
-        /// Modified by the press of the right control key.
-        /// </summary>
-        public bool RightControl
-        {
-            get { return ((modifiers & 0x10) > 0); }
-        }
-        /// <summary>
-        /// Modified by the press of either shift key.
-        /// </summary>
-        public bool Shift
-        {
-            get { return ((modifiers & 0x20) > 0); }
         }
     }
 

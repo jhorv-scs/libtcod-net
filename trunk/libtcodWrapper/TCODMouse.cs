@@ -99,37 +99,56 @@ namespace libtcodWrapper
         {
             get { return dcy; }
         }
-        
-        //This field is set by libtcod when struct is marshalled. Disable the incorrect warning. 
-        #pragma warning disable 0649
-        private byte modifiers;
-        #pragma warning restore 0649
-        
+                
         #pragma warning disable 1591  //Disable warning about lack of xml comments
+        private byte lbutton;
         public bool LeftButton
         {
-            get { return ((modifiers & 0x01) > 0); }
+            get { return lbutton == 1; }
         }
+
+        private byte rbutton;
         public bool RightButton
         {
-            get { return ((modifiers & 0x02) > 0); }
+            get { return rbutton == 1; }
         }
+
+        private byte mbutton;
         public bool MiddleButton
         {
-            get { return ((modifiers & 0x4) > 0); }
+            get { return mbutton == 1; }
         }
+
+        private byte lbutton_pressed;
         public bool LeftButtonPressed
         {
-            get { return ((modifiers & 0x8) > 0); }
+            get { return lbutton_pressed == 1; }
         }
+
+        private byte rbutton_pressed;
         public bool RightButtonPressed
         {
-            get { return ((modifiers & 0x10) > 0); }
+            get { return rbutton_pressed == 1; }
         }
+
+        private byte mbutton_pressed;
         public bool MiddleButtonPressed
         {
-            get { return ((modifiers & 0x20) > 0); }
+            get { return mbutton_pressed == 1; }
         }
+
+        private byte wheel_up;
+        public bool WheelUp
+        {
+            get { return wheel_up == 1; }
+        }
+
+        private byte wheel_down;
+        public bool WheelDown
+        {
+            get { return wheel_down == 1; }
+        }
+
         #pragma warning restore 1591
 
         /// <summary>
