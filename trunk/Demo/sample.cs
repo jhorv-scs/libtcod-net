@@ -2,6 +2,7 @@ using System;
 using libtcodWrapper;
 
 using Console = libtcodWrapper.Console;
+using System.Collections.Generic;
 
 namespace TCODDemo
 {
@@ -1221,10 +1222,66 @@ namespace TCODDemo
                 roomWalls = !roomWalls;
                 refresh = true;
             }
-
         }
-        
-        private sample[] sampleList = new sample[9];
+
+        static int nbSets;
+        static int curSet = 0;
+        static float delay = 0.0f;
+        static List<string> sets = new List<string>();
+        static List<string> names = new List<string>();
+        void render_name(bool first, KeyPress key)
+        {
+            if (names.Count == 0)
+            {
+                foreach (string filename in System.IO.Directory.GetFiles("Names"))
+                {
+                    TCODNameGenerator.LoadSyllableFile(filename);
+                }
+                sets = TCODNameGenerator.GetSet();
+                nbSets = sets.Count;
+            }
+            if (first)
+                TCODSystem.FPS = 30;
+
+            while (names.Count >= 15)
+            {
+                string nameToRemove = names[0];
+                names.RemoveAt(0);
+            }
+            sampleConsole.Clear();
+            sampleConsole.ForegroundColor = TCODColorPresets.White;
+            sampleConsole.PrintLine(string.Format("{0}\n\n+ : next generator\n- : prev generator", sets[curSet]), 1, 1, Background.None, LineAlignment.Left);
+
+            for (int i = 0; i < names.Count; ++i)
+            {
+                string name = names[i];
+                if (name.Length < SAMPLE_SCREEN_WIDTH)
+                    sampleConsole.PrintLine(name, SAMPLE_SCREEN_WIDTH - 2, 2 + i, Background.None, LineAlignment.Right);
+            }
+
+            delay += TCODSystem.LastFrameLength;
+            if (delay >= .5f)
+            {
+                delay -= .5f;
+                names.Add(TCODNameGenerator.Generate(sets[curSet]));
+            }
+            if (key.Character == '+')
+            {
+                curSet++;
+                if (curSet == nbSets)
+                    curSet = 0;
+                names.Add("======");
+            }
+            if (key.Character == '-')
+            {
+                curSet--;
+                if (curSet < 0)
+                    curSet = nbSets-1;
+                names.Add("======");
+            }
+        }
+
+        private sample[] sampleList = new sample[10];
 
         private void fillSampleList()
         {
@@ -1239,6 +1296,7 @@ namespace TCODDemo
 
             sampleList[7] = new sample("  Image toolkit      ", render_image);
             sampleList[8] = new sample("  Mouse support      ", render_mouse);
+            sampleList[9] = new sample("  Name generator     ", render_name);
         }
 
 
@@ -1384,7 +1442,7 @@ namespace TCODDemo
                         rootConsole.ForegroundColor = (ColorPresets.Gray);
                         rootConsole.BackgroundColor = ColorPresets.Black;
                     }
-                    rootConsole.PrintLine(sampleList[i].name, 2, 46 - sampleList.Length + i, Background.Set, LineAlignment.Left);
+                    rootConsole.PrintLine(sampleList[i].name, 2, 45 - sampleList.Length + i, Background.Set, LineAlignment.Left);
                 }
                 rootConsole.ForegroundColor = (ColorPresets.Gray);
                 rootConsole.BackgroundColor = ColorPresets.Black;
