@@ -34,6 +34,7 @@
     <RootNamespace>libtcodWrapper</RootNamespace>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <DocumentationFile>xmlDocs.xml</DocumentationFile>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -71,6 +72,7 @@
     <Compile Include="TCODKeyboard.cs" />
     <Compile Include="TCODLineDrawing.cs" />
     <Compile Include="TCODMouse.cs" />
+    <Compile Include="TCODNameGenerator.cs" />
     <Compile Include="TCODNoise.cs" />
     <Compile Include="TCODPathFinding.cs" />
     <Compile Include="TCODRandom.cs" />
