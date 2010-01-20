@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 
 namespace libtcodWrapper
-{
+{    
     /// <summary>
     /// Generate random names using sylable files
     /// </summary>
@@ -48,7 +48,7 @@ namespace libtcodWrapper
         /// <returns></returns>
         public static string Generate(string type)
         {
-            return TCOD_namegen_generate(type, false);
+            return Marshal.PtrToStringAnsi(TCOD_namegen_generate(type, false));
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace libtcodWrapper
         /// <returns></returns>
         public static string GenerateCustom(string type, string rule)
         {
-            return TCOD_namegen_generate_custom(type, rule, false);
+            return Marshal.PtrToStringAnsi(TCOD_namegen_generate_custom(type, rule, false));
         }
 
         /// <summary>
@@ -74,8 +74,8 @@ namespace libtcodWrapper
             int listSize = TCOD_list_size(tcodStringList);
             for(int i = 0 ; i < listSize ; ++i)
             {
-                string s = TCOD_list_get(tcodStringList, i);
-                returnList.Add(s);
+                string str = Marshal.PtrToStringAnsi(TCOD_list_get(tcodStringList, i));
+                returnList.Add(str);
             }
 
             TCOD_list_delete(tcodStringList);
@@ -84,13 +84,13 @@ namespace libtcodWrapper
 
         #region DllImport
         [DllImport(DLLName.name)]
-        private extern static void TCOD_namegen_parse(string filename, IntPtr random);
+        private extern static void TCOD_namegen_parse([MarshalAs(UnmanagedType.LPStr)]string filename, IntPtr random);
 
         [DllImport(DLLName.name)]
-        private extern static string TCOD_namegen_generate (string name, bool allocate);
+        private extern static IntPtr TCOD_namegen_generate([MarshalAs(UnmanagedType.LPStr)]string name, bool allocate);
 
         [DllImport(DLLName.name)]
-        private extern static string TCOD_namegen_generate_custom(string name, string rule, bool allocate);
+        private extern static IntPtr TCOD_namegen_generate_custom(string name, string rule, bool allocate);
         
         [DllImport(DLLName.name)]
         private extern static void TCOD_namegen_destroy();
@@ -99,7 +99,7 @@ namespace libtcodWrapper
         private extern static IntPtr TCOD_namegen_get_sets();
 
         [DllImport(DLLName.name)]
-        private extern static string TCOD_list_get(IntPtr l, int idx);
+        private extern static IntPtr TCOD_list_get(IntPtr l, int idx);
 
         [DllImport(DLLName.name)]
         private extern static int TCOD_list_size(IntPtr l);
