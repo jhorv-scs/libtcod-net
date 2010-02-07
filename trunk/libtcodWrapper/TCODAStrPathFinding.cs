@@ -1,43 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace libtcodWrapper
 {
     /// <summary>
-    /// Callback made from pathfinding engine to determine cell pathfinding information
+    /// TCOD Pathfinding using A*
     /// </summary>
-    /// <param name="xFrom">staring x coord</param>
-    /// <param name="yFrom">starting y coord</param>
-    /// <param name="xTo">ending x coord</param>
-    /// <param name="yTo">ending y coord</param>
-    /// <returns>"Cost" to pass through cell</returns>
-    public delegate float TCODPathCallback(int xFrom, int yFrom, int xTo, int yTo);
-
-    /// <summary>
-    /// Calculates paths in maps using djikstra's algorithms
-    /// </summary>
-    public class TCODPathFinding : IDisposable
+    public class TCODAStrPathFinding : TCODPathFindingBase
     {
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate float TCODPathCallbackInternal(int xFrom, int yFrom, int xTo, int yTo, IntPtr nullPtr);
-
-        float TCODPathCallInternal(int xFrom, int yFrom, int xTo, int yTo, IntPtr nullPtr)
-        {
-            return m_callback(xFrom, yFrom, xTo, yTo);
-        }
-
-        private IntPtr m_instance;
-        private TCODPathCallback m_callback;
-        private TCODPathCallbackInternal m_internalCallback;
-
         /// <summary>
-        /// Create a new TCODPathFinding with a callback to determine cell information
+        /// Create a new TCODAStrPathFinding with a callback to determine cell information
         /// </summary>
         /// <param name="width">Map Width</param>
         /// <param name="height">Map Height</param>
         /// <param name="diagonalCost">Factor diagonal moves cost more</param>
         /// <param name="callback">Callback from path finder</param>
-        public TCODPathFinding(int width, int height, double diagonalCost, TCODPathCallback callback)
+        public TCODAStrPathFinding(int width, int height, double diagonalCost, TCODPathCallback callback)
         {
             m_callback = callback;
             m_internalCallback = new TCODPathCallbackInternal(this.TCODPathCallInternal);
@@ -45,11 +26,11 @@ namespace libtcodWrapper
         }
 
         /// <summary>
-        /// Create new TCODPathFinding using map from TCODFov instance
+        /// Create new TCODAStrPathFinding using map from TCODFov instance
         /// </summary>
         /// <param name="fovMap">Existing map</param>
         /// <param name="diagonalCost">Factor diagonal moves cost more</param>
-        public TCODPathFinding(TCODFov fovMap, double diagonalCost)
+        public TCODAStrPathFinding(TCODFov fovMap, double diagonalCost)
         {
             m_instance = TCOD_path_new_using_map(fovMap.m_mapPtr, (float)diagonalCost);
         }
@@ -67,7 +48,6 @@ namespace libtcodWrapper
             return TCOD_path_compute(m_instance, origX, origY, destX, destY);
         }
 
-
         /// <summary>
         /// Walk along a path. Fill x and y with previous step's coord to get next point.
         /// </summary>
@@ -79,7 +59,6 @@ namespace libtcodWrapper
         {
             return TCOD_path_walk(m_instance, ref x, ref y, recalculateWhenNeeded);
         }
-
 
         /// <summary>
         /// Query individual point on path
@@ -132,12 +111,13 @@ namespace libtcodWrapper
         /// <summary>
         /// Destory unmanaged pathfinding resource.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             TCOD_path_delete(m_instance);
         }
 
         #region DllImport
+        // A*
         [DllImport(DLLName.name)]
         private extern static IntPtr TCOD_path_new_using_function(int map_width, int map_height, TCODPathCallbackInternal func, IntPtr nullData, float diagonalCost);
 
@@ -171,6 +151,5 @@ namespace libtcodWrapper
         [DllImport(DLLName.name)]
         private extern static void TCOD_path_delete(IntPtr path);
         #endregion
-
     }
 }

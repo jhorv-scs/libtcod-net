@@ -4,9 +4,11 @@ using libtcodWrapper;
 using Console = libtcodWrapper.Console;
 using System.Collections.Generic;
 
+// This is a direct port of sample_c from libtcod.
+// This was done to make obvious the differences between the two APIs
+// This is not suggested as a style to use for c# programs.
 namespace TCODDemo
 {
-
     class TCODDemo : IDisposable
     {
         Console sampleConsole;
@@ -783,23 +785,23 @@ namespace TCODDemo
 
         // int px = 20, py = 10; // player position
         int dx = 24, dy = 1; // destination
-        TCODPathFinding path = null;
+        TCODAStrPathFinding AStrPath = null;
+        TCODDijkstraPathFinding DijkstraPath = null;
         bool recalculatePath = false;
         float busy = 0.0f;
         char oldChar = ' ';
+        bool usingAstar = true;
+        float dijkstraDist = 0;
 
         void render_path(bool first, KeyPress key)
         {
-            Mouse mouse;
-            int mx, my, x, y, i;
-
             if (map == null)
             {
                 // initialize the map
                 map = new TCODFov(SAMPLE_SCREEN_WIDTH, SAMPLE_SCREEN_HEIGHT);
-                for (y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+                for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
                 {
-                    for (x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                    for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
                     {
                         if (smap[y][x] == ' ')
                             map.SetCell(x, y, true, true);// ground
@@ -807,7 +809,6 @@ namespace TCODDemo
                             map.SetCell(x, y, true, false); // window
                     }
                 }
-                // path = new TCODPathFinding(map, 1.41);
             }
 
             if (first)
@@ -819,13 +820,14 @@ namespace TCODDemo
                 // draw the help text & player @
                 sampleConsole.Clear();
                 sampleConsole.ForegroundColor = (ColorPresets.White);
-                sampleConsole.PrintLine("IJKL : move around\nT : mouse : move destination", 1, 1, LineAlignment.Left);
+                sampleConsole.PrintLine("IJKL / mouse :\nmove destination\nTAB : A*/dijkstra", 1, 1, LineAlignment.Left);
+                sampleConsole.PrintLine("Using : A*", 1, 4, LineAlignment.Left);
                 sampleConsole.ForegroundColor = (ColorPresets.Black);
                 sampleConsole.PutChar(px, py, '@');
                 // draw windows
-                for (y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+                for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
                 {
-                    for (x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                    for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
                     {
                         if (smap[y][x] == '=')
                         {
@@ -838,16 +840,42 @@ namespace TCODDemo
             
             if (recalculatePath)
             {
-                path = new TCODPathFinding(map, 1.41);
-                path.ComputePath(px, py, dx, dy);
+                if (usingAstar)
+                {
+                    if (AStrPath == null)
+                        AStrPath = new TCODAStrPathFinding(map, 1.41);
+
+                    AStrPath.ComputePath(px, py, dx, dy);
+                }
+                else
+                {
+                    if (DijkstraPath == null)
+                        DijkstraPath = new TCODDijkstraPathFinding(map, 1.41);
+
+                    dijkstraDist = 0.0f;
+                    /* compute the distance grid */
+                    DijkstraPath.Compute(px, py);
+                    /* get the maximum distance (needed for ground shading only) */
+                    for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+                    {
+                        for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                        {
+                            float d = DijkstraPath.GetDistance(x, y);
+                            if (d > dijkstraDist) 
+                                dijkstraDist = d;
+                        }
+                    }
+                    // compute the path
+                    DijkstraPath.SetPath(dx, dy);
+                }
                 recalculatePath = false;
-                busy = 1.0f;
+                busy = .2f;
             }
 
             // draw the dungeon
-            for (y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+            for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
             {
-                for (x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
                 {
                     bool wall = smap[y][x] == '#';
                     sampleConsole.SetCharBackground(x, y, (wall ? darkWall : darkGround), Background.Set);
@@ -855,11 +883,35 @@ namespace TCODDemo
             }
 
             // draw the path
-            for (i = 0; i < path.GetPathSize(); i++)
+            if (usingAstar)
             {
-                // int x, y;
-                path.GetPointOnPath(i, out x, out y);
-                sampleConsole.SetCharBackground(x, y, lightGround, Background.Set);
+                for (int i = 0; i < AStrPath.GetPathSize(); i++)
+                {
+                    int x, y;
+                    AStrPath.GetPointOnPath(i, out x, out y);
+                    sampleConsole.SetCharBackground(x, y, lightGround, Background.Set);
+                }
+            }
+            else
+            {
+                for (int y = 0; y < SAMPLE_SCREEN_HEIGHT; y++)
+                {
+                    for (int x = 0; x < SAMPLE_SCREEN_WIDTH; x++)
+                    {
+                        bool wall = smap[y][x] == '#';
+                        if (!wall)
+                        {
+                            float d = DijkstraPath.GetDistance(x, y);
+                            sampleConsole.SetCharBackground(x, y, Color.Interpolate(lightGround, darkGround, 0.9 * d / dijkstraDist), Background.Set);
+                        }
+                    }
+                }
+                for (int i = 0; i < DijkstraPath.PathLength(); i++)
+                {
+                    int x, y;
+                    DijkstraPath.GetPointOnPath(i, out x, out y);
+                    sampleConsole.SetCharBackground(x, y, lightGround, Background.Set);
+                }
             }
 
             // move the creature
@@ -867,11 +919,24 @@ namespace TCODDemo
             if (busy <= 0.0f)
             {
                 busy += 0.2f;
-                if (!path.IsPathEmpty())
+                if (usingAstar)
                 {
-                    sampleConsole.PutChar(px, py, ' ', Background.None);
-                    path.WalkPath(ref px, ref py, true);
-                    sampleConsole.PutChar(px, py, '@', Background.None);
+                    if (!AStrPath.IsPathEmpty())
+                    {
+                        sampleConsole.PutChar(px, py, ' ', Background.None);
+                        AStrPath.WalkPath(ref px, ref py, true);
+                        sampleConsole.PutChar(px, py, '@', Background.None);
+                    }
+                }
+                else
+                {
+                    if (!DijkstraPath.IsPathEmpty())
+                    {
+                        sampleConsole.PutChar(px, py, ' ', Background.None);
+                        DijkstraPath.WalkPath(ref px, ref py);
+                        sampleConsole.PutChar(px, py, '@', Background.None);
+                        recalculatePath = true;
+                    }
                 }
             }
 
@@ -923,10 +988,21 @@ namespace TCODDemo
                     recalculatePath = true;
                 }
             }
+            else if (key.KeyCode == KeyCode.TCODK_TAB)
+            {
+                usingAstar = !usingAstar;
+                sampleConsole.ForegroundColor = (ColorPresets.White);
+                if (usingAstar)
+                    sampleConsole.PrintLine("Using : A*      ", 1, 4, LineAlignment.Left);
+                else
+                    sampleConsole.PrintLine("Using : Dijkstra", 1, 4, LineAlignment.Left);
+                sampleConsole.ForegroundColor = (ColorPresets.Black);
+                recalculatePath = true;
+            }
 
-            mouse = Mouse.GetStatus();
-            mx = mouse.CellX - SAMPLE_SCREEN_X;
-            my = mouse.CellY - SAMPLE_SCREEN_Y;
+            Mouse mouse = Mouse.GetStatus();
+            int mx = mouse.CellX - SAMPLE_SCREEN_X;
+            int my = mouse.CellY - SAMPLE_SCREEN_Y;
 
             if (mx >= 0 && mx < SAMPLE_SCREEN_WIDTH && my >= 0 && my < SAMPLE_SCREEN_HEIGHT && (dx != mx || dy != my))
             {
