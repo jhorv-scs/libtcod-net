@@ -10,20 +10,51 @@ namespace libtcodWrapper
     public class TCODRandom : IDisposable
     {
         /// <summary>
+        /// Types of random number generator algorithms
+        /// </summary>
+        public enum RandomGeneratorTypes
+        {
+            /// <summary>
+            /// Mersenne Twister
+            /// </summary>
+            MersenneTwister=0,
+
+            /// <summary>
+            /// Complementary Multiply With Carry
+            /// </summary>
+            ComplementaryMultiplyWithCarry=1
+        }
+
+        /// <summary>
         /// Create a new instance of a random number generator.
         /// </summary>
         public TCODRandom()
         {
-            m_instance = TCOD_random_new();
+            m_instance = TCOD_random_get_instance();
+        }
+
+        /// <summary>
+        /// Create a new instance of a random number generator with a specific algorithm
+        /// </summary>
+        /// <param name="type">Type of algorithm</param>
+        public TCODRandom(RandomGeneratorTypes type)
+        {
+            m_instance = TCOD_random_new(type);
         }
 
         /// <summary>
         /// Create new instance of a random number generator with a starting seed.
         /// </summary>
         /// <param name="seed">Intial Seed</param>
-        public TCODRandom(uint seed)
+        /// <param name="type">Type of algorithm</param>
+        public TCODRandom(RandomGeneratorTypes type, uint seed)
         {
-            m_instance = TCOD_random_new_from_seed(seed);
+            m_instance = TCOD_random_new_from_seed(type, seed);
+        }
+
+        private TCODRandom(IntPtr instance)
+        {
+            m_instance = instance;
         }
 
         /// <summary>
@@ -68,25 +99,50 @@ namespace libtcodWrapper
         }
 
         /// <summary>
-        /// Deterministly obtain a random number based upon a string seed
+        /// Generate a floating point number with an approximated Gaussian distribution
         /// </summary>
         /// <param name="min">Minimum number to generate</param>
-        /// <param name="max">Maximum number to generate</param>
-        /// <param name="data">String to be a seed</param>
-        /// <returns>Random Number</returns>
-        public int GetIntFromByteArray(int min, int max, string data)
+        /// <param name="max">Max number to generate</param>
+        /// <returns>Generated number</returns>
+        public float GetGaussianFloat(float min, float max)
         {
-            return TCOD_random_get_int_from_byte_array(min, max, new StringBuilder(data), data.Length);
+            return TCOD_random_get_gaussian_float(m_instance, min, max);
+        }
+
+        /// <summary>
+        /// Generate an integer number with an approximated Gaussian distribution
+        /// </summary>
+        /// <param name="min">Minimum number to generate</param>
+        /// <param name="max">Max number to generate</param>
+        /// <returns>Generated number</returns>
+        public int GetGaussianInt(int min, int max)
+        {
+            return TCOD_random_get_gaussian_int(m_instance, min, max);
+        }
+
+        /// <summary>
+        /// Save state of generator and create clone.
+        /// </summary>
+        /// <returns>New TCODRandom with the given state.</returns>
+        public TCODRandom Save()
+        {
+            return new TCODRandom(TCOD_random_save(m_instance));
         }
 
         internal IntPtr m_instance;
 
         #region DllImport
         [DllImport(DLLName.name)]
-        private extern static IntPtr TCOD_random_new();
+        private extern static IntPtr TCOD_random_get_instance();
 
         [DllImport(DLLName.name)]
-        private extern static IntPtr TCOD_random_new_from_seed(uint seed);
+        private extern static IntPtr TCOD_random_save(IntPtr mersenne);
+
+        [DllImport(DLLName.name)]
+        private extern static IntPtr TCOD_random_new(RandomGeneratorTypes type);
+
+        [DllImport(DLLName.name)]
+        private extern static IntPtr TCOD_random_new_from_seed(RandomGeneratorTypes type, uint seed);
 
         [DllImport(DLLName.name)]
         private extern static int TCOD_random_get_int(IntPtr mersenne, int min, int max);
@@ -95,7 +151,10 @@ namespace libtcodWrapper
         private extern static float TCOD_random_get_float(IntPtr mersenne, float min, float max);
 
         [DllImport(DLLName.name)]
-        private extern static int TCOD_random_get_int_from_byte_array(int min, int max, StringBuilder data, int len);
+        private extern static float TCOD_random_get_gaussian_float (IntPtr mersenne, float min, float max);
+
+        [DllImport(DLLName.name)]
+        private extern static int TCOD_random_get_gaussian_int (IntPtr mersenne, int min, int max);
 
         [DllImport(DLLName.name)]
         private extern static void TCOD_random_delete(IntPtr mersenne);

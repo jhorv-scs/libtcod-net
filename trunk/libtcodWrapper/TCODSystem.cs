@@ -78,6 +78,16 @@ namespace libtcodWrapper
         }
 
         /// <summary>
+        /// Get the current font's width and height
+        /// </summary>
+        /// <param name="w">Width</param>
+        /// <param name="h">Height</param>
+        public static void GetCurrentFontSize(out int w, out int h)
+        {
+            TCOD_sys_get_char_size(out w, out h);
+        }
+
+        /// <summary>
         /// Get or set the current value of frames per second that
         /// the library will attempt to render.
         /// </summary>
@@ -88,6 +98,10 @@ namespace libtcodWrapper
         }
 
         #region DllImport
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_sys_get_char_size(out int w, out int h);
+
         [DllImport(DLLName.name)]
         private extern static uint TCOD_sys_elapsed_milli();
 

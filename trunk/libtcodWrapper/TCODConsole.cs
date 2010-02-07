@@ -591,6 +591,13 @@ namespace libtcodWrapper
             return TCOD_console_credits_render(x, y, alpha) == 1;
         }
 
+        /// <summary>
+        /// Reset the state of "Powered by libtcod x.y.z" animation
+        /// </summary>
+        public void ResetCreditsAnimation()
+        {
+            TCOD_console_credits_reset();
+        }
 
         #region DLLImports
 
@@ -701,6 +708,10 @@ namespace libtcodWrapper
 
         [DllImport(DLLName.name)]
         private static extern byte TCOD_console_credits_render(int x, int y, bool alpha);
+
+        [DllImport(DLLName.name)]
+        private extern static void TCOD_console_credits_reset();
+
         #endregion
     }
 
@@ -971,7 +982,6 @@ namespace libtcodWrapper
         #endregion
 
         #region DLLImports
-
         [DllImport(DLLName.name)]
         private extern static void TCOD_console_set_window_title(StringBuilder title);
 
