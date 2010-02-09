@@ -9,6 +9,8 @@ namespace libtcodWrapper
     /// </summary>
     public class TCODRandom : IDisposable
     {
+        private bool m_globalInstanceUsed;
+
         /// <summary>
         /// Types of random number generator algorithms
         /// </summary>
@@ -31,6 +33,7 @@ namespace libtcodWrapper
         public TCODRandom()
         {
             m_instance = TCOD_random_get_instance();
+            m_globalInstanceUsed = true;
         }
 
         /// <summary>
@@ -40,6 +43,7 @@ namespace libtcodWrapper
         public TCODRandom(RandomGeneratorTypes type)
         {
             m_instance = TCOD_random_new(type);
+            m_globalInstanceUsed = false;
         }
 
         /// <summary>
@@ -50,11 +54,13 @@ namespace libtcodWrapper
         public TCODRandom(RandomGeneratorTypes type, uint seed)
         {
             m_instance = TCOD_random_new_from_seed(type, seed);
+            m_globalInstanceUsed = false;
         }
 
         private TCODRandom(IntPtr instance)
         {
             m_instance = instance;
+            m_globalInstanceUsed = false;
         }
 
         /// <summary>
@@ -62,7 +68,8 @@ namespace libtcodWrapper
         /// </summary>
         public void Dispose()
         {
-            TCOD_random_delete(m_instance);
+            if(!m_globalInstanceUsed)
+                TCOD_random_delete(m_instance);
         }
 
         /// <summary>
